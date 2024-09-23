@@ -55,7 +55,7 @@ export class LoginComponent implements OnInit {
         }).then(() => {
           // Redirige según el rol del usuario
           if (user.roles.includes(0)) {
-            this.router.navigate(['Perfil']);
+            this.router.navigate(['Licencias-historial']);
           } else if (user.roles.includes(1)) {
             this.router.navigate(['licencias']);
           } else {
