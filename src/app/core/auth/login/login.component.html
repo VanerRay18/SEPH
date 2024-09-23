@@ -7,7 +7,7 @@
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
       <div class="form-group">
         <label for="usuario">Usuario</label>
-        <input id="usuario" formControlName="usuario" type="text" class="form-control"
+        <input id="usuario" formControlName="user" type="text" class="form-control"
           placeholder="Ingrese su usuario" />
         <div *ngIf="loginForm.get('usuario')?.invalid && loginForm.get('usuario')?.touched" class="error">
           Usuario es requerido

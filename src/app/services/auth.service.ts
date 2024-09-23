@@ -29,7 +29,7 @@ export class AuthService {
   }
 
   authLogg(data: any): Observable<ApiResponse> {
-    return this.http.post<any>(`${environment.baseService}${'/login'}`, data);
+    return this.http.post<any>(`${environment.baseService}${'login'}`, data);
   }
 
 
