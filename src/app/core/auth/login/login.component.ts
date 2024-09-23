@@ -36,13 +36,18 @@ export class LoginComponent implements OnInit {
     console.log(data)
     this.authService.authLogg(data).subscribe(
       (response) => {
-        console.log('Respuesta de la API:', response.success);
-        // Manejar la respuesta y hacer la navegación o lógica que desees
+        console.log('Respuesta de la API:', response);
       },
       (error) => {
-        console.error('Error en la autenticación:', error);
+        Swal.fire({
+          title: 'Error!',
+          text:  error.error.message,
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
       }
     );
+    
     // const { usuario, password } = this.loginForm.value;
 
     // this.authService.authenticate(usuario, password).subscribe(user => {
