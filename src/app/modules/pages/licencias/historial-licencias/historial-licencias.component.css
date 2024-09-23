@@ -1,0 +1,91 @@
+/* Estilo del contenedor principal */
+.historial-container {
+    padding: 20px;
+    font-family: 'Arial', sans-serif;
+    background-color: #f9f9f9; /* Fondo ligeramente gris */
+    border: 1px solid #ddd; /* Borde gris claro */
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
+  }
+  
+  /* Títulos */
+  .historial-container h1 {
+    font-size: 24px;
+    color: #333; /* Color de texto oscuro */
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .historial-container h2 {
+    font-size: 20px;
+    color: #555; /* Color de texto ligeramente oscuro */
+    margin-top: 20px;
+  }
+  
+  /* Tabla */
+  .historial-container table {
+    width: 100%; /* Tabla ocupa todo el ancho del contenedor */
+    border-collapse: collapse;
+    margin: 20px 0; /* Espaciado superior e inferior */
+    background-color: #fff; /* Fondo blanco */
+  }
+  
+  /* Encabezados de la tabla */
+  .historial-container table th {
+    background-color: #007bff; /* Fondo azul */
+    color: white; /* Texto blanco */
+    font-weight: bold;
+    padding: 10px;
+    border: 1px solid #ddd; /* Borde gris claro */
+  }
+  
+  /* Filas de la tabla */
+  .historial-container table td {
+    padding: 10px;
+    text-align: center; /* Centrar contenido */
+    border: 1px solid #ddd; /* Borde gris claro */
+  }
+  
+  /* Color de fondo alternativo para las filas */
+  .historial-container table tbody tr:nth-child(even) {
+    background-color: #f2f2f2; /* Fondo gris claro */
+  }
+  
+  /* Mensaje cuando no hay datos */
+  .historial-container p {
+    font-size: 16px;
+    color: #888; /* Color de texto gris */
+    text-align: center; /* Centrar el texto */
+  }
+  
+  /* Botón para generar PDF */
+  button {
+    display: block; /* Hace que el botón sea un bloque */
+    margin: 20px auto; /* Centrar el botón horizontalmente */
+    padding: 10px 20px; /* Espaciado interno */
+    font-size: 16px;
+    color: white;
+    background-color: #007bff; /* Fondo azul */
+    border: none;
+    border-radius: 5px; /* Bordes redondeados */
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Transición suave */
+  }
+  
+  /* Efecto hover para el botón */
+  button:hover {
+    background-color: #0056b3; /* Fondo azul más oscuro */
+  }
+  
+  /* Estilo para el PDF (opcional) */
+  @media print {
+    .historial-container {
+      box-shadow: none; /* Sin sombra al imprimir */
+      border: none; /* Sin borde al imprimir */
+    }
+  
+    button {
+      display: none; /* Ocultar el botón al imprimir */
+    }
+  }
+  

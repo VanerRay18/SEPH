@@ -1,0 +1,99 @@
+<buscar-licencias></buscar-licencias>
+<ingresar-licencia></ingresar-licencia>
+<h3>Historial de {{ tipo | titlecase }}</h3>
+
+<!-- Selector de tipo de historial -->
+<div>
+  <label>RFC:</label>
+  <input [(ngModel)]="rfc" placeholder="RFC del docente" />
+  <select [(ngModel)]="tipo" (change)="mostrarHistorial()">
+    <option value="licencias">Licencias Médicas</option>
+    <option value="accidentes">Accidentes de Trabajo</option>
+    <option value="acuerdos">Acuerdos Presidenciales</option>
+  </select>
+  <button (click)="mostrarHistorial()">Mostrar Historial</button>
+</div>
+
+<!-- Plantilla para mostrar tablas de historial -->
+<ng-container *ngIf="historial.length > 0">
+  <ng-template [ngIf]="tipo === 'licencias'">
+    <h4>Licencias Médicas</h4>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Periodo</th>
+          <th>Folio</th>
+          <th>Inicio Licencia</th>
+          <th>Termino Licencia</th>
+          <th>Días Licencia</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let licencia of historial">
+          <td>{{ licencia.periodo }}</td>
+          <td>{{ licencia.folio }}</td>
+          <td>{{ licencia.fecha_inicio }}</td>
+          <td>{{ licencia.fecha_final }}</td>
+          <td>{{ licencia.dias_licencia }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-template>
+
+  <ng-template [ngIf]="tipo === 'accidentes'">
+    <h4>Accidentes de Trabajo</h4>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Fecha Inicio</th>
+          <th>Fecha Término</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let accidente of historial">
+          <td>{{ accidente.fecha_inicio }}</td>
+          <td>{{ accidente.fecha_termino }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-template>
+
+  <ng-template [ngIf]="tipo === 'acuerdos'">
+    <h4>Acuerdos Presidenciales</h4>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Fecha Inicio</th>
+          <th>Descripción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let acuerdo of historial">
+          <td>{{ acuerdo.fecha_inicio }}</td>
+          <td>{{ acuerdo.descripcion }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-template>
+</ng-container>
+
+<!-- Formulario para agregar un nuevo registro -->
+<ng-template [ngIf]="tipo === 'licencias'">
+  <h4>Nueva Licencia Médica</h4>
+  <label>Folio:</label>
+  <input [(ngModel)]="nuevoRegistro.folio" placeholder="Folio" />
+  <label>Fecha Inicio:</label>
+  <input [(ngModel)]="nuevoRegistro.fecha_inicio" type="date" />
+  <label>Fecha Término:</label>
+  <input [(ngModel)]="nuevoRegistro.fecha_termino" type="date" />
+</ng-template>
+
+<ng-template [ngIf]="tipo === 'accidentes'">
+  <h4>Nuevo Accidente de Trabajo</h4>
+  <label>Fecha Inicio:</label>
+  <input [(ngModel)]="nuevoRegistro.fecha_inicio" type="date" />
+  <label>Fecha Término:</label>
+  <input [(ngModel)]="nuevoRegistro.fecha_termino" type="date" />
+</ng-template>
+
+<button (click)="guardarRegistro()">Guardar</button>

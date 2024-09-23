@@ -1,0 +1,45 @@
+<div class="container">
+    <form (ngSubmit)="onSubmit()">
+      <div>
+        <label for="accion">Acción:</label>
+        <select id="accion" [(ngModel)]="accion" name="accion" required>
+          <option value="get_docente">Obtener Docente</option>
+          <option value="get_historial_personal">Obtener Historial Personal</option>
+          <option value="set_licencia">Registrar Licencia</option>
+          <option value="set_accidente">Registrar Accidente</option>
+        </select>
+      </div>
+      
+      <div *ngIf="accion === 'get_docente'">
+        <label for="docente">Docente:</label>
+        <input id="docente" [(ngModel)]="docente" name="docente" />
+      </div>
+      
+      <div *ngIf="accion === 'get_historial_personal'">
+        <label for="rfc">RFC:</label>
+        <input id="rfc" [(ngModel)]="rfc" name="rfc" />
+      </div>
+      
+      <div *ngIf="accion === 'set_licencia' || accion === 'set_accidente'">
+        <label for="rfc-licencia">RFC:</label>
+        <input id="rfc-licencia" [(ngModel)]="rfcLicencia" name="rfcLicencia" />
+        
+        <label for="fecha_inicio">Fecha Inicio:</label>
+        <input id="fecha_inicio" [(ngModel)]="fechaInicio" name="fecha_inicio" type="date" />
+        
+        <label for="fecha_termino">Fecha Término:</label>
+        <input id="fecha_termino" [(ngModel)]="fechaTermino" name="fecha_termino" type="date" />
+        
+        <label *ngIf="accion === 'set_licencia'" for="folio">Folio:</label>
+        <input *ngIf="accion === 'set_licencia'" id="folio" [(ngModel)]="folio" name="folio" />
+      </div>
+      
+      <button type="submit">Enviar</button>
+    </form>
+    
+    <div *ngIf="response">
+      <p *ngIf="response.error">{{ response.error }}</p>
+      <p *ngIf="response.repetidos">Días Repetidos: {{ response.dias_repetidos }}</p>
+    </div>
+  </div>
+  
