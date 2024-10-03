@@ -1,9 +1,11 @@
 import { NgModule } from '@angular/core';
 import { PerfilComponent } from './perfil/perfil.component';
 import { RouterModule, Routes } from '@angular/router';
+import { TestComponent } from './test/test.component';
 
 const routes: Routes = [
-  {path: 'Perfil', component: PerfilComponent}
+  {path: 'Perfil', component: PerfilComponent},
+  {path: 'Test', component: TestComponent}
 
 ];
 

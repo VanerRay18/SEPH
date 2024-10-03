@@ -1,0 +1,25 @@
+<table>
+  <thead>
+    <tr>
+      <th *ngFor="let header of headers">{{header}}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let row of data">
+      <td *ngFor="let key of displayedColums">{{row[key]}}</td>
+      <td *ngIf="showActions">
+           <button (click)="onEdit(row)">Edit</button>
+           <button (click)="onDelete(row)">Delete</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<!-- Ejemplo de cuando no no quiera usar la columna de acciones -->
+<!-- <app-reusable-table  -->
+  <!-- [headers]="headers" -->
+  <!-- [data]="data" -->
+  <!-- [displayedColumns]="displayedColumns" -->
+  <!-- [showActions]="false">  --> <!-- Aquí omites las acciones -->
+<!-- </app-reusable-table> -->
