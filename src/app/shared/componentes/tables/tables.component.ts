@@ -1,0 +1,32 @@
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+
+@Component({
+  selector: 'app-tables',
+  templateUrl: './tables.component.html',
+  styleUrls: ['./tables.component.css']
+})
+export class TablesComponent {
+
+// Input para las cabeceras de la tabla
+@Input() headers: string []= [];
+// Input para los datos a mostrar
+@Input() data: any[]=[];
+ // Input para las columnas que se deben mostrar
+@Input() displayedColums: string []=[];
+// Input para mostrar u ocultar la columna de acciones
+@Input() showActions: boolean = false;
+
+// Outputs para emitir eventos de editar o eliminar
+@Output() edit: EventEmitter<any> = new EventEmitter();
+@Output() delete: EventEmitter<any> = new EventEmitter();
+
+onEdit(row: any) {
+  this.edit.emit(row); // Emitir el evento al componente padre
+}
+
+onDelete(row: any) {
+  this.delete.emit(row); // Emitir el evento al componente padre
+}
+
+
+}

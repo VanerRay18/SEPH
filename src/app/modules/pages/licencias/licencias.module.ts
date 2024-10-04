@@ -7,6 +7,9 @@ import { IngresarLicenciaComponent } from './ingresar-licencia/ingresar-licencia
 import { HistorialLicenciasComponent } from './historial-licencias/historial-licencias.component';
 import { HistorialComponent } from './historial/historial.component';
 import { BuscarLicenciasComponent } from './buscar-licencias/buscar-licencias.component';
+import { IngresoLicenciasComponent } from './ingreso-licencias/ingreso-licencias.component';
+import { ArchivoLicenciasComponent } from './archivo-licencias/archivo-licencias.component';
+import { OficioLicenciasComponent } from './oficio-licencias/oficio-licencias.component';
 
 
 
@@ -15,7 +18,10 @@ import { BuscarLicenciasComponent } from './buscar-licencias/buscar-licencias.co
     IngresarLicenciaComponent,
     HistorialLicenciasComponent,
     HistorialComponent,
-    BuscarLicenciasComponent
+    BuscarLicenciasComponent,
+    IngresoLicenciasComponent,
+    ArchivoLicenciasComponent,
+    OficioLicenciasComponent
   ],
   imports: [
     CommonModule,
