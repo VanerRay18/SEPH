@@ -1,19 +1,18 @@
 /* Estilo del navbar principal */
 .navbar {
-  background-color: #8a1538; /* Color Morena */
-  padding: 1rem;
+  background-color: #a52a2a; /* Marrón rojizo */
 }
 
 /* Estilo de la marca (logo o nombre del sistema) */
 .navbar-brand {
-  color: white;
+  color: white; /* blanco */
   font-size: 1.5rem;
   font-weight: bold;
 }
 
 /* Estilo del botón de hamburguesa (offcanvas) */
 .navbar-toggler {
-  border-color: rgba(255, 255, 255, 0.5);
+  border-color: #8a1538;
 }
 
 /* Color del icono del botón de hamburguesa */
@@ -23,7 +22,7 @@
 
 /* Estilo del offcanvas */
 .offcanvas {
-  background-color: #f8f9fa;
+  background-color: #8a1538;;
   width: 280px;
 }
 
@@ -31,7 +30,7 @@
 .offcanvas-title {
   font-size: 1.25rem;
   font-weight: bold;
-  color: #8a1538; /* Color Morena */
+  color: white; /* Color Morena */ /* blanco */
 }
 
 /* Botón de cerrar el offcanvas */
@@ -41,25 +40,25 @@
 
 /* Estilo de los elementos del menú (links) */
 .nav-link {
-  color: #8a1538;
+  color: white; /* blanco */
   font-weight: 500;
 }
 
 .nav-link.active {
   font-weight: bold;
-  color: white;
+  color: #8a1538;
   background-color: #8a1538;
 }
 
 .nav-link:hover {
-  color: white;
+  color: white; /* blanco */
   background-color: #8a1538;
   border-radius: 5px;
 }
 
 /* Dropdown menú */
 .dropdown-menu {
-  background-color: #fff;
+  background-color: #8a1538;
 }
 
 .dropdown-item {
@@ -68,7 +67,7 @@
 
 .dropdown-item:hover {
   background-color: #8a1538;
-  color: white;
+  color: #8a1538;
 }
 
 /* Estilo del formulario de búsqueda */
@@ -89,98 +88,5 @@
 
 .btn-outline-success:hover {
   background-color: #8a1538;
-  color: white;
-}
-/* Estilo del navbar principal */
-.navbar {
-  background-color: #8a1538; /* Color Morena */
-  padding: 1rem;
-}
-
-/* Estilo de la marca (logo o nombre del sistema) */
-.navbar-brand {
-  color: white;
-  font-size: 1.5rem;
-  font-weight: bold;
-}
-
-/* Estilo del botón de hamburguesa (offcanvas) */
-.navbar-toggler {
-  border-color: rgba(255, 255, 255, 0.5);
-}
-
-/* Color del icono del botón de hamburguesa */
-.navbar-toggler-icon {
-  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba%28255, 255, 255, 0.5%29' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
-}
-
-/* Estilo del offcanvas */
-.offcanvas {
-  background-color: #f8f9fa;
-  width: 280px;
-}
-
-/* Título del offcanvas */
-.offcanvas-title {
-  font-size: 1.25rem;
-  font-weight: bold;
-  color: #8a1538; /* Color Morena */
-}
-
-/* Botón de cerrar el offcanvas */
-.btn-close {
-  filter: invert(1);
-}
-
-/* Estilo de los elementos del menú (links) */
-.nav-link {
-  color: #8a1538;
-  font-weight: 500;
-}
-
-.nav-link.active {
-  font-weight: bold;
-  color: white;
-  background-color: #8a1538;
-}
-
-.nav-link:hover {
-  color: white;
-  background-color: #8a1538;
-  border-radius: 5px;
-}
-
-/* Dropdown menú */
-.dropdown-menu {
-  background-color: #fff;
-}
-
-.dropdown-item {
-  color: #8a1538;
-}
-
-.dropdown-item:hover {
-  background-color: #8a1538;
-  color: white;
-}
-
-/* Estilo del formulario de búsqueda */
-.form-control {
-  border: 1px solid #8a1538;
-  border-radius: 5px;
-}
-
-.form-control:focus {
-  border-color: #8a1538;
-  box-shadow: none;
-}
-
-.btn-outline-success {
-  color: #8a1538;
-  border-color: #8a1538;
-}
-
-.btn-outline-success:hover {
-  background-color: #8a1538;
-  color: white;
+  color: white; /* blanco */
 }

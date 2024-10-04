@@ -12,19 +12,19 @@
       <div class="offcanvas-body">
         <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
           <!-- Iterar sobre los módulos y roles -->
-          <li *ngFor="let item of menuItems" class="nav-item" [ngClass]="{'dropdown': item.children.length > 0}">
+          <li *ngFor="let item of navItems" class="nav-item" [ngClass]="{'dropdown': item.children.length > 0}">
             <a *ngIf="item.children.length === 0" class="nav-link" [routerLink]="item.config.angularComponentPath" [ngClass]="{'active': currentRoute === item.config.angularComponentPath}">
-              {{ item.name['en'] }}
+              {{ item.name }}
             </a>
 
             <!-- Dropdown para elementos con hijos -->
             <a *ngIf="item.children.length > 0" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              {{ item.name['en'] }}
+              {{ item.name }}
             </a>
             <ul *ngIf="item.children.length > 0" class="dropdown-menu">
               <li *ngFor="let child of item.children">
                 <a class="dropdown-item" [routerLink]="child.config.angularComponentPath">
-                  {{ child.name['en'] }}
+                  {{ child.name }}
                 </a>
               </li>
             </ul>

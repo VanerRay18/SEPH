@@ -1,36 +1,41 @@
 import { Component, NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { LayoutComponent } from './modules/layout/layout.component';
 import { LoginComponent } from './core/auth/login/login.component';
-import { LicenciasModule } from './modules/pages/licencias/licencias.module';
-import { InicioComponent } from './modules/pages/home/inicio/inicio.component';
-import { PerfilComponent } from './modules/pages/extras/perfil/perfil.component';
+
 
 const routes: Routes = [
-  {
-    path:'',
-    pathMatch:'full',
-    redirectTo:'/pages/home/'
-  },
+  {path:'',redirectTo:'/login',pathMatch:'full'},
   {path: 'login',
     component: LoginComponent,
   },
-  {path: 'Home',
-    component: InicioComponent,
-  },
   {
-    path:'Licencias',
-    loadChildren:() =>
-      import('./modules/pages/licencias/licencias.module').then(
-        (m) => m.LicenciasModule
-      ),
-  },
-  {
-    path:'Perfil',
-    loadChildren:() =>
-      import('./modules/pages/extras/perfil/perfil.component').then(
-        (m) => m.PerfilComponent
-      ),
-  }
+    path: 'pages',
+    component: LayoutComponent,
+    // canActivate: [LoggedGuard],
+    children: [
+      {
+        path: 'Inicio',
+        loadChildren: () =>
+          import('./modules/pages/home/home.module').then((m) => m.HomeModule),
+      },
+      {
+        path:'Licencias',
+        loadChildren:() =>
+          import('./modules/pages/licencias/licencias.module').then(
+            (m) => m.LicenciasModule
+          ),
+      },
+      {
+        path:'Extras',
+        loadChildren:() =>
+          import('./modules/pages/extras/extras.module').then(
+            (m) => m.ExtrasModule
+          ),
+      }
+    ],
+    },
+    {path:'**',redirectTo:'/login',pathMatch:'full'}
 
 ];
 
