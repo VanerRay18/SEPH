@@ -1,23 +1,24 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, of, tap } from 'rxjs';
 import { User } from '../shared/interfaces/usuario.model'; // Importa el modelo de usuario
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ApiResponse } from '../models/ApiResponse';
 import { environment } from 'src/environments/enviroment';
 
-
+export interface AuthResponse {
+  success: boolean;
+  message: string;
+  data: {
+    roleId: number; // Asegúrate de que este tipo coincide con la respuesta
+    token: string; // Aquí debes asegurarte de que estás recibiendo el token
+  };
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  // Simula una base de datos de usuarios
-  // private users: User[] = [
-  //   { username: 'admin', password: 'admin123', roles: [0], modules: [1,2,3] },
-  //   { username: 'userLice', password: 'user123', roles: [1], modules: [1] },
-  //   { username: 'userYotube', password: 'user123', roles: [2], modules: [2] },
-  //   { username: 'userGoogle', password: 'user123', roles: [3], modules: [3] }
-  // ];
+
   private loggedIn: boolean = false;  // Estado de logueo del usuario
   private userRole: string | null = null;  // Almacena el nombre del rol del usuario
   private userModules: number[] = [];  // Almacena los módulos del usuario
@@ -25,9 +26,21 @@ export class AuthService {
   constructor(
     private http:HttpClient
   ) {}
-  authLogg(data: any): Observable<ApiResponse> {
-    return this.http.post<any>(`${environment.baseService}${'login'}`, data);
+
+  authLogg(data: any): Observable<any> {
+    console.log(`${environment.baseService}${'/login'}`);
+    return this.http.post<any>(`${environment.baseService}${'/login'}`, data, {observe:'response'})
   }
+  // authLogg(token: string): Observable<any> {
+  //   let headers = new HttpHeaders({Authorization:token})
+  //   console.log(`${environment.baseService}${'/login'}`)
+  //   return this.http.post<any>(`${environment.baseService}${'/login'}`, {headers});
+  // }
+
+  getModulesByRole(): Observable<ApiResponse> {
+    return this.http.get<ApiResponse>(`${environment.baseService}${'/user/roleByModule'}`);
+  }
+
 
   getModules(): Observable<ApiResponse> {
     return this.http.get<any>(`${environment.baseService}${'/modules'}`);
@@ -35,6 +48,10 @@ export class AuthService {
 
   getRoles(): Observable<ApiResponse> {
     return this.http.get<any>(`${environment.baseService}${'/roles'}`);
+  }
+
+  getModulesByUser(): Observable<ApiResponse> {
+    return this.http.get<any>(`${environment.baseService}${'/users/modules-by-user'}`);
   }
 
   GetCredentialsByUser(): Observable<ApiResponse> {
@@ -77,7 +94,9 @@ export class AuthService {
   }
 
 
-  
+
+
+
 
 
 }

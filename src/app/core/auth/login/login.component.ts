@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { AuthService } from 'src/app/services/auth.service';
+import { HttpResponse, HttpHeaders } from '@angular/common/http';
+import { Module } from 'src/app/shared/interfaces/utils';
 
 @Component({
   selector: 'login',
@@ -10,16 +12,21 @@ import { AuthService } from 'src/app/services/auth.service';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
+
   loginForm: FormGroup;
+  username: string = '';
+  password: string = '';
 
   constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
     this.loginForm = this.fb.group({
-      user: ['', [Validators.required]], 
+      user: ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(6)]],
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+
+  }
 
   onSubmit() {
     if (this.loginForm.invalid) {
@@ -29,14 +36,24 @@ export class LoginComponent implements OnInit {
     }
 
     const data = {
-        user: this.loginForm.value.user,
-        password: this.loginForm.value.password
-      
+      user: this.loginForm.value.user,
+      password: this.loginForm.value.password
+
     };
-    console.log(data)
+
     this.authService.authLogg(data).subscribe(
       (response) => {
-        console.log('Respuesta de la API:', response);
+        console.log(response.body.data.config.principal)
+        const token = response.headers.get('Authorization');
+
+    if (token) {
+      console.log('Token JWT:', token);
+      // Guarda el token en localStorage o sessionStorage
+      localStorage.setItem('jwtToken', token);
+    } else {
+      console.warn('El token JWT no se encontró en los headers');
+    }
+
       },
       (error) => {
         Swal.fire({
@@ -47,44 +64,7 @@ export class LoginComponent implements OnInit {
         });
       }
     );
-    
-    // const { usuario, password } = this.loginForm.value;
 
-    // this.authService.authenticate(usuario, password).subscribe(user => {
-    //   if (!user) {
-    //     // Usuario incorrecto
-    //     Swal.fire({
-    //       title: 'Error!',
-    //       text: 'Usuario incorrecto.',
-    //       icon: 'error',
-    //       confirmButtonText: 'OK'
-    //     });
-    //   } else if (user.password !== password) {
-    //     // Contraseña incorrecta
-    //     Swal.fire({
-    //       title: 'Error!',
-    //       text: 'Contraseña incorrecta.',
-    //       icon: 'error',
-    //       confirmButtonText: 'OK'
-    //     });
-    //   } else {
-    //     // Autenticación exitosa
-    //     Swal.fire({
-    //       title: 'Bienvenido!',
-    //       text: 'Has iniciado sesión exitosamente.',
-    //       icon: 'success',
-    //       confirmButtonText: 'OK'
-    //     }).then(() => {
-    //       // Redirige según el rol del usuario
-    //       if (user.roles.includes(0)) {
-    //         this.router.navigate(['Licencias-historial']);
-    //       } else if (user.roles.includes(1)) {
-    //         this.router.navigate(['licencias']);
-    //       } else {
-    //         this.router.navigate(['/']);  // Redirige a una página por defecto si no hay rol
-    //       }
-    //     });
-    //   }
-    // });
-  }
 }
+}
+

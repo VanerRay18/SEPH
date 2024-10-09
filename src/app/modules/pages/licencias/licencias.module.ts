@@ -3,22 +3,15 @@ import { FormsModule } from '@angular/forms'; // Importar FormsModule
 import { HttpClientModule } from '@angular/common/http'; // Necesario para realizar solicitudes HTTP
 import { CommonModule } from '@angular/common';
 import { LicenciasRoutingModule } from './licencias-routing.module';
-import { IngresarLicenciaComponent } from './ingresar-licencia/ingresar-licencia.component';
-import { HistorialLicenciasComponent } from './historial-licencias/historial-licencias.component';
-import { HistorialComponent } from './historial/historial.component';
-import { BuscarLicenciasComponent } from './buscar-licencias/buscar-licencias.component';
 import { IngresoLicenciasComponent } from './ingreso-licencias/ingreso-licencias.component';
 import { ArchivoLicenciasComponent } from './archivo-licencias/archivo-licencias.component';
 import { OficioLicenciasComponent } from './oficio-licencias/oficio-licencias.component';
+import { SharedModule } from "../../../shared/shared.module";
 
 
 
 @NgModule({
   declarations: [
-    IngresarLicenciaComponent,
-    HistorialLicenciasComponent,
-    HistorialComponent,
-    BuscarLicenciasComponent,
     IngresoLicenciasComponent,
     ArchivoLicenciasComponent,
     OficioLicenciasComponent
@@ -27,7 +20,8 @@ import { OficioLicenciasComponent } from './oficio-licencias/oficio-licencias.co
     CommonModule,
     FormsModule, // Añadir FormsModule a los imports
     HttpClientModule,
-    LicenciasRoutingModule
-  ]
+    LicenciasRoutingModule,
+    SharedModule
+]
 })
 export class LicenciasModule { }

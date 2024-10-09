@@ -1,1 +1,208 @@
-<p>ingreso-licencias works!</p>
+
+<div class="Cont">
+  <div class="container col-auto row  mt-4   ">
+    <div class="titulos ">
+      <h1>Licencias medicas</h1>
+      <h5>Ingreso de licencias medicas</h5>
+    </div>
+
+    <div class="Busq card mt-3 ">
+      <h5 style="margin-top: .5%">Busqueda de licencias</h5>
+      <div class="search-container d-flex flex-column flex-md-row">
+        <div class="RFC input-container">
+          <label class="text">RFC</label>
+          <input [(ngModel)]="rfcSearchTerm" (input)="filterRFC()"
+            type="text" placeholder="Buscar por RFC..." />
+          <ul *ngIf="rfcSuggestions.length > 0" class="dropdown">
+            <li *ngFor="let item of rfcSuggestions" (click)="selectRFC(item)">
+              {{ item.rfc }} - {{ item.nombre }}
+            </li>
+          </ul>
+        </div>
+        <div class="Nombre input-container mx-md-2">
+          <label class="text">Nombre</label>
+          <input [(ngModel)]="nombreSearchTerm"
+            (input)="filterNombre()" type="text"
+            placeholder="Buscar por Nombre..." />
+          <ul *ngIf="nombreSuggestions.length > 0" class="dropdown">
+            <li *ngFor="let item of nombreSuggestions"
+              (click)="selectNombre(item)">
+              {{ item.nombre }} - {{ item.rfc }}
+            </li>
+          </ul>
+        </div>
+        <button class="btn btn-primary mx-md-3 btn-sm btn-block"
+          (click)="buscar()">Buscar</button>
+      </div>
+    </div>
+
+    <div class="contLic">
+      <ul class="nav nav-tabs d-flex flex-row flex-wrap" role="tablist">
+        <li class="nav-item" *ngFor="let tab of tabs">
+          <a class="nav-link"
+            [class.active]="tab.id === activeTab"
+            (click)="setActiveTab(tab.id)">
+            <i [class]="tab.icon"></i>
+            {{ tab.title }}
+          </a>
+        </li>
+      </ul>
+
+      <div class="tab-content" role="tabpanel">
+        <ng-container *ngIf="activeTab === 'licencias'">
+          <div class="card">
+            <div class="row">
+               <div class="col-auto">
+                  <h5 class="ms-2 mt-2">Ingresar una nueva licencia médica</h5>
+               </div>
+               <div class="col-auto">
+                <button type="button" class="botones btn"><i class="fa-solid fa-folder"></i></button>
+               </div>
+               <div class="col-auto">
+                <button type="button" class="botones btn"><i class="fa-solid fa-file"></i></button>
+               </div>
+               <div class="col-auto">
+                <button type="button" class="botones btn"><i class="fa-solid fa-trash"></i></button>
+               </div>
+               <div class="col-auto">
+                <button type="button" class="botones btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+               </div>
+            </div>
+            <form class="m-3">
+              <div class="row">
+                <div class="col-auto">
+                  <label for="formGroupExampleInput"
+                    class="form-label">Folio:</label>
+                  <input type="text" class="form-control"
+                    placeholder="Ingrese el folio de licencia"
+                    aria-label="First name" required>
+                </div>
+                <div class="col-auto">
+                  <label for="start-date" class="form-label">Fecha de
+                    Inicio:</label>
+                  <input type="date" id="start-date" name="start-date"
+                    class="form-control" required>
+                </div>
+                <div class="col-auto">
+                  <label for="end-date" class="form-label">Fecha de
+                    Término:</label>
+                  <input type="date" id="end-date" name="end-date"
+                    class="form-control" required>
+                </div>
+                <div class="col-auto">
+                  <label for="end-date" class="form-label">Formato:</label>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" value="0" checked>
+                    <label class="form-check-label" for="flexRadioDefault1">
+                      Fisico
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" value="1" >
+                    <label class="form-check-label" for="flexRadioDefault2">
+                     Email
+                    </label>
+                  </div>
+                </div>
+
+              <div class="col-auto">
+                <button type="submit" class="guardar btn  btn-success">Guardar</button>
+              </div>
+              </div>
+            </form>
+            <app-tables
+            [headers]="headers"
+            [data]="data"
+            [displayedColums]="displayedColumns"
+            [showActions]="true"
+            ></app-tables>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="activeTab === 'accidentes'">
+          <div class="card">
+            <div class="row">
+               <div class="col-auto">
+                  <h5 class="ms-2 mt-2">Ingresar un nuevo Accidente de trabajo</h5>
+               </div>
+               <div class="col-auto">
+                <button type="button" class="botones btn"><i class="fa-solid fa-folder"></i></button>
+               </div>
+               <div class="col-auto">
+                <button type="button" class="botones btn"><i class="fa-solid fa-file"></i></button>
+               </div>
+               <div class="col-auto">
+                <button type="button" class="botones btn"><i class="fa-solid fa-trash"></i></button>
+               </div>
+               <div class="col-auto">
+                <button type="button" class="botones btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+               </div>
+            </div>
+            <form class="m-3">
+              <div class="row">
+                <div class="col-auto">
+                  <label for="formGroupExampleInput"
+                    class="form-label">Folio:</label>
+                  <input type="text" class="form-control"
+                    placeholder="Ingrese el folio de licencia"
+                    aria-label="First name" required>
+                </div>
+                <div class="col-auto">
+                  <label for="start-date" class="form-label">Fecha de
+                    Inicio:</label>
+                  <input type="date" id="start-date" name="start-date"
+                    class="form-control" required>
+                </div>
+                <div class="col-auto">
+                  <label for="end-date" class="form-label">Fecha de
+                    Término:</label>
+                  <input type="date" id="end-date" name="end-date"
+                    class="form-control" required>
+                </div>
+                <div class="col-auto">
+                  <label for="end-date" class="form-label">Formato:</label>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" value="0" checked>
+                    <label class="form-check-label" for="flexRadioDefault1">
+                      Fisico
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" value="1" >
+                    <label class="form-check-label" for="flexRadioDefault2">
+                     Email
+                    </label>
+                  </div>
+                </div>
+
+              <div class="col-auto">
+                <button type="submit" class="guardar btn  btn-success">Guardar</button>
+              </div>
+              </div>
+            </form>
+            <app-tables
+            [headers]="headers"
+            [data]="data"
+            [displayedColums]="displayedColumns"
+            [showActions]="true"
+            ></app-tables>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="activeTab === 'acuerdos'">
+          <div class="card">
+            <app-tables
+            [headers]="headers"
+            [data]="data"
+            [displayedColums]="displayedColumns"
+            [showActions]="false"
+            ></app-tables>
+          </div>
+
+        </ng-container>
+      </div>
+
+    </div>
+
+  </div>
+</div>

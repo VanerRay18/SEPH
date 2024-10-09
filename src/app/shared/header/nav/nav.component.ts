@@ -1,15 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
-import { forkJoin, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/services/auth.service';
 import Swal from 'sweetalert2';
 
-interface navItems {
-  id: number;
-  name: string;
-  config: { angularComponentPath: string, externalUrl?: string };
-  children: navItems[];
+export class TreeNode {
+  moduleId!: number; // ID del módulo
+  moduleName!: string; // Nombre del módulo
+  description!: string; // Descripción del módulo
+  config!: string; // Ruta del módulo
+  parentId!: number | null; // ID del módulo padre (si es null, es un nodo padre)
+  children: TreeNode[] = []; // Lista de módulos hijos
 }
+
 
 @Component({
   selector: 'app-nav',
@@ -17,149 +20,104 @@ interface navItems {
   styleUrls: ['./nav.component.css']
 })
 export class NavComponent implements OnInit {
-  // menuItems: MenuItem[] = [];
-  currentRoute: string = '';
-  subs: Subscription[] = [];
-  navItems: navItems[] = [];
+  menuItems: TreeNode[] = []; // Almacena los módulos construidos como árbol
+  subs: Subscription[] = []; // Lista de suscripciones para limpiar después
+  currentRoute: string = ''; // Ruta actual del navegador
 
-  constructor(private router: Router,
-              private authService: AuthService
+  constructor(
+    private AuthService: AuthService,
+    private router: Router
   ) {}
 
+  // homePath: TreeNode = {
+  //   children: [],
+  //   id: -1,
+  //   name: { en: 'Home', es: 'Página principal' },
+  //   parentId: null,
+  //   description: {},
+
+  //   config: {
+  //     angularComponentPath: '/pages/home',
+  //     externalUrl: '',
+  //     isAngularPath: true,
+  //     quickLink: false,
+  //   },
+  //   parentName: {},
+  //   visible: false,
+  // };
+
+
   ngOnInit(): void {
-    this.currentRoute = this.router.url;
-    this.getCurrentRoute();
+    this.currentRoute = this.router.url; // Obtiene la ruta actual al iniciar
+    this.getCurrentRoute(); // Escucha los eventos de navegación
 
-    // Aquí cargamos los módulos basados en el servicio de roles
-    this.compareRolesAndModules();
+    this.getUserModules(); // Llama al servicio para obtener los módulos del usuario
   }
 
+  // Escucha los cambios en la ruta actual del navegador
   getCurrentRoute() {
-    this.router.events.subscribe(event => {
+    this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
-        this.currentRoute = event.url;
+        this.currentRoute = event.url; // Actualiza la ruta actual
       }
     });
   }
 
-  // loadMenuBasedOnRoles() {
-  //   // Esta función debe obtener los módulos basados en los roles del usuario
-  //   const userRoles = this.getUserRoles();
-    
-  //   // Aquí iría la lógica para cargar módulos específicos según los roles
-  //   if (userRoles.includes('admin')) {
-  //     this.menuItems = [
-  //       { id: 1, name: { en: 'Perfil' }, config: { angularComponentPath: './modules/pages/perfil/perfil.component' }, children: [] },
-  //       { id: 2, name: { en: 'Usuarios' }, config: { angularComponentPath: '/users' }, children: [] },
-  //       {
-  //         id: 3, name: { en: 'Configuración' }, config: { angularComponentPath: '' }, children: [
-  //           { id: 4, name: { en: 'Perfil' }, config: { angularComponentPath: '/profile' }, children: [] },
-  //           { id: 5, name: { en: 'Preferencias' }, config: { angularComponentPath: '/preferences' }, children: [] }
-  //         ]
-  //       }
-  //     ];
-  //   } else if (userRoles.includes('user')) {
-  //     this.menuItems = [
-  //       { id: 1, name: { en: 'Inicio' }, config: { angularComponentPath: '/user-dashboard' }, children: [] },
-  //       { id: 2, name: { en: 'Licencias' }, config: { angularComponentPath: '/licencias' }, children: [] }
-  //     ];
-  //   } else {
-  //     // Menú por defecto
-  //     this.menuItems = [
-  //       { id: 1, name: { en: 'Inicio' }, config: { angularComponentPath: '/' }, children: [] }
-  //     ];
-  //   }
-  // }
+  // Obtiene los módulos del usuario desde la API
+  getUserModules() {
+    this.AuthService.getModulesByUser().subscribe({
+      next: (result) => {
+        const modules = result.data.map((item: TreeNode) => ({
+          id: item.moduleId,
+          name: item.moduleName,
+          description: item.description,
+          config: item.config,
+          parentId: item.parentId,
+          children: []
+        }));
 
-  // getUserRoles() {
-  //   // Este método debe obtener los roles del usuario, ya sea desde un servicio o almacenamiento local
-  //   return ['user']; // Por ejemplo
-  // }
-
-  compareRolesAndModules(): void {
-    // Llamadas a los endpoints
-    const userCredentials$ = this.authService.GetCredentialsByUser();
-    const allRoles$ = this.authService.getRoles();
-    const allModules$ = this.authService.getModules();
-  
-    forkJoin([userCredentials$, allRoles$, allModules$]).subscribe(
-      ([userCredentialsResponse, allRolesResponse, allModulesResponse]) => {
-        // Extraer los datos de las respuestas
-        const userModules = userCredentialsResponse.data.modulos; // Módulos del usuario
-        const userRoleId = userCredentialsResponse.data.roleId;   // Rol del usuario
-  
-        const allRoles = allRolesResponse.data;  // Todos los roles
-        const allModules = allModulesResponse.data;  // Todos los módulos
-  
-        // Verificar si el rol del usuario es válido
-        const validRole = allRoles.some((role: any) => role.id === userRoleId);
-  
-        if (validRole) {
-          // Filtrar los módulos que corresponden al rol del usuario
-          const validModules = allModules.filter((module: any) => {
-            return userModules.includes(module.id) && module.roleId === userRoleId;
-          });
-  
-          // Construir la navegación si hay módulos válidos
-          if (validModules.length > 0) {
-            this.buildNavigation([userRoleId], validModules);
-          } else {
-            Swal.fire('error', 'No tienes módulos asignados para este rol.');
-          }
-        } else {
-          Swal.fire('error', 'Rol no válido.');
-        }
+        this.menuItems = this.buildTree(modules); // Construye el árbol de módulos
       },
-      (error) => {
-        console.error('Error al obtener datos', error);
-        Swal.fire('error', 'Error al obtener la información del servidor.');
-      }
-    );
-  }
-  
-  
-  // Función para comparar los roles del usuario con los roles del sistema
-  compareRoles(userRoles: any[], allRoles: any[]): any[] {
-    return userRoles.filter((userRole) => 
-      allRoles.some((role) => role.id === userRole.id)
-    );
-  }
-  
-  // Función para comparar los módulos del usuario con los módulos disponibles
-  compareModules(userModules: any[], allModules: any[]): any[] {
-    return userModules.filter((userModule) => 
-      allModules.some((module) => module.id === userModule.id)
-    );
-  }
-  
-  buildNavigation(roles: any[], modules: any[]): void {
-    // Inicializa el array del menú vacío
-    this.navItems = [];
-  
-    // Iterar sobre los módulos disponibles para el usuario
-    modules.forEach((module) => {
-      // Verificar si el módulo es válido para los roles actuales
-      if (this.isModuleAllowedForRoles(module, roles)) {
-        // Construir el item del menú con la ruta correspondiente
-        this.navItems.push({ 
-          id: module.id,
-          name: module.name,
-          config: { angularComponentPath: module.config}, // Ruta a la que se redirige
-          children: [],
-        });
-      }
+      error: (error) => console.error('Error al obtener los módulos:', error),
     });
   }
-  
-  // Función auxiliar para verificar si un módulo está permitido para los roles del usuario
-  isModuleAllowedForRoles(module: any, roles: any[]): boolean {
-    return roles.some((role) => role.permissions.includes(module.id));
+
+  // Construye el árbol de navegación a partir de los módulos obtenidos
+  buildTree(data: TreeNode[]): TreeNode[] {
+    const treeMap = new Map<number, TreeNode>(); // Mapea los módulos por ID
+
+    // Primera pasada: Crea el mapa de módulos
+    data.forEach((item: TreeNode) => {
+      treeMap.set(item.moduleId, {
+        ...item,
+        children: [] // Inicializa el array de hijos
+      });
+    });
+
+    // Segunda pasada: Añade los módulos hijos a sus padres
+    data.forEach((item: TreeNode) => {
+      const node = treeMap.get(item.moduleId)!; // Esto le dice a TypeScript que `node` no será `undefined`
+      if (item.parentId !== null) {
+        const parent = treeMap.get(item.parentId);
+        if (parent) {
+          parent.children.push(node); // Añade este módulo como hijo del padre correspondiente
+        }
+      }
+    });
+
+    // Obtiene los nodos raíz (módulos sin padre)
+    const roots: TreeNode[] = [];
+    data.forEach((item: TreeNode) => {
+      const node = treeMap.get(item.moduleId);
+      if (node && item.parentId !== null) {
+        const parent = treeMap.get(item.parentId);
+        if (parent) {
+          parent.children.push(node); // Aquí estamos seguros de que `node` y `parent` no son undefined
+        }
+      }
+    });
+
+    roots.sort((a, b) => a.moduleId - b.moduleId); // Ordena los módulos raíz por su ID
+    return roots; // Devuelve la estructura final del árbol
   }
-  
-  
-
 }
-function swalCrmAlert(arg0: string, arg1: string) {
-  throw new Error('Function not implemented.');
-}
-

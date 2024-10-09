@@ -1,7 +1,11 @@
-/* Estilo del navbar principal */
-.navbar {
-  background-color: #a52a2a; /* Marrón rojizo */
+
+
+.navbar{
+  background-color:#8a1538;
+  position: sticky;
+  top: 0;
 }
+
 
 /* Estilo de la marca (logo o nombre del sistema) */
 .navbar-brand {

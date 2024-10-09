@@ -6,7 +6,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthModule } from './core/auth/auth.module';
 import { SharedModule } from './shared/shared.module';
-import { RouterModule } from '@angular/router'; 
+import { RouterModule } from '@angular/router';
+import { LicenciasModule } from './modules/pages/licencias/licencias.module';
 import { NavComponent } from './shared/header/nav/nav.component';
 import { LicenciasRoutingModule } from './modules/pages/licencias/licencias-routing.module';
 import { HomeRoutingModule } from './modules/pages/home/home-routing.module';
@@ -23,6 +24,7 @@ import { ExtrasRoutingModule } from './modules/pages/extras/extras-routing.modul
     BrowserModule,
     AppRoutingModule,
     FormsModule,
+    LicenciasModule,
     RouterModule,
     HttpClientModule,
     LicenciasRoutingModule,

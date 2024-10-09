@@ -2,10 +2,12 @@ import { Component, NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LayoutComponent } from './modules/layout/layout.component';
 import { LoginComponent } from './core/auth/login/login.component';
+import { IngresoLicenciasComponent } from './modules/pages/licencias/ingreso-licencias/ingreso-licencias.component';
 
 
 const routes: Routes = [
   {path:'',redirectTo:'/login',pathMatch:'full'},
+  { path: 'Test', component: IngresoLicenciasComponent },
   {path: 'login',
     component: LoginComponent,
   },
@@ -35,7 +37,7 @@ const routes: Routes = [
       }
     ],
     },
-    {path:'**',redirectTo:'/login',pathMatch:'full'}
+     {path:'**',redirectTo:'/login',pathMatch:'full'}
 
 ];
 
@@ -43,7 +45,7 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule { 
+export class AppRoutingModule {
 
-  
+
 }

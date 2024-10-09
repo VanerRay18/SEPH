@@ -1,6 +1,6 @@
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #8a1538; /* Color Morena */
+    background-color: #F1F5F9; /* Color Morena */
     margin: 0;
     padding: 0;
     display: flex;
@@ -8,19 +8,19 @@ body {
     align-items: center;
     height: 100vh;
   }
-  
+
   .login-container {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100%;
     width: 100%;  /* Asegura que ocupen también el 100% del ancho */
-    background-color: #8a1538;
+    background-color:#F1F5F9;
     display: flex; /* Centrar horizontalmente */
     align-items: center;     /* Centrar verticalmente */
-    height: 100vh; 
+    height: 100vh;
   }
-  
+
   .login-card {
     background-color: white;
     padding: 40px;
@@ -30,39 +30,39 @@ body {
     text-align: center;
     justify-content: center;
   }
-  
+
   .logo img {
     width: 80px;
     margin-bottom: 20px;
   }
-  
+
   h2 {
     color: #8a1538; /* Color Morena */
     margin-bottom: 20px;
   }
-  
+
   .form-group {
     margin-bottom: 15px;
     text-align: left;
   }
-  
+
   label {
     font-weight: bold;
     display: block;
     margin-bottom: 5px;
   }
-  
+
   input {
     width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
   }
-  
+
   input:focus {
     border-color: #8a1538;
   }
-  
+
   .btn-login {
     background-color: #8a1538; /* Color Morena */
     color: white;
@@ -72,19 +72,18 @@ body {
     border-radius: 5px;
     cursor: pointer;
   }
-  
+
   .btn-login:disabled {
     background-color: #ddd;
     cursor: not-allowed;
   }
-  
+
   .error {
     color: red;
     font-size: 12px;
   }
-  
+
   .error-message {
     margin-top: 10px;
     color: red;
   }
-  

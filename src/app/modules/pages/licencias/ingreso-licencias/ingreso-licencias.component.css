@@ -1,0 +1,155 @@
+.Cont{
+  background-color: #F1F5F9;
+}
+
+.container{
+ padding-left: 30px;
+ padding-right: 30px;
+}
+
+h1{
+  font-weight: bold;
+}
+
+h5{
+  color: rgb(122, 122, 122);
+}
+
+.card{
+  background-color: #ffffff;
+  border-top: none;
+
+  border-top-left-radius: 0;
+  width: 100%;
+}
+
+@media (min-width: 992px) {
+  .form-control {
+    flex-grow: 1; /* Hacer que los inputs crezcan */
+    min-width: 200px; /* Asegurarse de que no sean demasiado pequeños */
+  }
+
+  .row {
+    gap: 10px; /* Reducir el espacio entre los elementos */
+    align-items: center; /* Alinear verticalmente los elementos */
+  }
+
+  .btn-success {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+  .card {
+    padding: 15px;
+    width: 100%;
+  }
+}
+
+.Busq {
+  background-color: #ffffff;
+  width: 90%; /* Por defecto, ocupa el 100% en pantallas pequeñas */
+  margin: auto; /* Centra el elemento */
+  padding: 10px; /* Espacio interior */
+  border: 1px solid #ccc; /* Borde para visualización */
+}
+
+@media (min-width: 768px) {
+  .Busq {
+      width: 70%; /* Cambia el ancho a 70% en pantallas de 400px o más */
+      margin: 10px; /* Centra el elemento */
+      padding: 5px; /* Espacio interior */
+  }
+}
+
+.search-container {
+  position: relative; /* Necesario para el dropdown */
+  margin-bottom: 20px; /* Espacio debajo del contenedor */
+  display: flex;
+  flex-direction:  row;
+
+}
+
+.RFC{
+  width: 150px; /* Ajustar ancho para el botón */
+}
+
+.Nombre{
+  width: 250px; /* Ajustar ancho para el botón */
+}
+
+.input-container {
+  display: flex;
+  flex-direction: column; /* Esto pone los elementos uno encima del otro */
+}
+
+.text {
+  margin-bottom: 5px; /* Espaciado entre la etiqueta y el input */
+  font-family: "Montserrat", sans-serif;
+}
+
+input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 2px; /* Espacio entre inputs */
+}
+button {
+  margin-top: 3.3%;
+  /* width: 15%;*/
+  border-radius: .5em;
+  height: 50%;
+  cursor: pointer;
+}
+
+
+.dropdown {
+  position: absolute;
+  background-color: white;
+  border: 1px solid #ccc;
+  position: absolute;
+  /* width: calc(100% - 120px); */
+  max-height: 200px; /* Altura máxima del dropdown */
+  overflow-y: auto; /* Scroll si hay demasiados elementos */
+  z-index: 1000; /* Asegurarse de que aparezca encima de otros elementos */
+}
+.dropdown li {
+  padding: 10px;
+  cursor: pointer; /* Cambiar el cursor al pasar sobre el elemento */
+}
+.dropdown li:hover {
+  background-color: #f0f0f0; /* Color de fondo al pasar el ratón */
+}
+
+ng-container{
+  width: 100%;
+  display: flex;
+  flex-direction:  row;
+}
+
+.nav-tabs{
+  width: 100%;
+  color: #621132;
+  cursor: pointer;
+}
+
+.nav-item{
+  color: #621132;
+}
+
+.nav-link{
+  margin-right: 4px;
+  color: #6D6D6D;
+  font-weight:600;
+  background-color: #EAEAEA;
+}
+
+.nav-link.active {
+  color: #621132; /* Cambiar el color de la letra cuando está activo */
+
+}
+
+.botones{
+  background-color: #ffffff;
+  color: #621132;
+  border-color: #621132;
+}
+
