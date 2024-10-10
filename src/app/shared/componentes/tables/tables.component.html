@@ -7,9 +7,9 @@
   <tbody>
     <tr *ngFor="let row of data">
       <td *ngFor="let key of displayedColums">{{row[key]}}</td>
-      <td *ngIf="showActions">
-           <button (click)="onEdit(row)">Edit</button>
-           <button (click)="onDelete(row)">Delete</button>
+      <td >
+           <button *ngIf="showActionsEdit" (click)="onEdit(row)">Edit</button>
+           <button *ngIf="showActionsDeleted" (click)="onDelete(row)">Delete</button>
       </td>
     </tr>
   </tbody>

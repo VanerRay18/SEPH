@@ -14,6 +14,8 @@ export class LicenciasService {
     private http:HttpClient
   ) {}
 
+
+
   getLicencias(): Observable<ApiResponse> {
     return this.http.get<ApiResponse>(`${environment.baseService}${'/licMedicas'}`);
   }
@@ -21,6 +23,12 @@ export class LicenciasService {
   getUsers(): Observable<ApiResponse> {
     return this.http.get<ApiResponse>(`${environment.baseService}${'/user/users'}`);
   }
+
+    // authLogg(token: string): Observable<any> {
+  //   let headers = new HttpHeaders({Authorization:token})
+  //   console.log(`${environment.baseService}${'/login'}`)
+  //   return this.http.post<any>(`${environment.baseService}${'/login'}`, {headers});
+  // }
 
   // deleteLicencia(): Observable<ApiResponse> {
   //   const headers = new HttpHeaders({ 'licenciaId': licenciaId});

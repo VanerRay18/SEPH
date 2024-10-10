@@ -12,7 +12,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)], // Configura las rutas a nivel de raíz
+  imports: [RouterModule.forChild(routes)], // Configura las rutas a nivel de raíz
   exports: [RouterModule]
 })
 export class LicenciasRoutingModule { }

@@ -31,6 +31,11 @@ export class AuthService {
     console.log(`${environment.baseService}${'/login'}`);
     return this.http.post<any>(`${environment.baseService}${'/login'}`, data, {observe:'response'})
   }
+
+  getToken(): string | null {
+    return localStorage.getItem('token'); // Obtener el token del localStorage
+  }
+
   // authLogg(token: string): Observable<any> {
   //   let headers = new HttpHeaders({Authorization:token})
   //   console.log(`${environment.baseService}${'/login'}`)

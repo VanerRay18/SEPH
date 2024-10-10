@@ -16,6 +16,9 @@ export class TablesComponent {
 // Input para mostrar u ocultar la columna de acciones
 @Input() showActions: boolean = false;
 
+
+@Input() showActionsEdit: boolean = false;
+@Input() showActionsDeleted: boolean = false;
 // Outputs para emitir eventos de editar o eliminar
 @Output() edit: EventEmitter<any> = new EventEmitter();
 @Output() delete: EventEmitter<any> = new EventEmitter();

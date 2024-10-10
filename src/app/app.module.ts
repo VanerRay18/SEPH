@@ -13,6 +13,9 @@ import { LicenciasRoutingModule } from './modules/pages/licencias/licencias-rout
 import { HomeRoutingModule } from './modules/pages/home/home-routing.module';
 import { PerfilComponent } from './modules/pages/extras/perfil/perfil.component';
 import { ExtrasRoutingModule } from './modules/pages/extras/extras-routing.module';
+import { LayoutModule } from './modules/layout/layout.module';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { TokenInterceptor } from './core/interceptor/token.interceptor';
 
 @NgModule({
   declarations: [
@@ -30,8 +33,15 @@ import { ExtrasRoutingModule } from './modules/pages/extras/extras-routing.modul
     LicenciasRoutingModule,
     HomeRoutingModule,
     ExtrasRoutingModule,
+    LayoutModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi:true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
