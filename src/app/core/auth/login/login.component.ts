@@ -45,17 +45,18 @@ export class LoginComponent implements OnInit {
 
     this.authService.authLogg(data).subscribe(
       (response) => {
-        console.log(response.body.data.config.principal)
+        // console.log('response; '+response)
+        // console.log(response.body.data.config.principal)
         const token = response.headers.get('Authorization');
         const rolId = response.body.data.rolId;
         const path = response.body.data.config.principal;
 
-        console.log(response.body.data.rolId)
+        // console.log(response.body.data.rolId)
         this.router.navigate([path]);
     if (token) {
-      console.log('Token JWT:', token);
+      // console.log('Token JWT:', token);
       // Guarda el token en localStorage o sessionStorage
-      localStorage.setItem('roleId', rolId);
+      localStorage.setItem('rolId', rolId);
       localStorage.setItem('token', token);
     } else {
       console.warn('El token JWT no se encontró en los headers');

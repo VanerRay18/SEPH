@@ -33,7 +33,7 @@ export class AuthService {
   }
 
   getToken(): string | null {
-    return localStorage.getItem('token'); // Obtener el token del localStorage
+    return localStorage.getItem('jwt'); // Obtener el token del localStorage
   }
 
   // authLogg(token: string): Observable<any> {
@@ -42,8 +42,11 @@ export class AuthService {
   //   return this.http.post<any>(`${environment.baseService}${'/login'}`, {headers});
   // }
 
-  getModulesByRole(): Observable<ApiResponse> {
-    return this.http.get<ApiResponse>(`${environment.baseService}${'/user/roleByModule'}`);
+  getModulesByRole(rolId: string): Observable<ApiResponse> {
+    let headers = new HttpHeaders({'rolId': rolId})
+    return this.http.get<ApiResponse>(`${environment.baseService}${'/user/roleByModule'}`,
+      {headers}
+    );
   }
 
 

@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { LayoutComponent } from './modules/layout/layout.component';
 import { LoginComponent } from './core/auth/login/login.component';
 import { IngresoLicenciasComponent } from './modules/pages/licencias/ingreso-licencias/ingreso-licencias.component';
-
+import { LoggedGuard } from './core/guards/logged.guard';
 
 const routes: Routes = [
   {path:'',redirectTo:'/login',pathMatch:'full'},
@@ -14,7 +14,7 @@ const routes: Routes = [
   {
     path: 'pages',
     component: LayoutComponent,
-    // canActivate: [LoggedGuard],
+    canActivate: [LoggedGuard],
     children: [
       {
         path: 'Inicio',
