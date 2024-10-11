@@ -130,7 +130,7 @@ button {
 }
 
 ng-container{
-  width: 100%;
+  width: 100vw;
   display: flex;
   flex-direction:  row;
 }
@@ -163,3 +163,6 @@ ng-container{
   border-color: #621132;
 }
 
+.tabla{
+  width: 100vw;
+}

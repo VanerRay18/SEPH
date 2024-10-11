@@ -7,6 +7,8 @@ import { IngresoLicenciasComponent } from './ingreso-licencias/ingreso-licencias
 import { ArchivoLicenciasComponent } from './archivo-licencias/archivo-licencias.component';
 import { OficioLicenciasComponent } from './oficio-licencias/oficio-licencias.component';
 import { SharedModule } from "../../../shared/shared.module";
+import { IngresoAccidentesComponent } from './ingreso-accidentes/ingreso-accidentes.component';
+import { AcuerdosPreciComponent } from './acuerdos-preci/acuerdos-preci.component';
 
 
 
@@ -14,7 +16,9 @@ import { SharedModule } from "../../../shared/shared.module";
   declarations: [
     IngresoLicenciasComponent,
     ArchivoLicenciasComponent,
-    OficioLicenciasComponent
+    OficioLicenciasComponent,
+    IngresoAccidentesComponent,
+    AcuerdosPreciComponent
   ],
   imports: [
     CommonModule,

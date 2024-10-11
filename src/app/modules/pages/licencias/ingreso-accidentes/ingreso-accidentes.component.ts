@@ -1,20 +1,18 @@
-import { Component, OnInit } from '@angular/core';
-import { TablesComponent } from 'src/app/shared/componentes/tables/tables.component';
+import { Component } from '@angular/core';
 import { LicenciasService } from 'src/app/services/licencias-service/licencias.service';
+import { Employee } from 'src/app/shared/interfaces/usuario.model';
 import { ApiResponse } from 'src/app/models/ApiResponse';
-import { Employee} from 'src/app/shared/interfaces/usuario.model';
-
 @Component({
-  selector: 'ingreso-licencias',
-  templateUrl: './ingreso-licencias.component.html',
-  styleUrls: ['./ingreso-licencias.component.css']
+  selector: 'ingreso-accidentes',
+  templateUrl: './ingreso-accidentes.component.html',
+  styleUrls: ['./ingreso-accidentes.component.css']
 })
-export class IngresoLicenciasComponent implements OnInit{
+export class IngresoAccidentesComponent {
 
   headers = ['No. de Licencia', 'Desde', 'Hasta', 'Días', 'Status de licencia','No. de oficio', 'Acciones'];
   displayedColumns = ['folio', 'desde', 'hasta', 'total_dias', 'status','oficio'];
   data = [];
-  showCard: boolean = false;
+
 
   rfcSearchTerm: string = '';
   nombreSearchTerm: string = '';
@@ -101,13 +99,7 @@ buscar(srl_emp:any) {
   this.LicenciasService.getLicencias(srl_emp).subscribe((response: ApiResponse) => {
     this.data = response.data; // Asegúrate de mapear correctamente los datos
     console.log(response)
-    this.showCard = true;
-  },
-  (error) => {
-    console.error('Error al buscar licencias:', error);
-    this.showCard = false; // Oculta la tarjeta en caso de error
-  }
-);
+  });
 }
 
 
@@ -129,4 +121,5 @@ buscar(srl_emp:any) {
     //     this.data = this.data.filter(item => item.folio !== row.folio);
     //   });
     // }
+
 }

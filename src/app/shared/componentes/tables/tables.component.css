@@ -1,49 +1,106 @@
-button{
-  background-color: transparent; /* Elimina el fondo del botón */
-  border: none; /* Elimina el borde del botón */
-  outline: none; /* Elimina el contorno al enfocarlo */
-  cursor: pointer; /* Opcional: muestra el cursor como una mano al pasar sobre el botón */
+button {
+  background-color: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
 }
 
-.edit{
+.edit {
   color: #0FA958;
 }
 
-.delete{
+.delete {
   color: #F24E1E;
 }
 
 .table-responsive {
-  overflow-x: auto; /* Permite desplazamiento horizontal */
+  overflow-x: auto;
   display: block;
-  width: 100%; /* Asegura que ocupe el ancho completo del contenedor */
+  width: 100%;
 }
 
 .table-container {
   display: flex;
-  justify-content: center; /* Centrar horizontalmente la tabla */
-  overflow-x: auto; /* Permite el scroll horizontal si hay demasiados datos */
+  justify-content: center;
+  overflow-x: auto;
+  padding: 10px;
+
 }
 
 table {
-  font-size: 12px; /* Tamaño de letra más pequeño para que quepan más elementos */
-
+  font-size: 14px;
+  border-collapse: separate; /* Mantener 'separate' para bordes redondeados */
+  border-spacing: 0; /* Sin espacio entre celdas */
+  width: 100%;
+  width: 100vw;
+  background-color: #fff; /* Fondo blanco de la tabla */
 }
 
 th, td {
-  padding: 8px 12px; /* Espaciado interno en las celdas */
-  text-align: left; /* Alinear texto a la izquierda (puedes ajustarlo según prefieras) */
+  padding: 10px 15px;
+  text-align: left;
+  vertical-align: middle;
+  border-bottom: 1px solid #e0e0e0; /* Líneas sutiles entre las filas */
 }
 
+th {
+  background-color: #f9f9f9;
+  font-weight: bold;
+  color: #333;
+}
+
+td {
+  background-color: #fff; /* Fondo blanco para las celdas con datos */
+  color: #555;
+}
+
+tr:nth-child(even) td {
+  background-color: #fff; /* Mantener fondo blanco en todas las filas */
+}
+
+tr:hover td {
+  background-color: #eaeaea; /* Fondo gris claro al hacer hover */
+}
+
+/* Bordes redondeados en las esquinas de la tabla */
+table tr:first-child th:first-child {
+  border-top-left-radius: 12px;
+}
+
+table tr:first-child th:last-child {
+  border-top-right-radius: 12px;
+}
+
+table tr:last-child td:first-child {
+  border-bottom-left-radius: 12px;
+}
+
+table tr:last-child td:last-child {
+  border-bottom-right-radius: 12px;
+}
+
+/* Scrollbar personalizado */
 .table-container::-webkit-scrollbar {
-  height: 8px; /* Tamaño del scroll horizontal */
+  height: 8px;
 }
 
 .table-container::-webkit-scrollbar-thumb {
-  background-color: #888; /* Color del scroll */
-  border-radius: 4px; /* Bordes redondeados para el scroll */
+  background-color: #888;
+  border-radius: 4px;
 }
 
 .table-container::-webkit-scrollbar-thumb:hover {
-  background-color: #555; /* Color del scroll al pasar el cursor */
+  background-color: #555;
+}
+
+/* Íconos de clasificación */
+th svg {
+  width: 10px;
+  height: 10px;
+  margin-left: 5px;
+  fill: #888;
+}
+
+th.active svg {
+  fill: #333;
 }

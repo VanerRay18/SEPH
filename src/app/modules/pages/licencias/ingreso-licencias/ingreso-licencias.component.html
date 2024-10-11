@@ -38,7 +38,7 @@
       </div>
     </div>
 
-    <div class="contLic">
+    <div *ngIf="showCard" class="contLic">
       <ul class="nav nav-tabs d-flex flex-row flex-wrap" role="tablist">
         <li class="nav-item" *ngFor="let tab of tabs">
           <a class="nav-link"
@@ -75,7 +75,7 @@
               </div>
             </div>
             <form class="m-3">
-              <div class="row">
+              <div class="tabla row">
                 <div class="col-auto">
                   <label for="formGroupExampleInput"
                     class="form-label">Folio:</label>
@@ -131,92 +131,11 @@
         </ng-container>
 
         <ng-container *ngIf="activeTab === 'accidentes'">
-          <div class="card">
-            <div class="row">
-              <div class="col-auto">
-                <h5 class="ms-2 mt-2">Ingresar un nuevo Accidente de
-                  trabajo</h5>
-              </div>
-              <div class="col-auto">
-                <button type="button" class="botones btn"><i
-                    class="fa-solid fa-folder"></i></button>
-              </div>
-              <div class="col-auto">
-                <button type="button" class="botones btn"><i
-                    class="fa-solid fa-file"></i></button>
-              </div>
-              <div class="col-auto">
-                <button type="button" class="botones btn"><i
-                    class="fa-solid fa-trash"></i></button>
-              </div>
-              <div class="col-auto">
-                <button type="button" class="botones btn"><i
-                    class="fa-solid fa-magnifying-glass"></i></button>
-              </div>
-            </div>
-            <form class="m-3">
-              <div class="row">
-                <div class="col-auto">
-                  <label for="formGroupExampleInput"
-                    class="form-label">Folio:</label>
-                  <input type="text" class="form-control"
-                    placeholder="Ingrese el folio de licencia"
-                    aria-label="First name" required>
-                </div>
-                <div class="col-auto">
-                  <label for="start-date" class="form-label">Fecha de
-                    Inicio:</label>
-                  <input type="date" id="start-date" name="start-date"
-                    class="form-control" required>
-                </div>
-                <div class="col-auto">
-                  <label for="end-date" class="form-label">Fecha de
-                    Término:</label>
-                  <input type="date" id="end-date" name="end-date"
-                    class="form-control" required>
-                </div>
-                <div class="col-auto">
-                  <label for="end-date" class="form-label">Formato:</label>
-                  <div class="form-check">
-                    <input class="form-check-input" type="radio"
-                      name="flexRadioDefault" id="flexRadioDefault1" value="0"
-                      checked>
-                    <label class="form-check-label" for="flexRadioDefault1">
-                      Fisico
-                    </label>
-                  </div>
-                  <div class="form-check">
-                    <input class="form-check-input" type="radio"
-                      name="flexRadioDefault" id="flexRadioDefault2" value="1">
-                    <label class="form-check-label" for="flexRadioDefault2">
-                      Email
-                    </label>
-                  </div>
-                </div>
-
-                <div class="col-auto">
-                  <button type="submit"
-                    class="guardar btn  btn-success">Guardar</button>
-                </div>
-              </div>
-            </form>
-            <app-tables
-              [headers]="headers"
-              [data]="data"
-              [displayedColums]="displayedColumns"
-              [showActions]="true"></app-tables>
-          </div>
+        <ingreso-accidentes></ingreso-accidentes>
         </ng-container>
 
         <ng-container *ngIf="activeTab === 'acuerdos'">
-          <div class="card">
-            <app-tables
-              [headers]="headers"
-              [data]="data"
-              [displayedColums]="displayedColumns"
-              [showActions]="false"></app-tables>
-          </div>
-
+       <app-acuerdos-preci></app-acuerdos-preci>
         </ng-container>
       </div>
 

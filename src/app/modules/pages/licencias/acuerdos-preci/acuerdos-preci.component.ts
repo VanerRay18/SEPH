@@ -1,20 +1,18 @@
-import { Component, OnInit } from '@angular/core';
-import { TablesComponent } from 'src/app/shared/componentes/tables/tables.component';
+import { Component } from '@angular/core';
 import { LicenciasService } from 'src/app/services/licencias-service/licencias.service';
+import { Employee } from 'src/app/shared/interfaces/usuario.model';
 import { ApiResponse } from 'src/app/models/ApiResponse';
-import { Employee} from 'src/app/shared/interfaces/usuario.model';
 
 @Component({
-  selector: 'ingreso-licencias',
-  templateUrl: './ingreso-licencias.component.html',
-  styleUrls: ['./ingreso-licencias.component.css']
+  selector: 'app-acuerdos-preci',
+  templateUrl: './acuerdos-preci.component.html',
+  styleUrls: ['./acuerdos-preci.component.css']
 })
-export class IngresoLicenciasComponent implements OnInit{
-
-  headers = ['No. de Licencia', 'Desde', 'Hasta', 'Días', 'Status de licencia','No. de oficio', 'Acciones'];
+export class AcuerdosPreciComponent {
+  headers = ['No. de Licencia', 'Desde', 'Hasta', 'Días', 'Status de licencia','No. de oficio'];
   displayedColumns = ['folio', 'desde', 'hasta', 'total_dias', 'status','oficio'];
   data = [];
-  showCard: boolean = false;
+
 
   rfcSearchTerm: string = '';
   nombreSearchTerm: string = '';
@@ -101,13 +99,7 @@ buscar(srl_emp:any) {
   this.LicenciasService.getLicencias(srl_emp).subscribe((response: ApiResponse) => {
     this.data = response.data; // Asegúrate de mapear correctamente los datos
     console.log(response)
-    this.showCard = true;
-  },
-  (error) => {
-    console.error('Error al buscar licencias:', error);
-    this.showCard = false; // Oculta la tarjeta en caso de error
-  }
-);
+  });
 }
 
 
@@ -115,18 +107,4 @@ buscar(srl_emp:any) {
     this.activeTab = tabId; // Cambia la pestaña activa
   }
 
-     // Método para editar un registro
-     onEdit(row: any) {
-      console.log('Editing row', row);
-      // Aquí podrías abrir un modal o realizar la lógica para editar
-    }
-
-    // Método para eliminar un registro
-    // onDelete(row: any) {
-    //   console.log('Deleting row', row);
-    //   this.LicenciasService.deleteLicencia(row.folio).subscribe(() => {
-    //     // Eliminar el registro del arreglo de datos localmente
-    //     this.data = this.data.filter(item => item.folio !== row.folio);
-    //   });
-    // }
 }
