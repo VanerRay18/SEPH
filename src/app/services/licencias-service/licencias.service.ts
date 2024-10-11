@@ -16,8 +16,11 @@ export class LicenciasService {
 
 
 
-  getLicencias(): Observable<ApiResponse> {
-    return this.http.get<ApiResponse>(`${environment.baseService}${'/licMedicas'}`);
+  getLicencias(srl_emp: string): Observable<ApiResponse> {
+    let headers = new HttpHeaders({'srl_emp': srl_emp})
+    return this.http.get<ApiResponse>(`${environment.baseService}${'/licMedicas/user'}`,
+      {headers}
+    );
   }
 
   getUsers(): Observable<ApiResponse> {

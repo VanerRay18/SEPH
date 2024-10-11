@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 
 @Component({
   selector: 'app-tables',
@@ -22,6 +22,15 @@ export class TablesComponent {
 // Outputs para emitir eventos de editar o eliminar
 @Output() edit: EventEmitter<any> = new EventEmitter();
 @Output() delete: EventEmitter<any> = new EventEmitter();
+
+ // Propiedad para activar el scroll
+ enableScroll: boolean = false;
+
+ ngOnChanges() {
+   // Verificar si hay más de 10 filas
+   this.enableScroll = this.data.length > 3;
+ }
+
 
 onEdit(row: any) {
   this.edit.emit(row); // Emitir el evento al componente padre

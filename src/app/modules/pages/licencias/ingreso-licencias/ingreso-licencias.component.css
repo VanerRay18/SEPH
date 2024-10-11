@@ -73,7 +73,7 @@ h5{
 }
 
 .Nombre{
-  width: 250px; /* Ajustar ancho para el botón */
+  width: 320px; /* Ajustar ancho para el botón */
 }
 
 .input-container {
@@ -101,22 +101,32 @@ button {
 }
 
 
+
 .dropdown {
-  position: absolute;
-  background-color: white;
-  border: 1px solid #ccc;
-  position: absolute;
-  /* width: calc(100% - 120px); */
-  max-height: 200px; /* Altura máxima del dropdown */
-  overflow-y: auto; /* Scroll si hay demasiados elementos */
-  z-index: 1000; /* Asegurarse de que aparezca encima de otros elementos */
+  position: absolute; /* Permite colocar el dropdown debajo del input */
+  top: 100%; /* Coloca el dropdown justo debajo del input */
+  left: 0; /* Alinea el dropdown al lado izquierdo del input */
+  right: 0; /* Asegúrate de que el dropdown ocupe todo el ancho del input */
+  background-color: white; /* Color de fondo del dropdown */
+  border: 1px solid #ccc; /* Añade un borde */
+  z-index: 1000; /* Asegúrate de que el dropdown esté por encima de otros elementos */
+  overflow-y: auto;
+  max-height: 200px;
 }
+
+.dropdown ul {
+  list-style: none; /* Elimina los puntos de la lista */
+  padding: 0; /* Elimina el padding */
+  margin: 0; /* Elimina el margin */
+}
+
 .dropdown li {
-  padding: 10px;
-  cursor: pointer; /* Cambiar el cursor al pasar sobre el elemento */
+  padding: 8px 12px; /* Espaciado interno para las sugerencias */
+  cursor: pointer; /* Cambia el cursor al pasar sobre las sugerencias */
 }
+
 .dropdown li:hover {
-  background-color: #f0f0f0; /* Color de fondo al pasar el ratón */
+  background-color: #f0f0f0; /* Resalta la sugerencia al pasar el mouse */
 }
 
 ng-container{

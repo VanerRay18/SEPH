@@ -13,11 +13,13 @@
           <label class="text">RFC</label>
           <input [(ngModel)]="rfcSearchTerm" (input)="filterRFC()"
             type="text" placeholder="Buscar por RFC..." />
-          <ul *ngIf="rfcSuggestions.length > 0" class="dropdown">
-            <li *ngFor="let item of rfcSuggestions" (click)="selectRFC(item)">
-              {{ item.rfc }} - {{ item.nombre }}
-            </li>
-          </ul>
+          <div *ngIf="rfcSuggestions.length > 0" class="dropdown">
+            <ul >
+              <li *ngFor="let item of rfcSuggestions" (click)="selectRFC(item)">
+                {{ item.rfc }} - {{ item.nombre }}
+              </li>
+            </ul>
+          </div>
         </div>
         <div class="Nombre input-container mx-md-2">
           <label class="text">Nombre</label>
@@ -32,7 +34,7 @@
           </ul>
         </div>
         <button class="btn btn-primary mx-md-3 btn-sm btn-block"
-          (click)="buscar()">Buscar</button>
+          (click)="buscar(srl_emp)">Buscar</button>
       </div>
     </div>
 
@@ -52,21 +54,25 @@
         <ng-container *ngIf="activeTab === 'licencias'">
           <div class="card">
             <div class="row">
-               <div class="col-auto">
-                  <h5 class="ms-2 mt-2">Ingresar una nueva licencia médica</h5>
-               </div>
-               <div class="col-auto">
-                <button type="button" class="botones btn"><i class="fa-solid fa-folder"></i></button>
-               </div>
-               <div class="col-auto">
-                <button type="button" class="botones btn"><i class="fa-solid fa-file"></i></button>
-               </div>
-               <div class="col-auto">
-                <button type="button" class="botones btn"><i class="fa-solid fa-trash"></i></button>
-               </div>
-               <div class="col-auto">
-                <button type="button" class="botones btn"><i class="fa-solid fa-magnifying-glass"></i></button>
-               </div>
+              <div class="col-auto">
+                <h5 class="ms-2 mt-2">Ingresar una nueva licencia médica</h5>
+              </div>
+              <div class="col-auto">
+                <button type="button" class="botones btn"><i
+                    class="fa-solid fa-folder"></i></button>
+              </div>
+              <div class="col-auto">
+                <button type="button" class="botones btn"><i
+                    class="fa-solid fa-file"></i></button>
+              </div>
+              <div class="col-auto">
+                <button type="button" class="botones btn"><i
+                    class="fa-solid fa-trash"></i></button>
+              </div>
+              <div class="col-auto">
+                <button type="button" class="botones btn"><i
+                    class="fa-solid fa-magnifying-glass"></i></button>
+              </div>
             </div>
             <form class="m-3">
               <div class="row">
@@ -92,52 +98,61 @@
                 <div class="col-auto">
                   <label for="end-date" class="form-label">Formato:</label>
                   <div class="form-check">
-                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" value="0" checked>
+                    <input class="form-check-input" type="radio"
+                      name="flexRadioDefault" id="flexRadioDefault1" value="0"
+                      checked>
                     <label class="form-check-label" for="flexRadioDefault1">
                       Fisico
                     </label>
                   </div>
                   <div class="form-check">
-                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" value="1" >
+                    <input class="form-check-input" type="radio"
+                      name="flexRadioDefault" id="flexRadioDefault2" value="1">
                     <label class="form-check-label" for="flexRadioDefault2">
-                     Email
+                      Email
                     </label>
                   </div>
                 </div>
 
-              <div class="col-auto">
-                <button type="submit" class="guardar btn  btn-success">Guardar</button>
-              </div>
+                <div class="col-auto">
+                  <button type="submit"
+                    class="guardar btn  btn-success">Guardar</button>
+                </div>
               </div>
             </form>
             <app-tables
-            [headers]="headers"
-            [data]="data"
-            [displayedColums]="displayedColumns"
-            [showActionsEdit]=false
-            [showActionsDeleted]=true
-            ></app-tables>
+              [headers]="headers"
+              [data]="data"
+              [displayedColums]="displayedColumns"
+              [showActionsEdit]=true
+              [showActionsDeleted]=true>
+            </app-tables>
           </div>
         </ng-container>
 
         <ng-container *ngIf="activeTab === 'accidentes'">
           <div class="card">
             <div class="row">
-               <div class="col-auto">
-                  <h5 class="ms-2 mt-2">Ingresar un nuevo Accidente de trabajo</h5>
-               </div>
-               <div class="col-auto">
-                <button type="button" class="botones btn"><i class="fa-solid fa-folder"></i></button>
-               </div>
-               <div class="col-auto">
-                <button type="button" class="botones btn"><i class="fa-solid fa-file"></i></button>
-               </div>
-               <div class="col-auto">
-                <button type="button" class="botones btn"><i class="fa-solid fa-trash"></i></button>
-               </div>
-               <div class="col-auto">
-                <button type="button" class="botones btn"><i class="fa-solid fa-magnifying-glass"></i></button>
-               </div>
+              <div class="col-auto">
+                <h5 class="ms-2 mt-2">Ingresar un nuevo Accidente de
+                  trabajo</h5>
+              </div>
+              <div class="col-auto">
+                <button type="button" class="botones btn"><i
+                    class="fa-solid fa-folder"></i></button>
+              </div>
+              <div class="col-auto">
+                <button type="button" class="botones btn"><i
+                    class="fa-solid fa-file"></i></button>
+              </div>
+              <div class="col-auto">
+                <button type="button" class="botones btn"><i
+                    class="fa-solid fa-trash"></i></button>
+              </div>
+              <div class="col-auto">
+                <button type="button" class="botones btn"><i
+                    class="fa-solid fa-magnifying-glass"></i></button>
+              </div>
             </div>
             <form class="m-3">
               <div class="row">
@@ -163,41 +178,43 @@
                 <div class="col-auto">
                   <label for="end-date" class="form-label">Formato:</label>
                   <div class="form-check">
-                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" value="0" checked>
+                    <input class="form-check-input" type="radio"
+                      name="flexRadioDefault" id="flexRadioDefault1" value="0"
+                      checked>
                     <label class="form-check-label" for="flexRadioDefault1">
                       Fisico
                     </label>
                   </div>
                   <div class="form-check">
-                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" value="1" >
+                    <input class="form-check-input" type="radio"
+                      name="flexRadioDefault" id="flexRadioDefault2" value="1">
                     <label class="form-check-label" for="flexRadioDefault2">
-                     Email
+                      Email
                     </label>
                   </div>
                 </div>
 
-              <div class="col-auto">
-                <button type="submit" class="guardar btn  btn-success">Guardar</button>
-              </div>
+                <div class="col-auto">
+                  <button type="submit"
+                    class="guardar btn  btn-success">Guardar</button>
+                </div>
               </div>
             </form>
             <app-tables
-            [headers]="headers"
-            [data]="data"
-            [displayedColums]="displayedColumns"
-            [showActions]="true"
-            ></app-tables>
+              [headers]="headers"
+              [data]="data"
+              [displayedColums]="displayedColumns"
+              [showActions]="true"></app-tables>
           </div>
         </ng-container>
 
         <ng-container *ngIf="activeTab === 'acuerdos'">
           <div class="card">
             <app-tables
-            [headers]="headers"
-            [data]="data"
-            [displayedColums]="displayedColumns"
-            [showActions]="false"
-            ></app-tables>
+              [headers]="headers"
+              [data]="data"
+              [displayedColums]="displayedColumns"
+              [showActions]="false"></app-tables>
           </div>
 
         </ng-container>

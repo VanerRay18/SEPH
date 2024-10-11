@@ -1,25 +1,28 @@
-<table class="table table-light table-responsive">
-  <thead>
-    <tr>
-      <th *ngFor="let header of headers">{{header}}</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let row of data">
-      <td *ngFor="let key of displayedColums">{{row[key]}}</td>
-      <td >
-           <button *ngIf="showActionsEdit" (click)="onEdit(row)">Edit</button>
-           <button *ngIf="showActionsDeleted" (click)="onDelete(row)">Delete</button>
-      </td>
-    </tr>
-  </tbody>
-</table>
-
+<div [ngClass]="{'table-container-scroll': enableScroll}" class="table-container">
+  <table class="table table-responsive">
+    <thead>
+      <tr class="table-light">
+        <th *ngFor="let header of headers">{{header}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let row of data">
+        <td *ngFor="let key of displayedColums">{{row[key]}}</td>
+        <td>
+          <button class="edit" *ngIf="showActionsEdit" (click)="onEdit(row)"><i
+              class="fa-solid fa-pen-to-square"></i></button>
+          <button class="delete" *ngIf="showActionsDeleted"
+            (click)="onDelete(row)"><i class="fa-solid fa-trash"></i></button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
 <!-- Ejemplo de cuando no no quiera usar la columna de acciones -->
 <!-- <app-reusable-table  -->
-  <!-- [headers]="headers" -->
-  <!-- [data]="data" -->
-  <!-- [displayedColumns]="displayedColumns" -->
-  <!-- [showActions]="false">  --> <!-- Aquí omites las acciones -->
+<!-- [headers]="headers" -->
+<!-- [data]="data" -->
+<!-- [displayedColumns]="displayedColumns" -->
+<!-- [showActions]="false">  --> <!-- Aquí omites las acciones -->
 <!-- </app-reusable-table> -->
