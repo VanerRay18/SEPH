@@ -10,6 +10,7 @@ export class TreeNode {
   description!: string; // Descripción del módulo
   config!: string; // Ruta del módulo
   parentId!: number | null; // ID del módulo padre (si es null, es un nodo padre)
+  parentName!: string | null;
   children: TreeNode[] = []; // Lista de módulos hijos
 }
 
@@ -27,7 +28,7 @@ export class NavComponent implements OnInit {
   constructor(
     private AuthService: AuthService,
     private router: Router
-  ) {}
+  ) { }
 
   // homePath: TreeNode = {
   //   children: [],
@@ -70,18 +71,23 @@ export class NavComponent implements OnInit {
     if (rolId) {
       this.AuthService.getModulesByRole(rolId).subscribe({
         next: (result) => {
-          console.log('Módulos recibidos:', result.data);
+          console.log('Módulos recibidos:', result.data); // Asegúrate de que esto esté mostrando los módulos
+
           const modules = result.data.map((item: TreeNode) => ({
             id: item.moduleId,
             name: item.moduleName,
             description: item.description,
             config: item.config,
             parentId: item.parentId,
+            parentName: item.parentName,
             children: []
           }));
 
+          // Aquí es donde se construye el árbol
           this.menuItems = this.buildTree(modules); // Construye el árbol de módulos
-          console.log('Estructura de menuItems:', this.menuItems);
+          // console.log('Estructura de menuItems después de buildTree:', this.menuItems);
+          // Asegúrate de que se esté asignando correctamente
+          // console.log('Estructura de menuItems:', this.menuItems); // Esto debería mostrar la estructura
         },
         error: (error) => console.error('Error al obtener los módulos:', error),
       });
@@ -94,28 +100,43 @@ export class NavComponent implements OnInit {
 
   // Construye el árbol de navegación a partir de los módulos obtenidos
   buildTree(data: TreeNode[]): TreeNode[] {
-    const treeMap = new Map<number, TreeNode>();
+    console.log('Datos pasados a buildTree:', data);
+    const treeMap = new Map<number, TreeNode>(); // Mapa para almacenar los nodos
 
-    // Crea el mapa de nodos
-    data.forEach((item) => {
-      treeMap.set(item.moduleId, {
-        ...item,
-        children: [] // Inicializa el array de hijos
-      });
-    });
-
-    // Conecta nodos padres con hijos
-    data.forEach((item) => {
-      if (item.parentId !== null) {
-        const parent = treeMap.get(item.parentId);
-        if (parent) {
-          parent.children.push(treeMap.get(item.moduleId)!);
+    // Paso 1: Crea el mapa de módulos
+    data.forEach((item: TreeNode) => {
+      console.log('Módulo:', item);
+        // Asegúrate de usar la propiedad correcta (en este caso, `id` en lugar de `moduleId`)
+        treeMap.set(item.moduleId, {
+            ...item,
+            children: [] // Inicializa el array de hijos
+        });
+        const node = treeMap.get(item.moduleId); // Obtiene el nodo actual
+        if (item.parentId !== null) {
+            const parent = treeMap.get(item.parentId); // Busca el nodo padre
+            if (parent) {
+                parent.children.push(node!); // Añade el nodo actual como hijo del padre
+            }
         }
-      }
     });
 
-    // Filtra y devuelve los nodos raíz
-    return Array.from(treeMap.values()).filter(node => node.parentId === null);
-  }
+    console.log('Contenido de treeMap:', Array.from(treeMap.values()));
+    // Paso 2: Asocia los módulos hijos a sus padres
+    data.forEach((item: TreeNode) => {
 
+    });
+
+    // Paso 3: Obtiene los nodos raíz (módulos sin padre)
+    const roots: TreeNode[] = [];
+    treeMap.forEach((node) => {
+        if (node.parentId === null) {
+            roots.push(node); // Añade el nodo raíz a la lista
+        }
+    });
+
+    console.log('Raíces encontradas:', roots); // Muestra los nodos raíz
+    console.log('Estructura final de menuItems:', roots); // Para verificar la estructura final
+    return roots; // Devuelve la estructura final del árbol
+
+  }
 }
