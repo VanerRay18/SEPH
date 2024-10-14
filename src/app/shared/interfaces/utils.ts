@@ -5,4 +5,5 @@ export interface Module {
   config: string;            // Ruta de configuración del módulo
   description: string | null; // Descripción del módulo (opcional)
   moduleName: string;        // Nombre del módulo
+  icon: string;
 }

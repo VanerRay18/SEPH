@@ -6,6 +6,32 @@
   top: 0;
 }
 
+.centerIconDAD:hover{
+color:rgb(148, 148, 148);
+}
+.icons{
+
+    margin-right: 8px; /* Ajusta el valor según el espacio que necesites */
+
+  
+  font-size: 1.2em; /* Ajusta el tamaño del icono si es necesario */
+}
+.active-custom {
+  color: #FFD700; /* Cambia el color del texto a dorado */
+  background-color: #bb9f0063; /* Mantén el fondo verde o el color que prefieras */
+  font-weight: bold; /* Texto en negrita */
+  border-radius: 12px; /* Bordes redondeados, ajusta el valor según lo que prefieras */
+  border: 2px solid #FFD700; /* Borde dorado */
+
+
+}
+.generalHover:hover{
+color: #FFD700;
+}
+.centerIcon{
+  display: flex; /* Asegura que el enlace también use flexbox */
+  align-items: center; /* Centra el texto dentro del enlace */
+}
 
 /* Estilo de la marca (logo o nombre del sistema) */
 .navbar-brand {
@@ -44,21 +70,19 @@
 
 /* Estilo de los elementos del menú (links) */
 .nav-link {
+  
   color: white; /* blanco */
   font-weight: 500;
 }
 
 .nav-link.active {
+
   font-weight: bold;
   color: #8a1538;
   background-color: #8a1538;
 }
 
-.nav-link:hover {
-  color: white; /* blanco */
-  background-color: #8a1538;
-  border-radius: 5px;
-}
+
 
 /* Dropdown menú */
 .dropdown-menu {
