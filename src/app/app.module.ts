@@ -16,6 +16,7 @@ import { ExtrasRoutingModule } from './modules/pages/extras/extras-routing.modul
 import { LayoutModule } from './modules/layout/layout.module';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { TokenInterceptor } from './core/interceptor/token.interceptor';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { TokenInterceptor } from './core/interceptor/token.interceptor';
     LicenciasRoutingModule,
     HomeRoutingModule,
     ExtrasRoutingModule,
-    LayoutModule
+    LayoutModule,
+    NgbModule
   ],
   providers: [
     {
