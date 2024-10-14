@@ -16,27 +16,44 @@ export class LicenciasService {
 
 
 
-  getLicencias(srl_emp: string): Observable<ApiResponse> {
+  getLicencias(srl_emp: string): Observable<ApiResponse> {//Historial actual de licencias
     let headers = new HttpHeaders({'srl_emp': srl_emp})
     return this.http.get<ApiResponse>(`${environment.baseService}${'/licMedicas/user'}`,
       {headers}
     );
   }
 
-  getUsers(): Observable<ApiResponse> {
+  getUsers(): Observable<ApiResponse> {//optencion de rfc y nombre del empleado
     return this.http.get<ApiResponse>(`${environment.baseService}${'/user/users'}`);
   }
 
-    // authLogg(token: string): Observable<any> {
-  //   let headers = new HttpHeaders({Authorization:token})
-  //   console.log(`${environment.baseService}${'/login'}`)
-  //   return this.http.post<any>(`${environment.baseService}${'/login'}`, {headers});
-  // }
+  SearchLic(folio: string): Observable<ApiResponse> {//buscar un licencia en general
+    let headers = new HttpHeaders({'folio': folio})
+    return this.http.get<ApiResponse>(`${environment.baseService}${'/licMedicas'}`,
+      {headers}
+    );
+  }
 
-  // deleteLicencia(): Observable<ApiResponse> {
-  //   const headers = new HttpHeaders({ 'licenciaId': licenciaId});
-  //   return this.http.patch<ApiResponse>(`${environment.baseService}/licMedicas/softdeleted`, {}, { headers });
-  // }
+  addLicencia(data:any, userId: string, srl_emp:string): Observable<ApiResponse> { //agregar una nueva licencia
+    let headers = new HttpHeaders({'srl_emp': srl_emp, 'userId':userId})
+    return this.http.post<ApiResponse>(`${environment.baseService}${'/licMedicas'}`,data,
+      {headers}
+    );
+  }
+
+  softDeleteLic(folio: string, userId: string): Observable<ApiResponse> { //agregar una nueva licencia
+    let headers = new HttpHeaders({'folio': folio, 'userId':userId})
+    return this.http.patch<ApiResponse>(`${environment.baseService}${'/licMedicas/softdeleted'}`,
+      {headers}
+    );
+  }
+
+  updateLic(folio: string, userId: string): Observable<ApiResponse> { //editar una licencia
+    let headers = new HttpHeaders({'folio': folio, 'userId':userId})
+    return this.http.patch<ApiResponse>(`${environment.baseService}${'/licMedicas'}`,
+      {headers}
+    );
+  }
 
 
 

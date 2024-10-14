@@ -9,6 +9,7 @@ import { OficioLicenciasComponent } from './oficio-licencias/oficio-licencias.co
 import { SharedModule } from "../../../shared/shared.module";
 import { IngresoAccidentesComponent } from './ingreso-accidentes/ingreso-accidentes.component';
 import { AcuerdosPreciComponent } from './acuerdos-preci/acuerdos-preci.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 
@@ -25,7 +26,8 @@ import { AcuerdosPreciComponent } from './acuerdos-preci/acuerdos-preci.componen
     FormsModule, // Añadir FormsModule a los imports
     HttpClientModule,
     LicenciasRoutingModule,
-    SharedModule
+    SharedModule,
+    ReactiveFormsModule
 ]
 })
 export class LicenciasModule { }
