@@ -13,11 +13,6 @@ button {
   color: #F24E1E;
 }
 
-.table-responsive {
-  overflow-x: auto;
-  display: block;
-  width: 100%;
-}
 
 .table-container {
   display: flex;
@@ -27,12 +22,16 @@ button {
 
 }
 
+.table-responsive{
+  overflow-y: auto;
+  max-height: 300px;
+}
+
 table {
   font-size: 14px;
   border-collapse: separate; /* Mantener 'separate' para bordes redondeados */
   border-spacing: 0; /* Sin espacio entre celdas */
   width: 100%;
-  width: 100vw;
   background-color: #fff; /* Fondo blanco de la tabla */
 }
 
@@ -79,19 +78,6 @@ table tr:last-child td:last-child {
   border-bottom-right-radius: 12px;
 }
 
-/* Scrollbar personalizado */
-.table-container::-webkit-scrollbar {
-  height: 8px;
-}
-
-.table-container::-webkit-scrollbar-thumb {
-  background-color: #888;
-  border-radius: 4px;
-}
-
-.table-container::-webkit-scrollbar-thumb:hover {
-  background-color: #555;
-}
 
 /* Íconos de clasificación */
 th svg {

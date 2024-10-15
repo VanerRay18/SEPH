@@ -51,6 +51,7 @@ export class LoginComponent implements OnInit {
         const token = response.headers.get('Authorization');
         const tokenExpiration = new Date().getTime() + (2 * 60 * 60 * 1000) + (58 * 60 * 1000); // 2 horas y 58 minutos
         const rolId = response.body.data.rolId;
+        const userId = response.body.data.userId;
         const path = response.body.data.config.principal;
 
         // console.log(response.body.data.rolId)
@@ -59,6 +60,7 @@ export class LoginComponent implements OnInit {
       // console.log('Token JWT:', token);
       console.log('Expiración del token:', new Date(tokenExpiration));
       // Guarda el token en localStorage o sessionStorage
+      localStorage.setItem('userId', userId);
       localStorage.setItem('rolId', rolId);
       localStorage.setItem('token', token);
       localStorage.setItem('tokenExpiration', tokenExpiration.toString());

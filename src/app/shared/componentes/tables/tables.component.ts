@@ -33,6 +33,7 @@ export class TablesComponent {
 
 
 onEdit(row: any) {
+  console.log('ghola')
   this.edit.emit(row); // Emitir el evento al componente padre
 }
 
