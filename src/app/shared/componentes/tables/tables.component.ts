@@ -19,9 +19,12 @@ export class TablesComponent {
 
 @Input() showActionsEdit: boolean = false;
 @Input() showActionsDeleted: boolean = false;
+@Input() showActionsPdf: boolean = false;
 // Outputs para emitir eventos de editar o eliminar
 @Output() edit: EventEmitter<any> = new EventEmitter();
 @Output() delete: EventEmitter<any> = new EventEmitter();
+@Output() Pdf: EventEmitter<any> = new EventEmitter();
+@Input() searchTerm: string = '';  // Término de búsqueda, opcional
 
  // Propiedad para activar el scroll
  enableScroll: boolean = false;
@@ -41,5 +44,8 @@ onDelete(row: any) {
   this.delete.emit(row); // Emitir el evento al componente padre
 }
 
+onPDF(row: any) {
+  this.Pdf.emit(row); // Emitir el evento al componente padre
+}
 
 }

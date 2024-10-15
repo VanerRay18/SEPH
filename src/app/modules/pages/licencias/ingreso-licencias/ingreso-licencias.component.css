@@ -157,6 +157,8 @@ ng-container{
   background-color: #ffffff;
   color: #621132;
   border-color: #621132;
+  font-weight: bold;
+  border-radius: 15px;
 }
 
 .tabla{

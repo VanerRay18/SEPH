@@ -1,18 +1,21 @@
 <div class="table-responsive table-sm">
-  <table class="table  " >
+  <table class="table  ">
     <thead>
       <tr class="table-light">
         <th *ngFor="let header of headers">{{header}}</th>
       </tr>
     </thead>
-    <tbody class="table-responsive"  style="max-height: 300px; overflow-y: auto;">
-      <tr *ngFor="let row of data">
+    <tbody class="table-responsive"
+      style="max-height: 300px; overflow-y: auto;">
+      <tr *ngFor="let row of data | filter: searchTerm : displayedColums">
         <td *ngFor="let key of displayedColums">{{row[key]}}</td>
         <td>
           <button class="edit" *ngIf="showActionsEdit" (click)="onEdit(row)"><i
               class="fa-solid fa-pen-to-square"></i></button>
           <button class="delete" *ngIf="showActionsDeleted"
             (click)="onDelete(row)"><i class="fa-solid fa-trash"></i></button>
+          <button class="pdf" *ngIf="showActionsPdf"
+            (click)="onPDF(row)"><i class="fa-solid fa-file-pdf"></i></button>
         </td>
       </tr>
     </tbody>

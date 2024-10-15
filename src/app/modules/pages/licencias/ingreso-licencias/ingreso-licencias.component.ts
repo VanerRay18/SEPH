@@ -233,7 +233,7 @@ export class IngresoLicenciasComponent implements OnInit {
           <input class="form-check-input" type="radio" name="formato" id="formatoEmail" value="1" ${data.formato === 1 ? 'checked' : ''} style="margin-right: 5px;">
           <label class="form-check-label" for="formatoEmail">Email</label>
         </div>
-      </div>`,    
+      </div>`,
 
     showCancelButton: true,
     confirmButtonText: 'Guardar',
@@ -299,7 +299,44 @@ const licenciaId = "66253";
     );
   }
 
+  onDelete(licenciaId: string) {
+    const userId = localStorage.getItem('userId')!; // Asegúrate de obtener el userId correcto
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: "No podrás revertir esta acción.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Llama al servicio para eliminar el registro
+        this.LicenciasService.softDeleteLic(licenciaId, userId).subscribe(
+          response => {
+            console.log('Licencia eliminada correctamente', response);
+            this.buscar(this.srl_emp); // Refresca los datos después de eliminar
+            Swal.fire(
+              '¡Eliminada!',
+              'La licencia ha sido eliminada correctamente.',
+              'success'
+            );
+          },
+          error => {
+            console.error('Error al eliminar la licencia', error);
+            Swal.fire(
+              'Error',
+              'No se pudo eliminar la licencia.',
+              'error'
+            );
+          }
+        );
+      }
+    });
   }
+
+  }
+
+
 
   // Método para eliminar un registro
   // onDelete(row: any) {

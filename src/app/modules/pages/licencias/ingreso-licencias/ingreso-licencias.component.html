@@ -126,7 +126,9 @@
               [displayedColums]="displayedColumns"
               [showActionsEdit]=true
               (edit)="onEdit($event)"
-              [showActionsDeleted]=true>
+              [showActionsDeleted]=true
+              (delete)="onDelete($event)"
+              [showActionsPdf]=false>
             </app-tables>
           </div>
         </ng-container>

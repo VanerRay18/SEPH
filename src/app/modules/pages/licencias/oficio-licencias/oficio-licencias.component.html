@@ -1,1 +1,25 @@
-<p>oficio-licencias works!</p>
+<div class="cont col-auto row  mt-4 ms-4">
+  <div class="titulos ">
+    <h1>Oficios de licencias</h1>
+    <h5>Listado de oficios creados</h5>
+  </div>
+  <div class="card d-flex  ">
+    <div class="form-floating col-auto mt-4">
+      <input type="text" class=" buscar form-control" id="busqueda"
+        placeholder="Buscar"
+        [(ngModel)]="searchTerm" name="busqueda">
+      <label for="User">Buscar</label>
+    </div>
+    <div class="col-auto mt-4 justify-content-center align-items-center ">
+      <app-tables
+        [headers]="headers"
+        [data]="data"
+        [displayedColums]="displayedColumns"
+        [searchTerm]="searchTerm"
+        [showActionsEdit]=false
+        [showActionsDeleted]=false
+        [showActionsPdf]=true>
+      </app-tables>
+    </div>
+  </div>
+</div>

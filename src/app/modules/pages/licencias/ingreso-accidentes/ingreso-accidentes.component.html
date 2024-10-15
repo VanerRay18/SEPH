@@ -71,5 +71,8 @@
     [headers]="headers"
     [data]="data"
     [displayedColums]="displayedColumns"
-    [showActions]="true"></app-tables>
+    [showActionsEdit]=true
+    (edit)="onEdit($event)"
+    [showActionsDeleted]=true
+    [showActionsPdf]=false></app-tables>
 </div>
