@@ -48,9 +48,9 @@ export class LicenciasService {
     );
   }
 
-  updateLic(folio: string, userId: string): Observable<ApiResponse> { //editar una licencia
-    let headers = new HttpHeaders({'folio': folio, 'userId':userId})
-    return this.http.patch<ApiResponse>(`${environment.baseService}${'/licMedicas'}`,
+  updateLic(data:any,licenciaId: string, userId: string): Observable<ApiResponse> { //editar una licencia
+    let headers = new HttpHeaders({'licenciaId': licenciaId, 'userId':userId})
+    return this.http.patch<ApiResponse>(`${environment.baseService}${'/licMedicas'}`,data,
       {headers}
     );
   }

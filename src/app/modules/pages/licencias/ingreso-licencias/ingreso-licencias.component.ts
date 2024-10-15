@@ -146,7 +146,7 @@ export class IngresoLicenciasComponent implements OnInit {
       `Folio: ${data.folio}<br>` +
       `Fecha de Inicio: ${fechaInicio.toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' })}<br>` +
       `Fecha de Término: ${fechaTermino.toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' })}<br>` +
-      `Formato: ${data.formato === 0 ? 'Físico' : 'Email'}`,
+      `Formato: ${data.formato === 0 ? 'Físico' : ''}`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Sí, agregar',
@@ -203,31 +203,49 @@ export class IngresoLicenciasComponent implements OnInit {
   onEdit(data: any) {
     console.log('Editar:', data);
 
-    const fechaInicio = new Date(data.fecha_inicio).toISOString().split('T')[0];
-    const fechaTermino = new Date(data.fecha_termino).toISOString().split('T')[0];
 
+//AAGP790513HH4
     Swal.fire({
       title: 'Editar Registro',
-      html:
-        `<label for="folio">Folio</label>` +
-        `<input id="folio" class="swal2-input" value="${data.folio}">` +
-        `<label for="fecha_inicio">Fecha Inicio</label>` +
-        `<input id="fecha_inicio" type="date" class="swal2-input" value="${fechaInicio}">` +
-        `<label for="fecha_termino">Fecha Término</label>` +
-        `<input id="fecha_termino" type="date" class="swal2-input" value="${fechaTermino}">` +
-        `<label for="formato">Formato</label>` +
-        `<input id="formato" class="swal2-input" value="${data.formato}">`,
-      showCancelButton: true,
-      confirmButtonText: 'Guardar',
-      cancelButtonText: 'Cancelar',
-      preConfirm: () => {
-        const folio = (document.getElementById('folio') as HTMLInputElement).value;
-        const fecha_inicio = (document.getElementById('fecha_inicio') as HTMLInputElement).value;
-        const fecha_termino = (document.getElementById('fecha_termino') as HTMLInputElement).value;
-        const formato = parseInt((document.getElementById('formato') as HTMLInputElement).value, 10);
+      html: `
+      <div style="display: flex; flex-direction: column; text-align: left;">
+        <label style="margin-left:33px;" for="folio">Folio</label>
+        <input id="folioId" class="swal2-input" value="${data.folio}" style="padding: 0px; font-size: 16px;">
+      </div>
+
+      <div style="display: flex; flex-direction: column; text-align: left;">
+        <label style="margin-left:33px;" for="fecha_inicio">Fecha Inicio</label>
+        <input id="fecha_inicioId" type="date" class="swal2-input" value="${data.desde}" style="padding: 0px; font-size: 16px;">
+      </div>
+
+      <div style="display: flex; flex-direction: column; text-align: left;">
+        <label style="margin-left:33px;" for="fecha_termino">Fecha Término</label>
+        <input id="fecha_terminoId" type="date" class="swal2-input" value="${data.hasta}" style="padding: 0px; font-size: 16px;">
+      </div>
+
+      <div style="display: flex; flex-direction: column; text-align: left;">
+        <label style="margin-left:33px;" for="formato">Formato</label>
+        <div style="display: flex; align-items: center; margin-top: 10px; margin-left:33px;">
+          <input class="form-check-input" type="radio" name="formato" id="formatoFisico" value="0" ${data.formato === 0 ? 'checked' : ''} style="margin-right: 5px;">
+          <label class="form-check-label" for="formatoFisico">Físico</label>
+        </div>
+        <div style="display: flex; align-items: center; margin-top: 10px; margin-left:33px;">
+          <input class="form-check-input" type="radio" name="formato" id="formatoEmail" value="1" ${data.formato === 1 ? 'checked' : ''} style="margin-right: 5px;">
+          <label class="form-check-label" for="formatoEmail">Email</label>
+        </div>
+      </div>`,    
+
+    showCancelButton: true,
+    confirmButtonText: 'Guardar',
+    cancelButtonText: 'Cancelar',
+    preConfirm: () => {
+      const folio = (document.getElementById('folioId') as HTMLInputElement).value;
+      const fecha_inicio = ((document.getElementById('fecha_inicioId') as HTMLInputElement).value)+'T00:00:00';
+      const fecha_termino = ((document.getElementById('fecha_terminoId') as HTMLInputElement).value)+'T00:00:00';
+      const formato = parseInt((document.querySelector('input[name="formato"]:checked') as HTMLInputElement).value);
 
         // Validación de campos
-        if (!folio || !fecha_inicio || !fecha_termino || isNaN(formato)) {
+        if (!folio || !fecha_inicio || !fecha_termino) {
           Swal.showValidationMessage('Todos los campos son obligatorios');
           return false;
         }
@@ -242,6 +260,7 @@ export class IngresoLicenciasComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         const dataEditada = result.value;
+        console.log(dataEditada)
         console.log('Datos editados:', dataEditada);
 
         // Envío de los datos editados al backend
@@ -253,7 +272,8 @@ export class IngresoLicenciasComponent implements OnInit {
   guardarCambios(data: any) {
     const userId = localStorage.getItem('userId')!;
 
-    this.LicenciasService.updateLic(data, userId).subscribe(
+const licenciaId = "66253";
+    this.LicenciasService.updateLic(data,licenciaId, userId).subscribe(
       response => {
         console.log('Se editó la licencia correctamente', response);
         this.buscar(this.srl_emp);
