@@ -7,7 +7,7 @@
 }
 
 .centerIconDAD:hover{
-color:rgb(148, 148, 148);
+color:rgb(184, 184, 184);
 }
 .icons{
 
@@ -19,8 +19,7 @@ color:rgb(148, 148, 148);
 .active-custom {
   color: #FFD700; /* Cambia el color del texto a dorado */
   background-color: #bb9f0063; /* Mantén el fondo verde o el color que prefieras */
-  font-weight: bold; /* Texto en negrita */
-  border-radius: 12px; /* Bordes redondeados, ajusta el valor según lo que prefieras */
+  border-radius: 23px; /* Bordes redondeados, ajusta el valor según lo que prefieras */
   border: 2px solid #FFD700; /* Borde dorado */
 
 
