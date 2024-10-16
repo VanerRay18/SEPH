@@ -30,11 +30,10 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit() {
-
-
+    const loginButton = document.getElementById('loginButton') as HTMLButtonElement;
+    loginButton.disabled = true;
     if (this.loginForm.invalid) {
-
-
+      loginButton.disabled = false;
       return;
     }
 
@@ -43,6 +42,7 @@ export class LoginComponent implements OnInit {
       password: this.loginForm.value.password
 
     };
+    
 
     this.authService.authLogg(data).subscribe(
       (response) => {
@@ -67,6 +67,7 @@ export class LoginComponent implements OnInit {
 
     } else {
       console.warn('El token JWT no se encontró en los headers');
+      loginButton.disabled = false;
     }
 
       },
@@ -77,6 +78,7 @@ export class LoginComponent implements OnInit {
           icon: 'error',
           confirmButtonText: 'OK'
         });
+        loginButton.disabled = false;
       }
     );
 
