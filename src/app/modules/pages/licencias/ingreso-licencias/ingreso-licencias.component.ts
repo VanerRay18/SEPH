@@ -199,11 +199,51 @@ export class IngresoLicenciasComponent implements OnInit {
     this.activeTab = tabId; // Cambia la pestaña activa
   }
 
+  search(){
+    Swal.fire({
+      title: "Folio de licencia médica",
+      input: "text",
+      inputAttributes: {
+        autocapitalize: "off"
+      },
+      showCancelButton: true,
+      confirmButtonText: "Buscar",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        console.log(result.value)
+        this.LicenciasService.SearchLic(result.value).subscribe(
+          response => {
+            if(response.data.message){
+              console.log("------"+response.data)
+              Swal.fire({
+                title: response.data.message,
+                icon: "success"
+              });
+            }else{
+              console.log("?????"+response.data)
+              Swal.fire({
+                title: "Licencia encontrada",
+                html: `
+                  <div style="text-align: left; margin-left:30px">
+                    <strong>Folio:</strong> ${response.data.folio} <br>
+                    <strong>RFC:</strong> ${response.data.rfc} <br>
+                    <strong>Nombre:</strong> ${response.data.nombre.trim()} <br>
+                    <strong>Fecha de captura:</strong> ${response.data.fechaCaptura} <br>
+                    <strong>Válida desde:</strong> ${response.data.desde} <br>
+                    <strong>Hasta:</strong> ${response.data.hasta} <br>
+                    <strong>Total de días:</strong> ${response.data.total_dias}
+                  </div>
+                `,
+                icon: "warning"
+              });
+            }
+          });
+      }
+    });
+  }
+
   // Método para editar un registro
   onEdit(data: any) {
-    console.log('Editar:', data);
-
-
 //AAGP790513HH4
     Swal.fire({
       title: 'Editar Registro',
@@ -264,15 +304,14 @@ export class IngresoLicenciasComponent implements OnInit {
         console.log('Datos editados:', dataEditada);
 
         // Envío de los datos editados al backend
-        this.guardarCambios(dataEditada);
+        this.guardarCambios(dataEditada,data.id);
       }
     });
   }
 
-  guardarCambios(data: any) {
+  guardarCambios(data: any,licenciaId:any) {
     const userId = localStorage.getItem('userId')!;
 
-const licenciaId = "66253";
     this.LicenciasService.updateLic(data,licenciaId, userId).subscribe(
       response => {
         console.log('Se editó la licencia correctamente', response);
@@ -299,7 +338,7 @@ const licenciaId = "66253";
     );
   }
 
-  onDelete(licenciaId: string) {
+  onDelete(licenciaId: any) {
     const userId = localStorage.getItem('userId')!; // Asegúrate de obtener el userId correcto
     Swal.fire({
       title: '¿Estás seguro?',
@@ -311,7 +350,7 @@ const licenciaId = "66253";
     }).then((result) => {
       if (result.isConfirmed) {
         // Llama al servicio para eliminar el registro
-        this.LicenciasService.softDeleteLic(licenciaId, userId).subscribe(
+        this.LicenciasService.softDeleteLic(licenciaId.id, userId).subscribe(
           response => {
             console.log('Licencia eliminada correctamente', response);
             this.buscar(this.srl_emp); // Refresca los datos después de eliminar
