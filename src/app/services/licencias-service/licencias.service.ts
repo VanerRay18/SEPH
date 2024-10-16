@@ -57,6 +57,11 @@ export class LicenciasService {
   }
 
 
+  getLicenciasArchivo(): Observable<ApiResponse> {//Licencias del dia
+    return this.http.get<ApiResponse>(`${environment.baseService}${'/licMedicas/archivo'}`
+    );
+  }
+
 
 
 }
