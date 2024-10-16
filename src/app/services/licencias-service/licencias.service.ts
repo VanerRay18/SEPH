@@ -42,8 +42,9 @@ export class LicenciasService {
   }
 
   softDeleteLic(licenciaId: string, userId: string): Observable<ApiResponse> { //agregar una nueva licencia
+    console.log(licenciaId)
     let headers = new HttpHeaders({'licenciaId': licenciaId, 'userId':userId})
-    return this.http.patch<ApiResponse>(`${environment.baseService}${'/licMedicas/softdeleted'}`,
+    return this.http.patch<ApiResponse>(`${environment.baseService}${'/licMedicas/softdeleted'}`,null,
       {headers}
     );
   }

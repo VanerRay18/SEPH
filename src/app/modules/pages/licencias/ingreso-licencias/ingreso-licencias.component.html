@@ -69,9 +69,9 @@
                 <button type="button" class="botones btn"><i
                     class="fa-solid fa-trash"></i></button>
               </div>
-              <div class="col-auto">
+              <div class="col-auto" (click)="search()">
                 <button type="button" class="botones btn"><i
-                    class="fa-solid fa-magnifying-glass"></i></button>
+                    class="fa-solid fa-magnifying-glass" ></i></button>
               </div>
             </div>
             <form [formGroup]="insertarLic" class="m-3" (ngSubmit)="onSumit()">
