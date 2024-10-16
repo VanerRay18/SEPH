@@ -42,6 +42,7 @@ export class LoginComponent implements OnInit {
       password: this.loginForm.value.password
 
     };
+    
 
     this.authService.authLogg(data).subscribe(
       (response) => {

@@ -239,7 +239,6 @@ export class IngresoLicenciasComponent implements OnInit {
       }
     });
   }
-
   // Método para editar un registro
   onEdit(data: any) {
 //AAGP790513HH4
