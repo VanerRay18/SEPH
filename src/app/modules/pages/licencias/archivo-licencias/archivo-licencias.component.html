@@ -5,8 +5,13 @@
   </div>
   <div class="card d-flex  ">
     <div class="botones d-flex mt-4">
-      <button type="button" class="botones btn me-2"><i class="fa-solid fa-file-lines" (click)="generatePdfLicencias()"></i> Imprimir tabla de Licencias</button>
-      <button type="button" class="botones btn me-2"><i class="fa-solid fa-file-pdf" (click)="generatePdfFormato()"></i> Imprimir formato para archivo</button>
+      <button type="button" class="botones btn me-2" (click)="  generatePdfLicencias()">
+        <i class="fa-solid fa-file-lines"></i> Imprimir tabla de Licencias
+      </button>
+      <button type="button" class="botones btn me-2"
+        (click)="generatePdfFormato()">
+        <i class="fa-solid fa-file-pdf"></i> Imprimir formato para archivo
+      </button>
     </div>
     <div class="form-floating col-auto mt-4">
       <input type="text" class=" buscar form-control" id="busqueda"
@@ -18,7 +23,7 @@
       <app-tables
         [headers]="headers"
         [data]="data"
-        [displayedColums]="displayedColumns"s
+        [displayedColums]="displayedColumns" s
         [searchTerm]="searchTerm"
         [showActionsEdit]=false
         [showActionsDeleted]=false
@@ -26,15 +31,4 @@
       </app-tables>
     </div>
   </div>
-</div>
-
-
-<div id="contentToPrint" style="display: none;">
-  <h2>Licencias Médicas</h2>
-  <p>Contenido de la tabla de licencias capturadas...</p>
-</div>
-
-<div id="contentToPrintFormato" style="display: none;">
-  <h2>Formato para Archivo</h2>
-  <p>Aquí va el contenido específico para el formato para archivo...</p>
 </div>

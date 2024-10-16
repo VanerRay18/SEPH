@@ -24,3 +24,17 @@ h5{
   color: #621132;
   border-color: #621132;
 }
+
+/* Ocultar los elementos de la pantalla */
+.hidden-for-display {
+  display: none;
+}
+
+/* Mostrar los elementos cuando se impriman con html2canvas */
+@media print {
+  .hidden-for-display {
+    display: block;
+  }
+}
+
+

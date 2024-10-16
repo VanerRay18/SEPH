@@ -10,6 +10,7 @@ import { SharedModule } from "../../../shared/shared.module";
 import { IngresoAccidentesComponent } from './ingreso-accidentes/ingreso-accidentes.component';
 import { AcuerdosPreciComponent } from './acuerdos-preci/acuerdos-preci.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { ResgistrosLogsComponent } from './resgistros-logs/resgistros-logs.component';
 
 
 
@@ -19,7 +20,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     ArchivoLicenciasComponent,
     OficioLicenciasComponent,
     IngresoAccidentesComponent,
-    AcuerdosPreciComponent
+    AcuerdosPreciComponent,
+    ResgistrosLogsComponent
   ],
   imports: [
     CommonModule,

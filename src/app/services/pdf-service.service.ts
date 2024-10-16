@@ -10,21 +10,16 @@ export class PdfService {
 
   constructor() { }
 
-  generatePdfFromElement(elementId: string, fileName: string) {
-    const element = document.getElementById(elementId);
-    if (element) {
-      html2canvas(element).then((canvas) => {
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jspdf.jsPDF();
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const imgProps = pdf.getImageProperties(imgData);
-        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+  generatePdf(content: string, fileName: string) {
+    const pdf = new jspdf.jsPDF();
 
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-        pdf.save(`${fileName}.pdf`);
-      });
-    } else {
-      console.error('Elemento no encontrado:', elementId);
-    }
+    // Generar el PDF a partir del contenido HTML
+    pdf.html(content, {
+      callback: (doc) => {
+        doc.save(`${fileName}.pdf`);
+      },
+      x: 10,
+      y: 10
+    });
   }
 }
