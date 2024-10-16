@@ -63,25 +63,45 @@ export class ArchivoLicenciasComponent implements OnInit {
   generatePdfLicencias() {
     const documentDefinition: any = {
       content: [
-        { text: 'Coordinación General de Administración y Finanzas', style: 'header' },
-        { text: 'Dirección General de Recursos Humanos', style: 'subheader' },
-        { text: 'Dirección de Nómina y Control de Plazas', style: 'subheader' },
+        { text: 'Coordinación General de Administración y Finanzas', bold: true, margin: [0, 0, 0, 0], alignment: 'left', color: '#621132'},
+        { text: 'Dirección General de Recursos Humanos', bold: true, margin: [0, 0, 0, 0], alignment: 'left', color: '#621132'},
+        { text: 'Dirección de Nómina y Control de Plazas', bold: true, margin: [0, 0, 0, 20], alignment: 'left', color: '#621132'},
 
-        { text: ' ', margin: [0, 10, 0, 0] }, // Espaciado
-
-        { text: 'PARA: BRENDA MARTÍNEZ ALAVEZ', bold: true },
-        { text: 'TITULAR DE LA UNIDAD TÉCNICA DE RESGUARDO DOCUMENTAL' },
-        { text: 'DE: JOSÉ GABRIEL CASTRO BAUTISTA', bold: true },
-        { text: 'DIRECTOR DE NÓMINA Y CONTROL DE PLAZAS' },
-
-        { text: ' ', margin: [0, 10, 0, 0] }, // Espaciado
-
-        { text: 'HOJA: 1', bold: true },
-        { text: 'NO. OFICIO: DNCP/SNI/0150/2024', bold: true },
-        { text: 'FECHA: 19/09/2024', bold: true },
-
-        { text: ' ', margin: [0, 10, 0, 0] }, // Espaciado
-
+        {
+          table: {
+            widths: ['*', '*'], // Dos columnas de igual tamaño
+            body: [
+              [
+                {
+                  text: 'Para: Brenda Martínez Alavez\nTitular de la Unidad Técnica de Resguardo Documental',
+                  margin: [0, 0, 0, 0], // Sin margen
+                  alignment: 'left',
+                  bold: true // Alinear a la izquierda
+                },
+                {
+                  text: 'HOJA: 1',
+                  margin: [0, 0, 0, 0], // Sin margen
+                  alignment: 'right', // Alinear a la derecha
+                }
+              ],
+              [
+                {
+                  text: 'De: José Gabriel Castro Bautista\nDirector de Nómina y Control de Plazas',
+                  margin: [0, 0, 0, 0], // Sin margen
+                  alignment: 'left',
+                  bold: true // Alinear a la izquierda
+                },
+                {
+                  text: 'NO. OFICIO: DNCP/SNI/0150/2024\nFECHA: 19/09/2024',
+                  margin: [0, 0, 0, 0], // Sin margen
+                  alignment: 'right', // Alinear a la derecha
+                }
+              ]
+            ]
+          },
+          layout: 'noBorders', // Sin bordes para que parezca más limpio
+        },
+        { text: '', margin: [0, 20, 0, 0] }, // Espacio de 20 unidades de margen arriba
         {
           table: {
             headerRows: 1,
@@ -91,13 +111,13 @@ export class ArchivoLicenciasComponent implements OnInit {
                 { text: 'No.', style: 'tableHeader' },
                 { text: 'Nombre', style: 'tableHeader' },
                 { text: 'RFC', style: 'tableHeader' },
-                { text: 'FUPS', style: 'tableHeader' },
+                { text: 'FI_PS', style: 'tableHeader' },
                 { text: 'Nombramientos Definitivos', style: 'tableHeader' },
                 { text: 'Licencias Médicas', style: 'tableHeader' },
-                { text: 'Licencias Especiales (Solicitud y Autorización)', style: 'tableHeader' }
+                { text: 'Licencias Especiales', style: 'tableHeader' }
               ],
-              ['1', 'BAUTISTA DE LA CRUZ LORENA', 'BACLB61230SF4', '120401324001595', '', '', ''],
-              ['2', 'BAUTISTA LARA MOISES', 'BALM830818TZA', '120401324000861', '', '', '']
+              ['1', 'BAUTISTA DE LA CRUZ LORENA', 'BACLB61230SF4', '', '', '120401324001595', ''],
+              ['2', 'BAUTISTA LARA MOISES', 'BALM830818TZA', '', '', '120401324000861', '']
             ]
           },
           layout: {
@@ -121,7 +141,7 @@ export class ArchivoLicenciasComponent implements OnInit {
         tableHeader: {
           bold: true,
           fontSize: 12,
-          fillColor: '#4CAF50',
+          fillColor: '#621132',
           color: 'white'
         }
       }
