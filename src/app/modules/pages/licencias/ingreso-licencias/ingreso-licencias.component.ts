@@ -214,13 +214,11 @@ export class IngresoLicenciasComponent implements OnInit {
         this.LicenciasService.SearchLic(result.value).subscribe(
           response => {
             if(response.data.message){
-              console.log("------"+response.data)
               Swal.fire({
                 title: response.data.message,
                 icon: "success"
               });
             }else{
-              console.log("?????"+response.data)
               Swal.fire({
                 title: "Licencia encontrada",
                 html: `
@@ -228,9 +226,9 @@ export class IngresoLicenciasComponent implements OnInit {
                     <strong>Folio:</strong> ${response.data.folio} <br>
                     <strong>RFC:</strong> ${response.data.rfc} <br>
                     <strong>Nombre:</strong> ${response.data.nombre.trim()} <br>
-                    <strong>Fecha de captura:</strong> ${response.data.fechaCaptura} <br>
-                    <strong>Válida desde:</strong> ${response.data.desde} <br>
-                    <strong>Hasta:</strong> ${response.data.hasta} <br>
+                    <strong>Fecha de captura:</strong> ${new Date(response.data.fechaCaptura).toLocaleDateString()} <br>
+                    <strong>Válida desde:</strong> ${new Date(response.data.desde).toLocaleDateString()} <br>
+                    <strong>Hasta:</strong> ${new Date(response.data.hasta).toLocaleDateString()} <br>
                     <strong>Total de días:</strong> ${response.data.total_dias}
                   </div>
                 `,
