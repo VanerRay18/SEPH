@@ -34,6 +34,14 @@ export class LicenciasService {
     );
   }
 
+  SoftDeletelicG(folio: string): Observable<ApiResponse> {//Eliminar un licencia en general
+    let headers = new HttpHeaders({'folio': folio})
+    return this.http.patch<ApiResponse>(`${environment.baseService}${'/licMedicas'}`,
+      {headers}
+    );
+  }
+
+
   addLicencia(data:any, userId: string, srl_emp:string): Observable<ApiResponse> { //agregar una nueva licencia
     let headers = new HttpHeaders({'srl_emp': srl_emp, 'userId':userId})
     return this.http.post<ApiResponse>(`${environment.baseService}${'/licMedicas'}`,data,
@@ -61,6 +69,12 @@ export class LicenciasService {
     return this.http.get<ApiResponse>(`${environment.baseService}${'/licMedicas/archivo'}`
     );
   }
+
+  getLicenciasOficio(): Observable<ApiResponse> {//Licencias de oficio
+    return this.http.get<ApiResponse>(`${environment.baseService}${'/licMedicas/oficios'}`
+    );
+  }
+
 
 
 

@@ -1,10 +1,10 @@
-<div class="cont col-auto row  mt-4 ms-4">
+<div class="cont row  mt-4 ms-4">
   <div class="titulos ">
     <h1>Archivos de licencias medicas</h1>
     <h5>Listado de licencias capturadas del dia</h5>
   </div>
-  <div class="card d-flex  ">
-    <div class="botones d-flex mt-4">
+  <div class="card d-flex ">
+    <div class="d-flex mt-4">
       <button type="button" class="botones btn me-2" (click)="  generatePdfLicencias()">
         <i class="fa-solid fa-file-lines"></i> Imprimir tabla de Licencias
       </button>
@@ -19,7 +19,7 @@
         [(ngModel)]="searchTerm" name="busqueda">
       <label for="User">Buscar</label>
     </div>
-    <div class="col-auto mt-4 justify-content-center align-items-center ">
+    <div class="col-auto mt-4 ">
       <app-tables
         [headers]="headers"
         [data]="data"

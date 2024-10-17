@@ -1,1 +1,25 @@
-<p>resgistros-logs works!</p>
+<div class="cont row  mt-4 ms-4">
+  <div class="titulos ">
+    <h1>Archivos de licencias medicas</h1>
+    <h5>Listado de licencias capturadas del dia</h5>
+  </div>
+  <div class="card d-flex ">
+    <div class="form-floating col-auto mt-4">
+      <input type="text" class=" buscar form-control" id="busqueda"
+        placeholder="Buscar"
+        [(ngModel)]="searchTerm" name="busqueda">
+      <label for="User">Buscar</label>
+    </div>
+    <div class="col-auto mt-4 ">
+      <app-tables
+        [headers]="headers"
+        [data]="data"
+        [displayedColums]="displayedColumns"
+        [searchTerm]="searchTerm"
+        [showActionsEdit]=false
+        [showActionsDeleted]=false
+        [showActionsPdf]=false>
+      </app-tables>
+    </div>
+  </div>
+</div>

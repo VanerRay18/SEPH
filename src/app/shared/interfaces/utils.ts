@@ -7,3 +7,11 @@ export interface Module {
   moduleName: string;        // Nombre del módulo
   icon: string;
 }
+
+export interface Oficio {
+  oficio: string;
+  nombre: string;
+  fecha_primera_licencia: string;
+  fecha_ultima_licencia: string;
+  total_folios: number;
+}

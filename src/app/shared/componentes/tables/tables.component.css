@@ -17,14 +17,6 @@ button {
   color: #621132;
 }
 
-.table-container {
-  display: flex;
-  justify-content: center;
-  overflow-x: auto;
-  padding: 10px;
-
-}
-
 .table-responsive{
   overflow-y: auto;
   max-height: 300px;
@@ -34,12 +26,11 @@ table {
   font-size: 14px;
   border-collapse: separate; /* Mantener 'separate' para bordes redondeados */
   border-spacing: 0; /* Sin espacio entre celdas */
-  width: 100%;
+
   background-color: #fff; /* Fondo blanco de la tabla */
 }
 
 th, td {
-  padding: 10px 15px;
   text-align: left;
   vertical-align: middle;
   border-bottom: 1px solid #e0e0e0; /* Líneas sutiles entre las filas */
@@ -82,14 +73,3 @@ table tr:last-child td:last-child {
 }
 
 
-/* Íconos de clasificación */
-th svg {
-  width: 10px;
-  height: 10px;
-  margin-left: 5px;
-  fill: #888;
-}
-
-th.active svg {
-  fill: #333;
-}

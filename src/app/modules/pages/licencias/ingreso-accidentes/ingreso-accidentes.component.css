@@ -1,7 +1,6 @@
 .card{
   background-color: #ffffff;
   border-top: none;
-
   border-top-left-radius: 0;
   width: 100%;
 }
@@ -10,6 +9,7 @@
   background-color: #ffffff;
   color: #621132;
   border-color: #621132;
+  border-radius: 15px;
 }
 
 h5{

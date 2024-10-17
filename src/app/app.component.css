@@ -1,17 +1,8 @@
-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 80%;
-    background-color: #F1F5F9;
-  }
+
 
   .global-background {
     background-color: #F1F5F9;
     width: 100%;
     height: 100vh; /* Asegura que ocupe el 100% de la altura de la pantalla */
-    margin: 0; /* Quitar cualquier margen que pueda estar afectando */
-    padding: 0;
-    display: flex; /* Opcional: Para asegurarte de que los hijos puedan alinearse correctamente */
-    flex-direction: column; /* Opcional: Alinear los hijos en columna */
+
   }

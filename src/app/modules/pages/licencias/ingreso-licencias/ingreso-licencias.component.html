@@ -1,149 +1,152 @@
 
-<div class="Cont">
-  <div class="container col-auto row  mt-4   ">
-    <div class="titulos ">
-      <h1>Licencias medicas</h1>
-      <h5>Ingreso de licencias medicas</h5>
-    </div>
 
-    <div class="Busq card mt-3 ">
-      <h5 style="margin-top: .5%">Busqueda de licencias</h5>
-      <div class="search-container d-flex flex-column flex-md-row">
-        <div class="RFC input-container">
-          <label class="text">RFC</label>
-          <input [(ngModel)]="rfcSearchTerm" (input)="filterRFC()"
-            type="text" placeholder="Buscar por RFC..." />
-          <div *ngIf="rfcSuggestions.length > 0" class="dropdown">
-            <ul >
-              <li *ngFor="let item of rfcSuggestions" (click)="selectRFC(item)">
-                {{ item.rfc }} - {{ item.nombre }}
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div class="Nombre input-container mx-md-2">
-          <label class="text">Nombre</label>
-          <input [(ngModel)]="nombreSearchTerm"
-            (input)="filterNombre()" type="text"
-            placeholder="Buscar por Nombre..." />
-          <ul *ngIf="nombreSuggestions.length > 0" class="dropdown">
-            <li *ngFor="let item of nombreSuggestions"
-              (click)="selectNombre(item)">
-              {{ item.nombre }} - {{ item.rfc }}
+<div class="container col-auto row  mt-4   ">
+  <div class="titulos ">
+    <h1>Licencias medicas</h1>
+    <h5>Ingreso de licencias medicas</h5>
+  </div>
+
+  <div class="Busq card mt-3 ">
+    <h5 style="margin-top: .5%">Busqueda de licencias</h5>
+    <div class="search-container d-flex flex-column flex-md-row">
+      <div class="RFC input-container">
+        <label class="text">RFC</label>
+        <input [(ngModel)]="rfcSearchTerm" (input)="filterRFC()"
+          type="text" placeholder="Buscar por RFC..." />
+        <div *ngIf="rfcSuggestions.length > 0" class="dropdown">
+          <ul>
+            <li *ngFor="let item of rfcSuggestions" (click)="selectRFC(item)">
+              {{ item.rfc }} - {{ item.nombre }}
             </li>
           </ul>
         </div>
-        <button class="btn btn-primary mx-md-3 btn-sm btn-block"
-          (click)="buscar(srl_emp)">Buscar</button>
       </div>
+      <div class="Nombre input-container mx-md-2">
+        <label class="text">Nombre</label>
+        <input [(ngModel)]="nombreSearchTerm"
+          (input)="filterNombre()" type="text"
+          placeholder="Buscar por Nombre..." />
+        <ul *ngIf="nombreSuggestions.length > 0" class="dropdown">
+          <li *ngFor="let item of nombreSuggestions"
+            (click)="selectNombre(item)">
+            {{ item.nombre }} - {{ item.rfc }}
+          </li>
+        </ul>
+      </div>
+      <button class="btn btn-primary mx-md-3 btn-sm btn-block"
+        (click)="buscar(srl_emp)">Buscar</button>
     </div>
+  </div>
 
-    <div *ngIf="showCard" class="contLic">
-      <ul class="nav nav-tabs d-flex flex-row flex-wrap" role="tablist">
-        <li class="nav-item" *ngFor="let tab of tabs">
-          <a class="nav-link"
-            [class.active]="tab.id === activeTab"
-            (click)="setActiveTab(tab.id)">
-            <i [class]="tab.icon"></i>
-            {{ tab.title }}
-          </a>
-        </li>
-      </ul>
-      
+  <div *ngIf="showCard" class="contLic">
+    <ul class="nav nav-tabs d-flex flex-row flex-wrap" role="tablist">
+      <li class="nav-item" *ngFor="let tab of tabs">
+        <a class="nav-link"
+          [class.active]="tab.id === activeTab"
+          (click)="setActiveTab(tab.id)">
+          <i [class]="tab.icon"></i>
+          {{ tab.title }}
+        </a>
+      </li>
+    </ul>
 
-      <div class="tab-content" role="tabpanel">
-        <ng-container *ngIf="activeTab === 'licencias'">
-          <div class="card">
-            <div class="row">
+    <div class="tab-content" role="tabpanel">
+      <ng-container *ngIf="activeTab === 'licencias'">
+        <div class="card">
+          <div class="row">
+            <div class="col-auto">
+              <h5 class="ms-2 mt-2">Ingresar una nueva licencia médica</h5>
+            </div>
+            <div class="col-auto">
+              <button type="button" class="botones btn"><i
+                  class="fa-solid fa-folder"></i></button>
+            </div>
+            <div class="col-auto">
+              <button type="button" class="botones btn"><i
+                  class="fa-solid fa-file"></i></button>
+            </div>
+            <div class="col-auto">
+              <button type="button" class="botones btn"><i
+                  class="fa-solid fa-trash"></i></button>
+            </div>
+            <div class="col-auto" (click)="search()">
+              <button type="button" class="botones btn"><i
+                  class="fa-solid fa-magnifying-glass"></i></button>
+            </div>
+          </div>
+          <form [formGroup]="insertarLic" class="m-3" (ngSubmit)="onSumit()">
+            <div class="tabla row">
               <div class="col-auto">
-                <h5 class="ms-2 mt-2">Ingresar una nueva licencia médica</h5>
+                <label for="folio"
+                  class="form-label">Folio:</label>
+                <input type="text" class="form-control" id="folio"
+                  formControlName="folio"
+                  placeholder="Ingrese el folio de licencia"
+                  aria-label="First name" required>
               </div>
               <div class="col-auto">
-                <button type="button" class="botones btn"><i
-                    class="fa-solid fa-folder"></i></button>
+                <label for="fecha_inicio" class="form-label">Fecha de
+                  Inicio:</label>
+                <input type="date" id="fecha_inicio" name="fecha_inicio"
+                  formControlName="fecha_inicio"
+                  class="form-control" required>
               </div>
               <div class="col-auto">
-                <button type="button" class="botones btn"><i
-                    class="fa-solid fa-file"></i></button>
+                <label for="fecha_termino" class="form-label">Fecha de
+                  Término:</label>
+                <input type="date" id="fecha_termino" name="fecha_termino"
+                  formControlName="fecha_termino"
+                  class="form-control" required>
               </div>
               <div class="col-auto">
-                <button type="button" class="botones btn"><i
-                    class="fa-solid fa-trash"></i></button>
+                <label for="formatoLic" class="form-label">Formato:</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio"
+                    formControlName="formato"
+                    name="formato" id="formatoFisico" value="0"
+                    checked>
+                  <label class="form-check-label" for="flexRadioDefault1">
+                    Fisico
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio"
+                    formControlName="formato"
+                    name="formato" id="formatoEmail" value="1">
+                  <label class="form-check-label" for="flexRadioDefault2">
+                    Email
+                  </label>
+                </div>
               </div>
-              <div class="col-auto" (click)="search()">
-                <button type="button" class="botones btn"><i
-                    class="fa-solid fa-magnifying-glass" ></i></button>
+
+              <div class="col-auto">
+                <button type="submit"
+                  class="guardar btn btn-success">Guardar</button>
               </div>
             </div>
-            <form [formGroup]="insertarLic" class="m-3" (ngSubmit)="onSumit()">
-              <div class="tabla row">
-                <div class="col-auto">
-                  <label for="folio"
-                    class="form-label">Folio:</label>
-                  <input type="text" class="form-control" id="folio" formControlName="folio"
-                    placeholder="Ingrese el folio de licencia"
-                    aria-label="First name" required>
-                </div>
-                <div class="col-auto">
-                  <label for="fecha_inicio" class="form-label">Fecha de
-                    Inicio:</label>
-                  <input type="date" id="fecha_inicio" name="fecha_inicio" formControlName="fecha_inicio"
-                    class="form-control" required>
-                </div>
-                <div class="col-auto">
-                  <label for="fecha_termino" class="form-label">Fecha de
-                    Término:</label>
-                  <input type="date" id="fecha_termino" name="fecha_termino" formControlName="fecha_termino"
-                    class="form-control" required>
-                </div>
-                <div class="col-auto">
-                  <label for="formatoLic" class="form-label">Formato:</label>
-                  <div class="form-check">
-                    <input class="form-check-input" type="radio"  formControlName="formato"
-                      name="formato" id="formatoFisico" value="0"
-                      checked>
-                    <label class="form-check-label" for="flexRadioDefault1">
-                      Fisico
-                    </label>
-                  </div>
-                  <div class="form-check">
-                    <input class="form-check-input" type="radio"  formControlName="formato"
-                      name="formato" id="formatoEmail" value="1">
-                    <label class="form-check-label" for="flexRadioDefault2">
-                      Email
-                    </label>
-                  </div>
-                </div>
+          </form>
+          <app-tables
+            [headers]="headers"
+            [data]="data"
+            [displayedColums]="displayedColumns"
+            [showActionsEdit]=true
+            (edit)="onEdit($event)"
+            [showActionsDeleted]=true
+            (delete)="onDelete($event)"
+            [showActionsPdf]=false>
+          </app-tables>
+        </div>
+      </ng-container>
 
-                <div class="col-auto">
-                  <button type="submit"
-                    class="guardar btn btn-success">Guardar</button>
-                </div>
-              </div>
-            </form>
-            <app-tables
-              [headers]="headers"
-              [data]="data"
-              [displayedColums]="displayedColumns"
-              [showActionsEdit]=true
-              (edit)="onEdit($event)"
-              [showActionsDeleted]=true
-              (delete)="onDelete($event)"
-              [showActionsPdf]=false>
-            </app-tables>
-          </div>
-        </ng-container>
-
-        <ng-container *ngIf="activeTab === 'accidentes'">
+      <ng-container *ngIf="activeTab === 'accidentes'">
         <ingreso-accidentes></ingreso-accidentes>
-        </ng-container>
+      </ng-container>
 
-        <ng-container *ngIf="activeTab === 'acuerdos'">
-       <app-acuerdos-preci></app-acuerdos-preci>
-        </ng-container>
-      </div>
-
+      <ng-container *ngIf="activeTab === 'acuerdos'">
+        <app-acuerdos-preci></app-acuerdos-preci>
+      </ng-container>
     </div>
 
   </div>
+
 </div>

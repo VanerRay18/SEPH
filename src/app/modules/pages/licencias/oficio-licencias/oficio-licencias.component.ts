@@ -1,5 +1,9 @@
 import { Component } from '@angular/core';
-
+import { LicenciasService } from 'src/app/services/licencias-service/licencias.service';
+import { ApiResponse } from 'src/app/models/ApiResponse';
+import * as pdfMake from 'pdfmake/build/pdfmake';
+import * as pdfFonts from 'pdfmake/build/vfs_fonts';
+import { Oficio } from 'src/app/shared/interfaces/utils';
 @Component({
   selector: 'app-oficio-licencias',
   templateUrl: './oficio-licencias.component.html',
@@ -8,26 +12,32 @@ import { Component } from '@angular/core';
 export class OficioLicenciasComponent {
   searchTerm: string = '';
   headers = ['No. de Oficio', 'Nombre', 'Rango de fechas', 'Total de oficios', 'Generar PDF'];
-  displayedColumns = ['folio', 'desde', 'hasta', 'total_dias', 'status', 'oficio'];
+  displayedColumns = ['oficio', 'nombre', 'rango_fechas' , 'total_folios'];
   data = [];
 
+  constructor(
+    private LicenciasService: LicenciasService
+  ) {
+    // Registrar las fuentes necesarias
+    (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
+  }
 
-  // Método para buscar con los términos ingresados
-//   buscar(srl_emp: any) {
+  ngOnInit(): void {
+    this.fetchData();
+  }
 
-//     this.srl_emp = srl_emp;
-//     console.log('Buscando por RFC:', this.rfcSearchTerm, 'y Nombre:', this.nombreSearchTerm);
 
-//     this.LicenciasService.getLicencias(srl_emp).subscribe((response: ApiResponse) => {
-//       this.data = response.data; // Asegúrate de mapear correctamente los datos
-//       console.log(response)
-//       this.showCard = true;
-//     },
-//       (error) => {
-//         console.error('Error al buscar licencias:', error);
-//         this.showCard = false; // Oculta la tarjeta en caso de error
-//       }
-//     );
-//   }
+
+  fetchData() {
+    this.LicenciasService.getLicenciasOficio().subscribe((response: ApiResponse) => {
+      this.data = response.data.map((item: Oficio) => ({
+        ...item,
+        rango_fechas: `${item.fecha_primera_licencia} al ${item.fecha_ultima_licencia}`
+      })); // Aquí concatenas las fechas
+    },
+    (error) => {
+      console.error('Error al obtener los datos:', error);
+    });
+  }
 
  }
