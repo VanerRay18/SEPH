@@ -131,7 +131,7 @@ button {
   
 }
 .dropdown li {
-  padding: 8px 12px; /* Espaciado interno para las sugerencias */
+  padding: 8px 25px; /* Espaciado interno para las sugerencias */
   cursor: pointer; /* Cambia el cursor al pasar sobre las sugerencias */
 }
 
