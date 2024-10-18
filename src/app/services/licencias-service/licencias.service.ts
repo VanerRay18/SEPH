@@ -34,9 +34,9 @@ export class LicenciasService {
     );
   }
 
-  SoftDeletelicG(folio: string): Observable<ApiResponse> {//Eliminar un licencia en general
-    let headers = new HttpHeaders({'folio': folio})
-    return this.http.patch<ApiResponse>(`${environment.baseService}${'/licMedicas'}`,
+  softdeletedByOfo(folio: string, userId: string): Observable<ApiResponse> {//Eliminar un licencia en general
+    let headers = new HttpHeaders({'folio': folio, 'userId':userId})
+    return this.http.patch<ApiResponse>(`${environment.baseService}${'/softdeletedByOficio'}`,null,
       {headers}
     );
   }
@@ -94,16 +94,16 @@ export class LicenciasService {
     );
   }
 
-  softDeleteLicGen(folio: string, userId: string): Observable<ApiResponse> { //elimina una licencia de manera general
+  softdeletedByOficio(folio: string, userId: string): Observable<ApiResponse> { //elimina una licencia de manera general
     let headers = new HttpHeaders({'folio': folio, 'userId':userId})
-    return this.http.patch<ApiResponse>(`${environment.baseService}${'/licMedicas/softdeletedBYOficio'}`,
+    return this.http.patch<ApiResponse>(`${environment.baseService}${'/licMedicas/softdeletedByOficio'}`,null,
       {headers}
     );
   }
 
-  patchLicenciasOficio(data:any,folio: string, userId: string): Observable<ApiResponse> { //Crea nuevos oficios
+  patchLicenciasOficio(folio: string, userId: string): Observable<ApiResponse> { //Crea nuevos oficios
     let headers = new HttpHeaders({'folio': folio, 'userId':userId})
-    return this.http.patch<ApiResponse>(`${environment.baseService}${'/licMedicas/oficio'}`,data,
+    return this.http.patch<ApiResponse>(`${environment.baseService}${'/licMedicas/oficio'}`,null,
       {headers}
     );
   }

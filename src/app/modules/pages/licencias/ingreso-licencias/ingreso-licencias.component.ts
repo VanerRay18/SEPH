@@ -239,6 +239,51 @@ export class IngresoLicenciasComponent implements OnInit {
       }
     });
   }
+  
+  trash(){
+    Swal.fire({
+      title: "Ingrese la licencia a eliminar",
+      input: "text",
+      inputAttributes: {
+        autocapitalize: "off"
+      },
+      showCancelButton: true,
+      confirmButtonText: "Buscar",
+    }).then((hola) => {
+      if (hola.isConfirmed) {
+        Swal.fire({
+          title: "¿Estas seguro? Se eliminara la licencia: "+hola.value,
+          showCancelButton: true,
+          icon: "warning",
+          confirmButtonText: "Eliminar",
+          iconColor:'#dc3545',
+          confirmButtonColor:'#dc3545'
+        }).then((result) => {
+          if(result.isConfirmed){
+            const userId = localStorage.getItem('userId')!;
+            this.LicenciasService.softdeletedByOficio(hola.value,userId).subscribe(
+              response => {
+                console.log(response)
+                if(response.success ==false){
+                  Swal.fire({
+                    title: response.message!,
+                    icon: "error"
+                  });
+                }else{
+                  Swal.fire(
+                    '¡Eliminada!',
+                    'La licencia ha sido eliminada correctamente.',
+                    'success'
+                  );
+                  this.buscar(this.srl_emp);
+                }
+              });
+          }
+        });
+        
+      }
+    });
+  }
   // Método para editar un registro
   onEdit(data: any) {
 //AAGP790513HH4
@@ -343,7 +388,9 @@ export class IngresoLicenciasComponent implements OnInit {
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Sí, eliminar',
-      cancelButtonText: 'Cancelar'
+      cancelButtonText: 'Cancelar',
+      iconColor:'#dc3545',
+      confirmButtonColor:'#dc3545'
     }).then((result) => {
       if (result.isConfirmed) {
         // Llama al servicio para eliminar el registro
