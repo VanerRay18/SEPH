@@ -108,13 +108,15 @@ color: #FFD700;
   box-shadow: none;
 }
 .img{
-  margin-left: 30px;
-  margin-right: 20px;
-  width: 230px;
+  margin-left: 10px;
+  width: 220px;
 }
 
 .navbar-toggler{
   color: #8a1538;
+  
+  margin-left: 10px;
+  font-size: 22px;
 }
 .navbar-brand{
   margin-top: 30px;

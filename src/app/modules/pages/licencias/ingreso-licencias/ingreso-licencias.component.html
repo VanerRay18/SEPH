@@ -5,10 +5,9 @@
     <h1>Licencias medicas</h1>
     <h5>Ingreso de licencias medicas</h5>
   </div>
-
-  <div class="Busq card mt-3 ">
+  <div class="Busq card mt-3">
     <h5 style="margin-top: .5%">Busqueda de licencias</h5>
-    <div class="search-container d-flex flex-column flex-md-row">
+    <div class="search-container d-flex flex-column flex-md-row align-items-start">
       <div class="RFC input-container">
         <label class="text">RFC</label>
         <input [(ngModel)]="rfcSearchTerm" (input)="filterRFC()"
@@ -33,10 +32,14 @@
           </li>
         </ul>
       </div>
-      <button class="btn btn-primary mx-md-3 btn-sm btn-block"
-        (click)="buscar(srl_emp)">Buscar</button>
+      <div class="input-container buton">
+        <button class="btn btn-primary btn-sm btn-block busqueda" 
+          (click)="buscar(srl_emp)">Buscar</button>
+      </div>
     </div>
   </div>
+  
+  
 
   <div *ngIf="showCard" class="contLic">
     <ul class="nav nav-tabs d-flex flex-row flex-wrap" role="tablist">
@@ -52,7 +55,7 @@
 
     <div class="tab-content" role="tabpanel">
       <ng-container *ngIf="activeTab === 'licencias'">
-        <div class="card">
+        <div class="card2">
           <div class="row">
             <div class="col-auto">
               <h5 class="ms-2 mt-2">Ingresar una nueva licencia médica</h5>
