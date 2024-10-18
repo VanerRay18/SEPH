@@ -15,3 +15,14 @@ export interface Oficio {
   fecha_ultima_licencia: string;
   total_folios: number;
 }
+
+
+export interface Logs {
+  usuario:string;
+  nombre: string;
+  accion:string;
+  data:string;
+  tiempo:any;
+  prev:string;
+  folio:string;
+}

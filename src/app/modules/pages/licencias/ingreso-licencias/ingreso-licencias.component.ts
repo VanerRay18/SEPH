@@ -163,16 +163,16 @@ export class IngresoLicenciasComponent implements OnInit {
               title: '¡Éxito!',
               text: 'Licencia agregada correctamente.',
               icon: 'success',
-              showConfirmButton: false, // No muestra el botón
-              timer: 1500, // Duración en milisegundos (2000 ms = 2 segundos)
-              timerProgressBar: true // Muestra una barra de progreso del temporizador (opcional)
+              showConfirmButton: false,
+              timer: 1500,
+              timerProgressBar: true 
             });
           },
           error => {
-            console.error('Error al agregar la licencia', error);
+            console.log(error)
             Swal.fire({
               title: 'Error',
-              text: 'No se pudo agregar la licencia.',
+              text: error.error.message,
               icon: 'error',
               confirmButtonText: 'Aceptar'
             });
