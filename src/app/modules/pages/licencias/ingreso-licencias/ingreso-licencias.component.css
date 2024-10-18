@@ -32,7 +32,7 @@ h5 {
 
 @media (min-width: 768px) {
   .Busq {
-    width: 75%; /* Cambia el ancho a 70% en pantallas de 768px o más */
+    width: 78%; /* Cambia el ancho a 70% en pantallas de 768px o más */
     margin: 10px; /* Centra el elemento */
     padding: 5px; /* Espacio interior */
   }
@@ -125,6 +125,7 @@ button {
   margin: 1; /* Elimina el margin */
 }
 .busqueda{
+  margin-top: 8px;
   height: 40px; 
   width: 80px;
   
