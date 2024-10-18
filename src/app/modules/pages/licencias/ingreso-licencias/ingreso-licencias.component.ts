@@ -372,7 +372,7 @@ export class IngresoLicenciasComponent implements OnInit {
         console.error('Error al editar la licencia', error);
         Swal.fire({
           title: 'Error',
-          text: 'No se pudo editar la licencia.',
+          text: error.error.message,
           icon: 'error',
           confirmButtonText: 'Aceptar'
         });

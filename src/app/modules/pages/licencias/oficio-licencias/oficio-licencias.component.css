@@ -6,7 +6,9 @@ h5{
   color: rgb(122, 122, 122);
 }
 
-
+.row{
+  margin: 0;
+}
 
 .card{
   background-color: #ffffff;

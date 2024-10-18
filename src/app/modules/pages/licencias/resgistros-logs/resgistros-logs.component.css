@@ -3,3 +3,8 @@
   width: 98%;
 
 }
+.row{
+  margin: 0;
+}.titulos {
+  margin-bottom: 1rem; /* Espacio entre títulos y contenido */
+}

@@ -1,10 +1,11 @@
 <nav class="navbar fixed-top">
   <div class="col-auto">
-    <button class="navbar-toggler " type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
+    <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
       aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <a class="navbar-brand ms-3" href="#">Sistema de SEPH</a>
+    <img src="/assets/logo_gobhidalgo.png" class="img">
+    
 
     <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
       <div class="offcanvas-header">
@@ -13,44 +14,34 @@
       </div>
       <div class="offcanvas-body">
         <ul class="navbar-nav justify-content-start flex-grow-1 pe-3">
-          <li *ngFor="let node of menuItems" class="nav-item" >
+          <li *ngFor="let node of menuItems" class="nav-item">
             <!-- Enlace para módulos sin hijos -->
-            <div class=" nav-link centerIconDAD" [ngClass]="{'dropdown': node.children.length > 0}">
-             
-              <a *ngIf="node.children.length === 0" 
+            <div class="nav-link centerIconDAD" [ngClass]="{'dropdown': node.children.length > 0}">
+              <a *ngIf="node.children.length === 0"
               class="nav-link centerIconDAD" [routerLink]="node.config">
-              <i class="{{node.icon}} icons "></i>{{ node.moduleName }}
+                <i class="{{node.icon}} icons"></i>{{ node.moduleName }}
               </a>
             </div>
             <!-- Enlace para módulos con hijos -->
             <button *ngIf="node.children.length > 0" class="nav-link dropdown-toggle centerIconDAD" type="button"
               data-bs-toggle="collapse" [attr.data-bs-target]="'#collapse-' + node.moduleId" aria-expanded="false"
               [attr.aria-controls]="'collapse-' + node.children">
-              <i class="{{node.icon}} icons "></i> {{ node.moduleName }}
+              <i class="{{node.icon}} icons"></i> {{ node.moduleName }}
             </button>
 
             <!-- Submenú para módulos con hijos -->
             <div class="collapse" [id]="'collapse-' + node.moduleId">
               <ul class="nav flex-column ms-3">
-                <li *ngFor="let subNode of node.children" class="nav-item"  [ngClass]="{'active-custom': currentRoute === ('/' + subNode.config)}">
-                
-
-                    <a class="nav-link generalHover " [routerLink]="subNode.config"
-                      (click)="handleChildClick(subNode.config)" data-bs-dismiss="offcanvas">
-                     
+                <li *ngFor="let subNode of node.children" class="nav-item" [ngClass]="{'active-custom': currentRoute === ('/' + subNode.config)}">
+                  <a class="nav-link generalHover" [routerLink]="subNode.config"
+                    (click)="handleChildClick(subNode.config)" data-bs-dismiss="offcanvas">
                     <i class="{{subNode.icon}} icons"></i> {{ subNode.moduleName }}
-                    </a>
-               
+                  </a>
                 </li>
               </ul>
             </div>
           </li>
         </ul>
-
-        <!-- <form class="d-flex mt-3" role="search">
-          <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Buscar">
-          <button class="btn btn-outline-success" type="submit">Buscar</button>
-        </form> -->
       </div>
     </div>
   </div>

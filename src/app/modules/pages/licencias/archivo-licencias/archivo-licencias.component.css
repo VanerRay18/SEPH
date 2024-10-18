@@ -13,7 +13,9 @@ h5{
   width: 98%;
 
 }
-
+.row{
+  margin: 0;
+}
 .buscar{
   width:20%;
 }

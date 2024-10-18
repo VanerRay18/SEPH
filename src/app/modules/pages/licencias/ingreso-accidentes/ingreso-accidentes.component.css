@@ -15,7 +15,9 @@
 h5{
   color: rgb(122, 122, 122);
 }
-
+.row{
+  margin: 0;
+}
 @media (min-width: 992px) {
   .form-control {
     flex-grow: 1; /* Hacer que los inputs crezcan */
