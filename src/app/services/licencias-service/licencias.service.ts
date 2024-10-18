@@ -75,7 +75,52 @@ export class LicenciasService {
     );
   }
 
+  getLicenciasOficioPdf(oficio: string): Observable<ApiResponse> { //Pdf de oficio
+    let headers = new HttpHeaders({'oficio': oficio})
+    return this.http.get<ApiResponse>(`${environment.baseService}${'/licMedicas/oficiosPdf'}`,
+      {headers}
+    );
+  }
 
+  getLicMedicasLogs(): Observable<ApiResponse> {//Logs de licencias
+    return this.http.get<ApiResponse>(`${environment.baseService}${'/licMedicas/licMedicaLogs'}`
+    );
+  }
+
+  getAccidentes(srl_emp: string): Observable<ApiResponse> {//Historial actual de accidentes de trabajo
+    let headers = new HttpHeaders({'srl_emp': srl_emp})
+    return this.http.get<ApiResponse>(`${environment.baseService}${'/licMedicas/accidentes'}`,
+      {headers}
+    );
+  }
+
+  softDeleteLicGen(folio: string, userId: string): Observable<ApiResponse> { //elimina una licencia de manera general
+    let headers = new HttpHeaders({'folio': folio, 'userId':userId})
+    return this.http.patch<ApiResponse>(`${environment.baseService}${'/licMedicas/softdeletedBYOficio'}`,
+      {headers}
+    );
+  }
+
+  patchLicenciasOficio(data:any,folio: string, userId: string): Observable<ApiResponse> { //Crea nuevos oficios
+    let headers = new HttpHeaders({'folio': folio, 'userId':userId})
+    return this.http.patch<ApiResponse>(`${environment.baseService}${'/licMedicas/oficio'}`,data,
+      {headers}
+    );
+  }
+   
+  getHistorico(srl_emp: string): Observable<ApiResponse> {//Historial completo de licencias
+    let headers = new HttpHeaders({'srl_emp': srl_emp})
+    return this.http.get<ApiResponse>(`${environment.baseService}${'/licMedicas/historico'}`,
+      {headers}
+    );
+  }
+
+  getHistoricoAnte(srl_emp: string): Observable<ApiResponse> {//Historial del anio anterior de licencias
+    let headers = new HttpHeaders({'srl_emp': srl_emp})
+    return this.http.get<ApiResponse>(`${environment.baseService}${'/licMedicas/historicoAnterior'}`,
+      {headers}
+    );
+  }
 
 
 }
