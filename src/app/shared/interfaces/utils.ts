@@ -26,3 +26,48 @@ export interface Logs {
   prev:string;
   folio:string;
 }
+
+// export interface clave{
+//   CT: string;
+//   PLAZA: string;
+// }
+
+// export interface licencia{
+//   hasta: string;
+//   desde: string;
+//   periodo: number;
+//   srl_emp: number;
+//   nombre: string;
+//   rfc: string;
+//   foliolic: string;
+//   oficio: string;
+//   fechaCaptura: string;
+//   observaciones: string;
+//   apartir: string;
+//   total_dias: number;
+// }
+
+
+
+export interface OficioPdf {
+  data: {
+    nombre: string;
+    rfc: string;
+    fecha_ingreso: string;
+  };
+  claves: Array<{
+    PLAZA: string;
+    CT: string;
+  }>;
+  licencias: Array<{
+    foliolic: string;
+    total_dias: string;
+    desde: string;
+    hasta: string;
+    observaciones: string;
+    apartir?: string;
+    oficio: string;
+  }>;
+}
+
+
