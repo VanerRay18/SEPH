@@ -5,6 +5,9 @@ import { ApiResponse } from 'src/app/models/ApiResponse';
 import { Employee } from 'src/app/shared/interfaces/usuario.model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
+import * as pdfMake from 'pdfmake/build/pdfmake';
+import * as pdfFonts from 'pdfmake/build/vfs_fonts';
+import { ImageToBaseService } from './../../../../services/image-to-base.service';
 
 @Component({
   selector: 'ingreso-licencias',
@@ -40,7 +43,8 @@ export class IngresoLicenciasComponent implements OnInit {
   srl_emp: any = "";
   constructor(
     private LicenciasService: LicenciasService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private ImageToBaseService: ImageToBaseService
   ) {
     //this.fetchData(); // Si tienes un endpoint real, descomenta esto
   }
@@ -136,7 +140,9 @@ export class IngresoLicenciasComponent implements OnInit {
         folio: this.insertarLic.value.folio,
         fecha_inicio: fechaInicio.toISOString(), // Mantener en formato ISO para el envío
         fecha_termino: fechaTermino.toISOString(),
-        formato: parseInt(this.insertarLic.value.formato, 10)
+        formato: parseInt(this.insertarLic.value.formato, 10),
+        "accidente":0
+
       };
 
     // Mostrar alerta de confirmación
@@ -165,7 +171,7 @@ export class IngresoLicenciasComponent implements OnInit {
               icon: 'success',
               showConfirmButton: false,
               timer: 1500,
-              timerProgressBar: true 
+              timerProgressBar: true
             });
           },
           error => {
@@ -239,7 +245,7 @@ export class IngresoLicenciasComponent implements OnInit {
       }
     });
   }
-  
+
   trash(){
     Swal.fire({
       title: "Ingrese la licencia a eliminar",
@@ -280,7 +286,7 @@ export class IngresoLicenciasComponent implements OnInit {
               });
           }
         });
-        
+
       }
     });
   }
@@ -417,7 +423,200 @@ export class IngresoLicenciasComponent implements OnInit {
     });
   }
 
+  sumitOficios(){
+    let idsArray: number[] = []; // Array donde se guardarán los ids
+console.log(this.data)
+this.data.forEach((data: { id: number, nueva: string }) => {
+  if (data.nueva === "1") {
+    idsArray.push(data.id); // Agrega data.id al array si nueva es 1
   }
+});
+
+const licenciasid = {
+  licenciasId: idsArray
+};
+
+    const userId = localStorage.getItem('userId')!; // Asegúrate de obtener el userId correcto
+    Swal.fire({
+      title: '¿Está seguro de crear el oficio?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, estoy seguro',
+      cancelButtonText: 'Cancelar',
+      iconColor:'#dc3545',
+      confirmButtonColor:'#dc3545'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Llama al servicio para crear un oficio
+        this.LicenciasService.patchLicenciasOficio(licenciasid, userId,this.srl_emp).subscribe(
+          (response: { data: { oficio: string } }) => { // Asegúrate de definir el tipo de respuesta
+            console.log('Respuesta del servicio:', response);
+            const oficio = response.data.oficio; // Accede al 'oficio' dentro de 'data'
+
+            if (oficio) {
+                this.onPdf(oficio); // Llama a onPdf con el oficio
+            } else {
+                console.error('No se recibió el número de oficio en la respuesta');
+            }
+            // Swal.fire(
+            //   '¡Oficio creado!',
+            //   'Se creo un oficio correctamente.',
+            //   'success'
+            // );
+          },
+          error => {
+            console.error('Error al eliminar la licencia', error);
+            Swal.fire(
+              'Error',
+              error.error,
+              'error'
+            );
+          }
+        );
+      }
+    });
+   }
+
+
+
+
+  onPdf(oficio: any) {
+    console.log(oficio);
+    this.LicenciasService.getLicenciasOficioPdf(oficio).subscribe(async response => {
+      const data = response.data;
+      const claves = data.claves;
+      const licencias = data.licencias;
+      const today = new Date();
+        const formattedDate = today.toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' });
+
+      // Convertir la imagen a base64
+      const imageBase64 = await this.ImageToBaseService.convertImageToBase64('assets/logo_gobhidalgo.png');
+
+      const documentDefinition: any = {
+        content: [
+          {
+            columns: [
+              {
+                image: imageBase64, // Usar la imagen convertida
+                alignment: 'right',
+                width: 210, // Ajustar el ancho
+                height: 50, // Ajustar la altura
+              },
+              {
+                text: `Pachuca HGO. ${formattedDate}.\nOficio Num: ${data.oficio}.`,
+                alignment: 'right',
+                style: 'header'
+              }
+            ]
+          },
+          {
+            text: '\nAlberto Noble Gómez\nDirector de Atención y Aclaración de Nómina\nPresente:',
+            style: 'subheader',
+            margin: [0, 20, 0, 20]
+          },
+          {
+            text: `Con fundamento en el Artículo 111, de la Ley Federal de los Trabajadores al Servicio del Estado y Artículo 52, Fracción I del Reglamento de las Condiciones Generales de Trabajo del personal de la Secretaría del ramo, por este conducto solicito a Usted, gire instrucciones a quien corresponda a efecto de que la (el) C. ${data.nombre.trim()} R.F.C. ${data.rfc} fecha de ingreso ${data.fecha_ingreso}, quien labora en el CT con clave(s) presupuestal(es) siguientes:`,
+            margin: [0, 20, 0, 20]
+          },
+          {
+            table: {
+              headerRows: 1,
+              widths: ['*', '*'],
+              body: [
+                // Llena la tabla con los datos de 'claves'
+                ...claves.map((clave: { PLAZA: any; CT: any; }) => [
+                  { text: clave.PLAZA, alignment: 'center', bold: true },
+                  { text: clave.CT, alignment: 'center', bold: true }
+                ])
+              ]
+            },
+            margin: [0, 10, 0, 20]
+          },
+          {
+            text: 'Reintegre al Estado el sueldo no devengado, de conformidad con las licencias médicas que se mencionan a continuación:',
+            margin: [0, 20, 0, 10]
+          },
+          {
+            table: {
+              headerRows: 1,
+              widths: ['auto', 'auto', '*', '*', 'auto'], // Ajuste de anchos de columnas
+              body: [
+                // Cabeceras de la tabla
+                [
+                  { text: 'Folio', bold: true, fillColor: '#eeeeee', alignment: 'center' },
+                  { text: 'Días', bold: true, fillColor: '#eeeeee', alignment: 'center' },
+                  { text: 'Periodo de la Licencia', bold: true, fillColor: '#eeeeee', alignment: 'center' },
+                  { text: 'Observaciones', bold: true, fillColor: '#eeeeee', alignment: 'center' },
+                  { text: 'A partir de', bold: true, fillColor: '#eeeeee', alignment: 'center' }
+                ],
+                // Llena la tabla con los datos de 'licencias'
+                ...licencias.map((licencia: { foliolic: any; total_dias: any; desde: any; hasta: any; observaciones: any; apartir: any; }) => [
+                  { text: licencia.foliolic, alignment: 'center' },
+                  { text: licencia.total_dias, alignment: 'center' },
+                  { text: `${licencia.desde} - ${licencia.hasta}`, alignment: 'center' },
+                  { text: licencia.observaciones, alignment: 'center' },
+                  { text: licencia.apartir || '---', alignment: 'center' }
+                ])
+              ]
+            },
+            margin: [0, 10, 0, 30]
+          },
+          {
+            text: 'Atentamente',
+            margin: [0, 20, 0, 90],
+            alignment: 'center'
+          },
+          {
+            text: 'José Gabriel Castro Bautista\nDirector de Nómina y Control de Plazas',
+            alignment: 'center',
+            bold: true
+          }
+        ],
+        styles: {
+          header: {
+            fontSize: 12,
+            bold: true
+          }
+        }
+      };
+
+      // Generar y descargar el PDF
+      pdfMake.createPdf(documentDefinition).download('Oficios de licencias.pdf');
+    });
+  }
+
+   historicopdf(){
+    Swal.fire({
+      title: 'Que historico quiere ver?',
+      showCancelButton: true,
+      confirmButtonText: 'Completo',
+      cancelButtonText: 'Año anterior',
+      customClass: {
+        popup: 'small-swal', // Clase personalizada para ajustar el tamaño
+        title: 'small-swal-title' // Clase para el título
+      },
+      width: '450px', // Ajustar el ancho
+      padding: '1em', // Ajustar el padding
+      buttonsStyling: true, // Estilos para los botones
+      iconColor: '#3085d6', // Color del ícono
+      confirmButtonColor: '#3085d6', // Color del botón "Editar"
+      cancelButtonColor: '#3085d6', // Color del botón "Eliminar"
+    }).then((result) => {
+      if (result.isConfirmed) {
+       this.LicenciasService.getHistorico(this.srl_emp).subscribe(response =>{
+
+       })
+
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        console.log('Eliminar acción seleccionada');
+        // Lógica para eliminar
+      }
+    });
+
+   }
+
+   }
+
 
 
 

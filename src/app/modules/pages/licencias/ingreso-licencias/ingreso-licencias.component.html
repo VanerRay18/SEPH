@@ -7,7 +7,8 @@
   </div>
   <div class="Busq card mt-3 ">
     <h5 style="margin-top: .5% " class="ms-3">Busqueda de licencias</h5>
-    <div class="search-container d-flex flex-column flex-md-row align-items-start ms-3">
+    <div
+      class="search-container d-flex flex-column flex-md-row align-items-start ms-3">
       <div class="RFC input-container">
         <label class="text">RFC</label>
         <input [(ngModel)]="rfcSearchTerm" (input)="filterRFC()"
@@ -33,13 +34,11 @@
         </ul>
       </div>
       <div class="input-container buton">
-        <button class="btn btn-primary btn-sm btn-block busqueda" 
+        <button class="btn btn-primary btn-sm btn-block busqueda"
           (click)="buscar(srl_emp)">Buscar</button>
       </div>
     </div>
   </div>
-  
-  
 
   <div *ngIf="showCard" class="contLic">
     <ul class="nav nav-tabs d-flex flex-row flex-wrap" role="tablist">
@@ -61,11 +60,12 @@
               <h5 class="ms-2 mt-2">Ingresar una nueva licencia médica</h5>
             </div>
             <div class="col-auto">
-              <button type="button" class="botones btn"><i
-                  class="fa-solid fa-folder"></i></button>
+                <button type="button" (click)="historicopdf()" class="botones btn"><i
+                    class="fa-solid fa-folder"></i></button>
             </div>
             <div class="col-auto">
-              <button type="button" class="botones btn"><i
+              <button type="button" (click)="sumitOficios()"
+                class="botones btn"><i
                   class="fa-solid fa-file"></i></button>
             </div>
             <div class="col-auto">

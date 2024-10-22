@@ -61,7 +61,7 @@ export class OficioLicenciasComponent {
 
   onPdf(oficio: any) {
     console.log(oficio);
-    this.LicenciasService.getLicenciasOficioPdf(oficio.oficio).subscribe(async response => {
+    this.LicenciasService.getLicenciasOficioPdf(oficio).subscribe(async response => {
       const data = response.data;
       const claves = data.claves;
       const licencias = data.licencias;

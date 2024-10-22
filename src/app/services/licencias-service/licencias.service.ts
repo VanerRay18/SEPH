@@ -101,9 +101,9 @@ export class LicenciasService {
     );
   }
 
-  patchLicenciasOficio(folio: string, userId: string): Observable<ApiResponse> { //Crea nuevos oficios
-    let headers = new HttpHeaders({'folio': folio, 'userId':userId})
-    return this.http.patch<ApiResponse>(`${environment.baseService}${'/licMedicas/oficio'}`,null,
+  patchLicenciasOficio(data: any, userId: string, srl_emp:string): Observable<ApiResponse> { //Crea nuevos oficios
+    let headers = new HttpHeaders({'userId':userId,'srl_emp':srl_emp})
+    return this.http.patch<ApiResponse>(`${environment.baseService}${'/licMedicas/oficios'}`,data,
       {headers}
     );
   }
