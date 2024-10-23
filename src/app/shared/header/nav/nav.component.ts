@@ -80,7 +80,7 @@ export class NavComponent implements OnInit, OnDestroy {
   // Construye el árbol de navegación a partir de los módulos obtenidos
   buildTree(data: TreeNode[]): TreeNode[] {
     const treeMap = new Map<number, TreeNode>();
-
+console.log(data)
     // Paso 1: Crea el mapa de módulos
     data.forEach((item: TreeNode) => {
       treeMap.set(item.moduleId, {
