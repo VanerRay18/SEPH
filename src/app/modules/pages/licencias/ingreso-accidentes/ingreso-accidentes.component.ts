@@ -16,7 +16,7 @@ export class IngresoAccidentesComponent{
   headers = ['No. de Licencia', 'Desde', 'Hasta', 'Días', 'No. de oficio', 'Acciones'];
   displayedColumns = ['folio', 'desde', 'hasta', 'total_dias','oficio'];
   data = [];
-
+  table:any = true;
 
   rfcSearchTerm: string = '';
   nombreSearchTerm: string = '';
@@ -94,11 +94,16 @@ selectNombre(item: { rfc: string; nombre: string ; srl_emp:number}) {
 
 // Método para buscar con los términos ingresados
 buscar(srl_emp:any) {
+
   console.log('Buscando por RFC:', this.rfcSearchTerm, 'y Nombre:', this.nombreSearchTerm);
 
   this.LicenciasService.getAccidentes(srl_emp).subscribe((response: ApiResponse) => {
+    this.table=true
     this.data = response.data; // Asegúrate de mapear correctamente los datos
-    console.log(response)
+  },
+  (error) => {
+    this.table = false; // Asegúrate de manejar el estado de la tabla en caso de error
+    console.error('Error al obtener los accidentes: ', error); // Manejo del error
   });
 }
 
@@ -290,7 +295,7 @@ buscar(srl_emp:any) {
           this.LicenciasService.addLicencia(data, userId, this.srl_emp).subscribe(
             response => {
               console.log('Licencia agregada con éxito', response);
-              this.buscar(this.srl_emp);
+              this.buscar(this.srl_emp)
               this.HOLA();
               Swal.fire({
                 title: '¡Éxito!',

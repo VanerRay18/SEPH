@@ -49,7 +49,7 @@
       </div>
     </div>
   </form>
-  <app-tables 
+  <app-tables *ngIf="table == true"
   [headers]="headers" 
   [data]="data" 
   [displayedColums]="displayedColumns" 
@@ -58,4 +58,6 @@
     [showActionsDeleted]=true
     (delete)="onDelete($event)"
      [showActionsPdf]=false></app-tables>
+
+     <h1 *ngIf="table == false" class="ms-3">El usuario no cuenta con accidentes de trabajo </h1>
 </div>
