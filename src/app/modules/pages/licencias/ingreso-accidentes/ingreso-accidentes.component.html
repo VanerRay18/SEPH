@@ -5,32 +5,30 @@
         trabajo</h5>
     </div>
   </div>
-  <form class="m-3">
+  <form [formGroup]="insertarLics" class="m-3" (ngSubmit)="onSumit()">
     <div class="row">
       <div class="col-auto">
-        <label for="formGroupExampleInput"
-          class="form-label">Folio:</label>
-        <input type="text" class="form-control"
-          placeholder="Ingrese el folio de licencia"
+        <label for="folio" class="form-label">Folio:</label>
+        <input formControlName="folio" type="text" class="form-control" placeholder="Ingrese el folio de licencia"
           aria-label="First name" required>
       </div>
       <div class="col-auto">
         <label for="start-date" class="form-label">Fecha de
           Inicio:</label>
-        <input type="date" id="start-date" name="start-date"
-          class="form-control" required>
+        <input formControlName="fecha_inicio" type="date" id="start-date" name="start-date" class="form-control"
+          required>
       </div>
       <div class="col-auto">
         <label for="end-date" class="form-label">Fecha de
           Término:</label>
-        <input type="date" id="end-date" name="end-date"
-          class="form-control" required>
+        <input formControlName="fecha_termino" type="date" id="end-date" name="end-date" class="form-control" required>
       </div>
       <div class="col-auto">
         <label for="end-date" class="form-label">Formato:</label>
         <div class="form-check">
           <input class="form-check-input" type="radio"
-            name="flexRadioDefault" id="flexRadioDefault1" value="0"
+            formControlName="formato"
+            name="formato" id="formatoFisico" value="0"
             checked>
           <label class="form-check-label" for="flexRadioDefault1">
             Fisico
@@ -38,7 +36,8 @@
         </div>
         <div class="form-check">
           <input class="form-check-input" type="radio"
-            name="flexRadioDefault" id="flexRadioDefault2" value="1">
+            formControlName="formato"
+            name="formato" id="formatoEmail" value="1">
           <label class="form-check-label" for="flexRadioDefault2">
             Email
           </label>
@@ -46,17 +45,10 @@
       </div>
 
       <div class="col-auto">
-        <button type="submit"
-          class="guardar btn  btn-success">Guardar</button>
+        <button type="submit" class="guardar btn  btn-success">Guardar</button>
       </div>
     </div>
   </form>
-  <app-tables
-    [headers]="headers"
-    [data]="data"
-    [displayedColums]="displayedColumns"
-    [showActionsEdit]=true
-    (edit)="onEdit($event)"
-    [showActionsDeleted]=true
-    [showActionsPdf]=false></app-tables>
+  <app-tables [headers]="headers" [data]="data" [displayedColums]="displayedColumns" [showActionsEdit]=true
+    (edit)="onEdit($event)" [showActionsDeleted]=true [showActionsPdf]=false></app-tables>
 </div>

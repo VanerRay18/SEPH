@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { TablesComponent } from 'src/app/shared/componentes/tables/tables.component';
 import { LicenciasService } from 'src/app/services/licencias-service/licencias.service';
 import { ApiResponse } from 'src/app/models/ApiResponse';
@@ -8,7 +8,7 @@ import Swal from 'sweetalert2';
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { ImageToBaseService } from './../../../../services/image-to-base.service';
-
+import { LicMedica } from 'src/app/shared/interfaces/utils';
 @Component({
   selector: 'ingreso-licencias',
   templateUrl: './ingreso-licencias.component.html',
@@ -18,7 +18,7 @@ export class IngresoLicenciasComponent implements OnInit {
 
   insertarLic!: FormGroup;
   headers = ['No. de Licencia', 'Desde', 'Hasta', 'Días', 'Status de licencia', 'No. de oficio', 'Acciones'];
-  displayedColumns = ['folio', 'desde', 'hasta', 'total_dias', 'status', 'oficio'];
+  displayedColumns = ['folio', 'desde', 'hasta', 'rango_fechas', 'observaciones', 'oficio'];
   data = [];
   showCard: boolean = false;
 
@@ -40,7 +40,7 @@ export class IngresoLicenciasComponent implements OnInit {
     { id: 'accidentes', title: 'Accidentes de Trabajo', icon: 'fas fa-exclamation-triangle' },
     { id: 'acuerdos', title: 'Acuerdos Precedenciales', icon: 'fas fa-handshake' }
   ];
-  srl_emp: any = "";
+ srl_emp: any = ""; 
   constructor(
     private LicenciasService: LicenciasService,
     private fb: FormBuilder,
@@ -120,8 +120,10 @@ export class IngresoLicenciasComponent implements OnInit {
     console.log('Buscando por RFC:', this.rfcSearchTerm, 'y Nombre:', this.nombreSearchTerm);
 
     this.LicenciasService.getLicencias(srl_emp).subscribe((response: ApiResponse) => {
-      this.data = response.data; // Asegúrate de mapear correctamente los datos
-      console.log(response)
+      this.data = response.data.map((item: LicMedica) => ({
+        ...item,
+        rango_fechas: `${item.total_dias} -   ${item.accidente == 1? '':item.sumaDias}`
+      })); // Aquí concatenas las fechas
       this.showCard = true;
     },
       (error) => {
@@ -331,7 +333,7 @@ export class IngresoLicenciasComponent implements OnInit {
       const fecha_inicio = ((document.getElementById('fecha_inicioId') as HTMLInputElement).value)+'T00:00:00';
       const fecha_termino = ((document.getElementById('fecha_terminoId') as HTMLInputElement).value)+'T00:00:00';
       const formato = parseInt((document.querySelector('input[name="formato"]:checked') as HTMLInputElement).value);
-
+      const accidente = 0;
         // Validación de campos
         if (!folio || !fecha_inicio || !fecha_termino) {
           Swal.showValidationMessage('Todos los campos son obligatorios');
@@ -342,7 +344,8 @@ export class IngresoLicenciasComponent implements OnInit {
           folio,
           fecha_inicio,
           fecha_termino,
-          formato
+          formato,
+          accidente
         };
       }
     }).then((result) => {
