@@ -203,6 +203,42 @@ buscar(srl_emp:any) {
           );
         }
 
+        onDelete(licenciaId: any) {
+          const userId = localStorage.getItem('userId')!; // Asegúrate de obtener el userId correcto
+          Swal.fire({
+            title: '¿Estás seguro?',
+            text: "No podrás revertir esta acción.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar',
+            iconColor: '#dc3545',
+            confirmButtonColor: '#dc3545'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              // Llama al servicio para eliminar el registro
+              this.LicenciasService.softDeleteLic(licenciaId.id, userId).subscribe(
+                response => {
+                  console.log('Licencia eliminada correctamente', response);
+                  this.buscar(this.srl_emp); // Refresca los datos después de eliminar
+                  Swal.fire(
+                    '¡Eliminada!',
+                    'La licencia ha sido eliminada correctamente.',
+                    'success'
+                  );
+                },
+                error => {
+                  console.error('Error al eliminar la licencia', error);
+                  Swal.fire(
+                    'Error',
+                    'No se pudo eliminar la licencia.',
+                    'error'
+                  );
+                }
+              );
+            }
+          });
+        }
 
         HOLA(){
           this.insertarLics = this.fb.group({

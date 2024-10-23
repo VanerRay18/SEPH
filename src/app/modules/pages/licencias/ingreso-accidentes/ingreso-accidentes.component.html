@@ -49,6 +49,13 @@
       </div>
     </div>
   </form>
-  <app-tables [headers]="headers" [data]="data" [displayedColums]="displayedColumns" [showActionsEdit]=true
-    (edit)="onEdit($event)" [showActionsDeleted]=true [showActionsPdf]=false></app-tables>
+  <app-tables 
+  [headers]="headers" 
+  [data]="data" 
+  [displayedColums]="displayedColumns" 
+  [showActionsEdit]=true
+    (edit)="onEdit($event)" 
+    [showActionsDeleted]=true
+    (delete)="onDelete($event)"
+     [showActionsPdf]=false></app-tables>
 </div>
