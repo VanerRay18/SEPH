@@ -12,7 +12,7 @@ export class AcuerdosPreciComponent {
   headers = ['No. de Certificado','Acuerdo', 'Tipo', 'Desde', 'Hasta', 'Días','No. de oficio'];
   displayedColumns = ['numero_certificado','acuerdo', 'tipo', 'desde', 'hasta', 'total_dias','oficio'];
   data = [];
-
+  table:any = true;
 
   rfcSearchTerm: string = '';
   nombreSearchTerm: string = '';
@@ -91,8 +91,13 @@ buscar(srl_emp:any) {
   console.log('Buscando por RFC:', this.rfcSearchTerm, 'y Nombre:', this.nombreSearchTerm);
 
   this.LicenciasService.getAcuerdos(srl_emp).subscribe((response: ApiResponse) => {
+    this.table = true
     this.data = response.data; // Asegúrate de mapear correctamente los datos
     console.log(response)
+  },
+  (error) => {
+    this.table = false; // Asegúrate de manejar el estado de la tabla en caso de error
+    console.error('Error al obtener los accidentes: ', error); // Manejo del error
   });
 }
 

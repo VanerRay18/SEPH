@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { LicenciasService } from 'src/app/services/licencias-service/licencias.service';
 import { Employee } from 'src/app/shared/interfaces/usuario.model';
 import { ApiResponse } from 'src/app/models/ApiResponse';
@@ -11,7 +11,7 @@ import { ReactiveFormsModule } from '@angular/forms';
   templateUrl: './ingreso-accidentes.component.html',
   styleUrls: ['./ingreso-accidentes.component.css']
 })
-export class IngresoAccidentesComponent{
+export class IngresoAccidentesComponent implements OnChanges{
   insertarLics!: FormGroup;
   headers = ['No. de Licencia', 'Desde', 'Hasta', 'Días', 'No. de oficio', 'Acciones'];
   displayedColumns = ['folio', 'desde', 'hasta', 'total_dias','oficio'];
@@ -47,6 +47,10 @@ export class IngresoAccidentesComponent{
 
     this.HOLA();
 
+  }
+  ngOnChanges(changes: SimpleChanges) {
+      this.buscar(changes['srl_emp']);
+    
   }
 // Filtrar RFC al escribir
 filterRFC() {

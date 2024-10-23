@@ -22,7 +22,7 @@ export class IngresoLicenciasComponent implements OnInit {
   displayedColumns = ['folio', 'desde', 'hasta', 'rango_fechas', 'observaciones', 'oficio'];
   data = [];
   showCard: boolean = false;
-
+  table:any = true;
 
   rfcSearchTerm: string = '';
   nombreSearchTerm: string = '';
@@ -122,11 +122,16 @@ export class IngresoLicenciasComponent implements OnInit {
     console.log('Buscando por RFC:', this.rfcSearchTerm, 'y Nombre:', this.nombreSearchTerm, 'y srl_emp:', this.srl_emp);
 
     this.LicenciasService.getLicencias(srl_emp).subscribe((response: ApiResponse) => {
+      this.table = true
       this.data = response.data.map((item: LicMedica) => ({
         ...item,
         rango_fechas: `${item.total_dias} -   ${item.accidente == 1? '':item.sumaDias}`
       })); // Aquí concatenas las fechas
 
+    },
+    (error) => {
+      this.table = false; // Asegúrate de manejar el estado de la tabla en caso de error
+      console.error('Error al obtener los accidentes: ', error); // Manejo del error
     }
     );
   }
