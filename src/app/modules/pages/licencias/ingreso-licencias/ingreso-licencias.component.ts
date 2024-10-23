@@ -487,8 +487,6 @@ export class IngresoLicenciasComponent implements OnInit {
       const data = response.data;
       const claves = data.claves;
       const licencias = data.licencias;
-      const today = new Date();
-      const formattedDate = today.toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' });
 
       // Convertir la imagen a base64
       const imageBase64 = await this.ImageToBaseService.convertImageToBase64('assets/logo_gobhidalgo.png');
@@ -504,7 +502,7 @@ export class IngresoLicenciasComponent implements OnInit {
                 height: 50, // Ajustar la altura
               },
               {
-                text: `Pachuca HGO. ${formattedDate}.\nOficio Num: ${data.oficio}.`,
+                text: `Pachuca HGO. ${data.impresion}.\nOficio Num: ${data.oficio}.`,
                 alignment: 'right',
                 style: 'header'
               }
