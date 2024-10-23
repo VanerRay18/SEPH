@@ -27,6 +27,13 @@ export interface Logs {
   folio:string;
 }
 
+export interface LicMedica{
+sumaDias:any,
+total_dias:any,
+nueva:any,
+accidente:any
+}
+
 // export interface clave{
 //   CT: string;
 //   PLAZA: string;
