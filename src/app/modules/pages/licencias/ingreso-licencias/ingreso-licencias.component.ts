@@ -8,6 +8,7 @@ import Swal from 'sweetalert2';
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { ImageToBaseService } from './../../../../services/image-to-base.service';
+import { content } from 'html2canvas/dist/types/css/property-descriptors/content';
 
 @Component({
   selector: 'ingreso-licencias',
@@ -46,6 +47,7 @@ export class IngresoLicenciasComponent implements OnInit {
     private fb: FormBuilder,
     private ImageToBaseService: ImageToBaseService
   ) {
+    (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
     //this.fetchData(); // Si tienes un endpoint real, descomenta esto
   }
   ngOnInit() {
@@ -58,10 +60,10 @@ export class IngresoLicenciasComponent implements OnInit {
         srl_emp: user.srl_emp
       }));
     });
-      this.HOLA()
+    this.HOLA()
   }
 
-  HOLA(){
+  HOLA() {
     this.insertarLic = this.fb.group({
       folio: ['', Validators.required],
       fecha_inicio: ['', Validators.required],
@@ -115,25 +117,21 @@ export class IngresoLicenciasComponent implements OnInit {
 
   // Método para buscar con los términos ingresados
   buscar(srl_emp: any) {
-
+    this.showCard = true;
     this.srl_emp = srl_emp;
-    console.log('Buscando por RFC:', this.rfcSearchTerm, 'y Nombre:', this.nombreSearchTerm);
+    console.log('Buscando por RFC:', this.rfcSearchTerm, 'y Nombre:', this.nombreSearchTerm, 'y srl_emp:', this.srl_emp);
 
     this.LicenciasService.getLicencias(srl_emp).subscribe((response: ApiResponse) => {
       this.data = response.data; // Asegúrate de mapear correctamente los datos
       console.log(response)
-      this.showCard = true;
-    },
-      (error) => {
-        console.error('Error al buscar licencias:', error);
-        this.showCard = false; // Oculta la tarjeta en caso de error
-      }
+
+    }
     );
   }
 
-  onSumit():void{
+  onSumit(): void {
     if (this.insertarLic.valid) {
-      const userId=localStorage.getItem('userId')!
+      const userId = localStorage.getItem('userId')!
       const fechaInicio = new Date(this.insertarLic.value.fecha_inicio);
       const fechaTermino = new Date(this.insertarLic.value.fecha_termino);
       const data = {
@@ -141,62 +139,62 @@ export class IngresoLicenciasComponent implements OnInit {
         fecha_inicio: fechaInicio.toISOString(), // Mantener en formato ISO para el envío
         fecha_termino: fechaTermino.toISOString(),
         formato: parseInt(this.insertarLic.value.formato, 10),
-        "accidente":0
+        "accidente": 0
 
       };
 
-    // Mostrar alerta de confirmación
-    Swal.fire({
-      title: 'Confirmar',
-      html: `¿Está seguro de que desea agregar la siguiente licencia?<br><br>` +
-      `Folio: ${data.folio}<br>` +
-      `Fecha de Inicio: ${fechaInicio.toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' })}<br>` +
-      `Fecha de Término: ${fechaTermino.toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' })}<br>` +
-      `Formato: ${data.formato === 0 ? 'Físico' : ''}`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Sí, agregar',
-      cancelButtonText: 'No, cancelar'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // El usuario confirmó, proceder a enviar los datos
-        this.LicenciasService.addLicencia(data, userId, this.srl_emp).subscribe(
-          response => {
-            console.log('Licencia agregada con éxito', response);
-            this.buscar(this.srl_emp);
-            this.HOLA();
-            Swal.fire({
-              title: '¡Éxito!',
-              text: 'Licencia agregada correctamente.',
-              icon: 'success',
-              showConfirmButton: false,
-              timer: 1500,
-              timerProgressBar: true
-            });
-          },
-          error => {
-            console.log(error)
-            Swal.fire({
-              title: 'Error',
-              text: error.error.message,
-              icon: 'error',
-              confirmButtonText: 'Aceptar'
-            });
-          }
-        );
-      } else {
-        console.log('El usuario canceló la operación');
-      }
-    });
-  } else {
-    console.error('El formulario no es válido');
-    Swal.fire({
-      title: 'Advertencia',
-      text: 'Por favor, completa todos los campos requeridos.',
-      icon: 'warning',
-      confirmButtonText: 'Aceptar'
-    });
-  }
+      // Mostrar alerta de confirmación
+      Swal.fire({
+        title: 'Confirmar',
+        html: `¿Está seguro de que desea agregar la siguiente licencia?<br><br>` +
+          `Folio: ${data.folio}<br>` +
+          `Fecha de Inicio: ${fechaInicio.toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' })}<br>` +
+          `Fecha de Término: ${fechaTermino.toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' })}<br>` +
+          `Formato: ${data.formato === 0 ? 'Físico' : ''}`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, agregar',
+        cancelButtonText: 'No, cancelar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // El usuario confirmó, proceder a enviar los datos
+          this.LicenciasService.addLicencia(data, userId, this.srl_emp).subscribe(
+            response => {
+              console.log('Licencia agregada con éxito', response);
+              this.buscar(this.srl_emp);
+              this.HOLA();
+              Swal.fire({
+                title: '¡Éxito!',
+                text: 'Licencia agregada correctamente.',
+                icon: 'success',
+                showConfirmButton: false,
+                timer: 1500,
+                timerProgressBar: true
+              });
+            },
+            error => {
+              console.log(error)
+              Swal.fire({
+                title: 'Error',
+                text: error.error.message,
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+              });
+            }
+          );
+        } else {
+          console.log('El usuario canceló la operación');
+        }
+      });
+    } else {
+      console.error('El formulario no es válido');
+      Swal.fire({
+        title: 'Advertencia',
+        text: 'Por favor, completa todos los campos requeridos.',
+        icon: 'warning',
+        confirmButtonText: 'Aceptar'
+      });
+    }
   }
 
 
@@ -205,7 +203,7 @@ export class IngresoLicenciasComponent implements OnInit {
     this.activeTab = tabId; // Cambia la pestaña activa
   }
 
-  search(){
+  search() {
     Swal.fire({
       title: "Folio de licencia médica",
       input: "text",
@@ -219,12 +217,12 @@ export class IngresoLicenciasComponent implements OnInit {
         console.log(result.value)
         this.LicenciasService.SearchLic(result.value).subscribe(
           response => {
-            if(response.data.message){
+            if (response.data.message) {
               Swal.fire({
                 title: response.data.message,
                 icon: "success"
               });
-            }else{
+            } else {
               Swal.fire({
                 title: "Licencia encontrada",
                 html: `
@@ -246,7 +244,7 @@ export class IngresoLicenciasComponent implements OnInit {
     });
   }
 
-  trash(){
+  trash() {
     Swal.fire({
       title: "Ingrese la licencia a eliminar",
       input: "text",
@@ -258,24 +256,24 @@ export class IngresoLicenciasComponent implements OnInit {
     }).then((hola) => {
       if (hola.isConfirmed) {
         Swal.fire({
-          title: "¿Estas seguro? Se eliminara la licencia: "+hola.value,
+          title: "¿Estas seguro? Se eliminara la licencia: " + hola.value,
           showCancelButton: true,
           icon: "warning",
           confirmButtonText: "Eliminar",
-          iconColor:'#dc3545',
-          confirmButtonColor:'#dc3545'
+          iconColor: '#dc3545',
+          confirmButtonColor: '#dc3545'
         }).then((result) => {
-          if(result.isConfirmed){
+          if (result.isConfirmed) {
             const userId = localStorage.getItem('userId')!;
-            this.LicenciasService.softdeletedByOficio(hola.value,userId).subscribe(
+            this.LicenciasService.softdeletedByOficio(hola.value, userId).subscribe(
               response => {
                 console.log(response)
-                if(response.success ==false){
+                if (response.success == false) {
                   Swal.fire({
                     title: response.message!,
                     icon: "error"
                   });
-                }else{
+                } else {
                   Swal.fire(
                     '¡Eliminada!',
                     'La licencia ha sido eliminada correctamente.',
@@ -292,7 +290,7 @@ export class IngresoLicenciasComponent implements OnInit {
   }
   // Método para editar un registro
   onEdit(data: any) {
-//AAGP790513HH4
+    //AAGP790513HH4
     Swal.fire({
       title: 'Editar Registro',
       html: `
@@ -323,14 +321,14 @@ export class IngresoLicenciasComponent implements OnInit {
         </div>
       </div>`,
 
-    showCancelButton: true,
-    confirmButtonText: 'Guardar',
-    cancelButtonText: 'Cancelar',
-    preConfirm: () => {
-      const folio = (document.getElementById('folioId') as HTMLInputElement).value;
-      const fecha_inicio = ((document.getElementById('fecha_inicioId') as HTMLInputElement).value)+'T00:00:00';
-      const fecha_termino = ((document.getElementById('fecha_terminoId') as HTMLInputElement).value)+'T00:00:00';
-      const formato = parseInt((document.querySelector('input[name="formato"]:checked') as HTMLInputElement).value);
+      showCancelButton: true,
+      confirmButtonText: 'Guardar',
+      cancelButtonText: 'Cancelar',
+      preConfirm: () => {
+        const folio = (document.getElementById('folioId') as HTMLInputElement).value;
+        const fecha_inicio = ((document.getElementById('fecha_inicioId') as HTMLInputElement).value) + 'T00:00:00';
+        const fecha_termino = ((document.getElementById('fecha_terminoId') as HTMLInputElement).value) + 'T00:00:00';
+        const formato = parseInt((document.querySelector('input[name="formato"]:checked') as HTMLInputElement).value);
 
         // Validación de campos
         if (!folio || !fecha_inicio || !fecha_termino) {
@@ -352,15 +350,15 @@ export class IngresoLicenciasComponent implements OnInit {
         console.log('Datos editados:', dataEditada);
 
         // Envío de los datos editados al backend
-        this.guardarCambios(dataEditada,data.id);
+        this.guardarCambios(dataEditada, data.id);
       }
     });
   }
 
-  guardarCambios(data: any,licenciaId:any) {
+  guardarCambios(data: any, licenciaId: any) {
     const userId = localStorage.getItem('userId')!;
 
-    this.LicenciasService.updateLic(data,licenciaId, userId).subscribe(
+    this.LicenciasService.updateLic(data, licenciaId, userId).subscribe(
       response => {
         console.log('Se editó la licencia correctamente', response);
         this.buscar(this.srl_emp);
@@ -395,8 +393,8 @@ export class IngresoLicenciasComponent implements OnInit {
       showCancelButton: true,
       confirmButtonText: 'Sí, eliminar',
       cancelButtonText: 'Cancelar',
-      iconColor:'#dc3545',
-      confirmButtonColor:'#dc3545'
+      iconColor: '#dc3545',
+      confirmButtonColor: '#dc3545'
     }).then((result) => {
       if (result.isConfirmed) {
         // Llama al servicio para eliminar el registro
@@ -423,18 +421,18 @@ export class IngresoLicenciasComponent implements OnInit {
     });
   }
 
-  sumitOficios(){
+  sumitOficios() {
     let idsArray: number[] = []; // Array donde se guardarán los ids
-console.log(this.data)
-this.data.forEach((data: { id: number, nueva: string }) => {
-  if (data.nueva === "1") {
-    idsArray.push(data.id); // Agrega data.id al array si nueva es 1
-  }
-});
+    console.log(this.data)
+    this.data.forEach((data: { id: number, nueva: string }) => {
+      if (data.nueva === "1") {
+        idsArray.push(data.id); // Agrega data.id al array si nueva es 1
+      }
+    });
 
-const licenciasid = {
-  licenciasId: idsArray
-};
+    const licenciasid = {
+      licenciasId: idsArray
+    };
 
     const userId = localStorage.getItem('userId')!; // Asegúrate de obtener el userId correcto
     Swal.fire({
@@ -443,20 +441,20 @@ const licenciasid = {
       showCancelButton: true,
       confirmButtonText: 'Sí, estoy seguro',
       cancelButtonText: 'Cancelar',
-      iconColor:'#dc3545',
-      confirmButtonColor:'#dc3545'
+      iconColor: '#dc3545',
+      confirmButtonColor: '#dc3545'
     }).then((result) => {
       if (result.isConfirmed) {
         // Llama al servicio para crear un oficio
-        this.LicenciasService.patchLicenciasOficio(licenciasid, userId,this.srl_emp).subscribe(
+        this.LicenciasService.patchLicenciasOficio(licenciasid, userId, this.srl_emp).subscribe(
           (response: { data: { oficio: string } }) => { // Asegúrate de definir el tipo de respuesta
             console.log('Respuesta del servicio:', response);
             const oficio = response.data.oficio; // Accede al 'oficio' dentro de 'data'
 
             if (oficio) {
-                this.onPdf(oficio); // Llama a onPdf con el oficio
+              this.onPdf(oficio); // Llama a onPdf con el oficio
             } else {
-                console.error('No se recibió el número de oficio en la respuesta');
+              console.error('No se recibió el número de oficio en la respuesta');
             }
             // Swal.fire(
             //   '¡Oficio creado!',
@@ -475,7 +473,7 @@ const licenciasid = {
         );
       }
     });
-   }
+  }
 
 
 
@@ -487,7 +485,7 @@ const licenciasid = {
       const claves = data.claves;
       const licencias = data.licencias;
       const today = new Date();
-        const formattedDate = today.toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' });
+      const formattedDate = today.toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' });
 
       // Convertir la imagen a base64
       const imageBase64 = await this.ImageToBaseService.convertImageToBase64('assets/logo_gobhidalgo.png');
@@ -581,51 +579,255 @@ const licenciasid = {
       };
 
       // Generar y descargar el PDF
-      pdfMake.createPdf(documentDefinition).download('Oficios de licencias.pdf');
+      pdfMake.createPdf(documentDefinition).open();
     });
   }
 
-   historicopdf(){
+  historicopdf() {
     Swal.fire({
-      title: 'Que historico quiere ver?',
+      title: '¿Qué histórico desea ver?',
+      html: `
+        <div style="display: flex; align-items: center; margin-bottom: 10px;">
+        <label for="completo">Completo</label>
+        <input type="radio" id="completo" name="historico" value="completo" style="margin-left: 5px;">
+      </div>
+      <div style="display: flex; align-items: center;">
+        <label for="anterior">Año anterior</label>
+        <input type="radio" id="anterior" name="historico" value="anterior" style="margin-left: 5px;">
+      </div>
+      `,
       showCancelButton: true,
-      confirmButtonText: 'Completo',
-      cancelButtonText: 'Año anterior',
+      confirmButtonText: 'Confirmar',
+      cancelButtonText: 'Cancelar',
       customClass: {
         popup: 'small-swal', // Clase personalizada para ajustar el tamaño
         title: 'small-swal-title' // Clase para el título
       },
       width: '450px', // Ajustar el ancho
       padding: '1em', // Ajustar el padding
-      buttonsStyling: true, // Estilos para los botones
-      iconColor: '#3085d6', // Color del ícono
-      confirmButtonColor: '#3085d6', // Color del botón "Editar"
-      cancelButtonColor: '#3085d6', // Color del botón "Eliminar"
+      preConfirm: () => {
+        const selectedValue = (document.querySelector('input[name="historico"]:checked') as HTMLInputElement)?.value;
+        if (!selectedValue) {
+          Swal.showValidationMessage('Por favor, seleccione una opción');
+          return false;
+        }
+        return selectedValue;
+      }
     }).then((result) => {
       if (result.isConfirmed) {
-       this.LicenciasService.getHistorico(this.srl_emp).subscribe(response =>{
+        const opcionSeleccionada = result.value;
+        if (opcionSeleccionada === 'completo') {
+          console.log('Opción seleccionada: Completo');
+          this.LicenciasService.getHistorico(this.srl_emp).subscribe(async response => {
+            const data = response.data;
+            const licencias = data.licencias;
+            const licenciasPorPeriodo = licencias.reduce((acc: any, licencia: { periodo: any }) => {
+              (acc[licencia.periodo] = acc[licencia.periodo] || []).push(licencia);
+              return acc;
+            }, {});
+            const today = new Date();
+            const formattedDate = today.toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' });
+            const imageBase64 = await this.ImageToBaseService.convertImageToBase64('assets/logo_gobhidalgo.png');
+            const content: any[] = [
+              {
+                columns: [
+                  {
+                    image: imageBase64,
+                    alignment: 'right',
+                    width: 210,
+                    height: 50
+                  },
+                  {
+                    text: `Pachuca HGO. ${formattedDate}.`,
+                    alignment: 'right',
+                    style: 'subheader'
+                  }
+                ]
+              },
+              {
+                text: 'Reporte de Licencias Médicas/Accidentes de Trabajo',
+                style: 'header',
+                alignment: 'center',
+                color: '#621132',
+                margin: [40, 20, 0, 10]
+              },
+              {
+                text: `\nNombre: ${data.nombre.trim()}\nR.F.C. ${data.rfc}\nFecha de ingreso: ${data.fecha_ingreso}`,
+                style: 'subheader',
+                margin: [0, 20, 0, 20]
+              }
+            ];
 
-       })
+            // Para cada periodo, agregar un bloque de contenido con una tabla de licencias
+            Object.keys(licenciasPorPeriodo).forEach(periodo => {
+              const licencias = licenciasPorPeriodo[periodo] || []; // Asignar un arreglo vacío si no hay licencias
+              const totalDias = licencias.reduce((acc: any, licencia: { total_dias: any; }) => {
+                return acc + (licencia.total_dias || 0); // Asegúrate de que total_dias tenga un valor
+              }, 0);
+              content.push(
+                { text: `Periodo: ${periodo}`, style: 'subheader', margin: [0, 20, 0, 10] },
+                {
+                  table: {
+                    headerRows: 1,
+                    widths: ['auto', '*', 'auto', 'auto', '*'],
+                    body: [
+                      // Cabeceras de la tabla
+                      [
+                        { text: 'Folio', bold: true, fillColor: '#eeeeee', alignment: 'center' },
+                        { text: 'Periodo de la Licencia', bold: true, fillColor: '#eeeeee', alignment: 'center' },
+                        { text: 'Días', bold: true, fillColor: '#eeeeee', alignment: 'center' },
+                        { text: 'Oficio', bold: true, fillColor: '#eeeeee', alignment: 'center' },
+                        { text: 'Fecha de captura', bold: true, fillColor: '#eeeeee', alignment: 'center' },
+                      ],
+                      // Agregar cada licencia correspondiente a este periodo
+                      ...licenciasPorPeriodo[periodo].map((licencia: { foliolic: any, desde: any, hasta: any, total_dias: any, oficio: any, fechaCaptura: any, apartir: any }) => [
+                        { text: licencia.foliolic, alignment: 'center' },
+                        { text: `${licencia.desde} - ${licencia.hasta}`, alignment: 'center' },
+                        { text: licencia.total_dias, alignment: 'center' },
+                        { text: licencia.oficio, alignment: 'center' },
+                        { text: licencia.fechaCaptura, alignment: 'center' },
+                      ])
+                    ]
+                  },
+                  alignment: 'center',
+                  margin: [0, 10, 0, 20]
+                },
+                {
+                  text: `Total de días del periodo: ${totalDias}`,
+                  alignment: 'right',
+                  bold: true,
+                  margin: [0, 20, 0, 20]
+                }
+              );
+            });
 
-      } else if (result.dismiss === Swal.DismissReason.cancel) {
-        console.log('Eliminar acción seleccionada');
-        // Lógica para eliminar
+            const documentDefinition = {
+              content: content,
+              styles: {
+                header: {
+                  fontSize: 20,
+                  bold: true,
+                },
+                subheader: {
+                  fontSize: 14,
+                  bold: true
+                }
+              }
+            };
+
+            pdfMake.createPdf(documentDefinition).open();
+          },
+            error => {
+              console.error('Error al obtener el histórico:', error);  // Manejo de error
+            });
+        } else if (opcionSeleccionada === 'anterior') {
+          console.log('Opción seleccionada: Año anterior');
+          this.LicenciasService.getHistoricoAnte(this.srl_emp).subscribe(async response => {
+            const data = response.data;
+            const licencias = data.licencias;
+            const totalDias = licencias.reduce((acc: any, licencia: { total_dias: any; }) => {
+              return acc + (licencia.total_dias || 0); // Asegúrate de que total_dias tenga un valor
+            }, 0);
+            const today = new Date();
+            const formattedDate = today.toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' });
+            const imageBase64 = await this.ImageToBaseService.convertImageToBase64('assets/logo_gobhidalgo.png');
+            const documentDefinition: any = {
+              content: [
+                {
+                  columns: [
+                    {
+                      image: imageBase64, // Usar la imagen convertida
+                      alignment: 'right',
+                      width: 210, // Ajustar el ancho
+                      height: 50, // Ajustar la altura
+                    },
+                    {
+                      text: `Pachuca HGO. ${formattedDate}.`,
+                      alignment: 'right',
+                      style: 'subheader'
+                    }
+                  ]
+                },
+                {
+                  text: 'Reporte de Licencias Médicas/Accidentes de Trabajo del periodo anterior',
+                  style: 'header',
+                  alignment: 'center',
+                  color: '#621132',
+                  margin: [40, 20, 0, 10]
+                },
+                {
+                  text: `\nNombre: ${data.nombre.trim()}\nR.F.C. ${data.rfc}\nFecha de ingreso: ${data.fecha_ingreso}`,
+                  style: 'subheader',
+                  margin: [0, 20, 0, 0]
+                },
+                { text: `Periodo: ${response.message}`, style: 'subheader', margin: [0, 20, 0, 10] },
+                {
+                  table: {
+                    headerRows: 1,
+                    widths: ['auto', '*', 'auto', 'auto', '*'],
+                    body: [
+                      // Cabeceras de la tabla
+                      [
+                        { text: 'Folio', bold: true, fillColor: '#eeeeee', alignment: 'center' },
+                        { text: 'Periodo de la Licencia', bold: true, fillColor: '#eeeeee', alignment: 'center' },
+                        { text: 'Días', bold: true, fillColor: '#eeeeee', alignment: 'center' },
+                        { text: 'Oficio', bold: true, fillColor: '#eeeeee', alignment: 'center' },
+                        { text: 'Fecha de captura', bold: true, fillColor: '#eeeeee', alignment: 'center' },
+                      ],
+                      // Agregar cada licencia correspondiente a este periodo
+                      ...licencias.map((licencia: { foliolic: any, desde: any, hasta: any, total_dias: any, oficio: any, fechaCaptura: any, apartir: any }) => [
+                        { text: licencia.foliolic, alignment: 'center' },
+                        { text: `${licencia.desde} - ${licencia.hasta}`, alignment: 'center' },
+                        { text: licencia.total_dias, alignment: 'center' },
+                        { text: licencia.oficio, alignment: 'center' },
+                        { text: licencia.fechaCaptura, alignment: 'center' },
+                      ])
+                    ]
+                  },
+                  margin: [0, 10, 0, 30]
+                },
+                {
+                  text: `Total de días del periodo: ${totalDias}`,
+                  alignment: 'right',
+                  bold: true,
+                  margin: [0, 20, 0, 20]
+                }
+
+              ],
+              styles: {
+                header: {
+                  fontSize: 20,
+                  bold: true,
+                },
+                subheader: {
+                  fontSize: 14,
+                  bold: true
+                }
+              }
+            };
+            // Generar y descargar el PDF
+            pdfMake.createPdf(documentDefinition).open();
+          },
+            error => {
+              console.error('Error al obtener el histórico:', error);  // Manejo de error
+            });
+        }
       }
     });
-
-   }
-
-   }
+  }
 
 
+}
 
 
-  // Método para eliminar un registro
-  // onDelete(row: any) {
-  //   console.log('Deleting row', row);
-  //   this.LicenciasService.deleteLicencia(row.folio).subscribe(() => {
-  //     // Eliminar el registro del arreglo de datos localmente
-  //     this.data = this.data.filter(item => item.folio !== row.folio);
-  //   });
-  // }
+
+
+// Método para eliminar un registro
+// onDelete(row: any) {
+//   console.log('Deleting row', row);
+//   this.LicenciasService.deleteLicencia(row.folio).subscribe(() => {
+//     // Eliminar el registro del arreglo de datos localmente
+//     this.data = this.data.filter(item => item.folio !== row.folio);
+//   });
+// }
 
