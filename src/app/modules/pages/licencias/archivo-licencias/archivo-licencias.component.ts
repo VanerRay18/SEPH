@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { ApiResponse } from 'src/app/models/ApiResponse';
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
+import { ImageToBaseService } from './../../../../services/image-to-base.service';
 
 
 @Component({
@@ -17,7 +18,8 @@ export class ArchivoLicenciasComponent implements OnInit {
   data: any[] = [];
 
   constructor(
-    private LicenciasService: LicenciasService
+    private LicenciasService: LicenciasService,
+    private ImageToBaseService: ImageToBaseService
   ) {
     // Registrar las fuentes necesarias
     (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
@@ -61,7 +63,7 @@ export class ArchivoLicenciasComponent implements OnInit {
 
   generatePdfLicencias() {
     const formattedDate = this.getCurrentFormattedDate();
-    this.LicenciasService.getLicenciasArchivo().subscribe(response => {
+    this.LicenciasService.getLicenciasArchivo().subscribe(async response => {
       if (response && response.data && Array.isArray(response.data)) {
         const data = response.data.map((item, index) => ({
           no: index + 1, // Número autoincremental
@@ -72,77 +74,77 @@ export class ArchivoLicenciasComponent implements OnInit {
           licenciasEspeciales: '', // Campo vacío
           licenciasMedicas: item.folio
         }));
-
+        const imageBase64 = await this.ImageToBaseService.convertImageToBase64('assets/logo_gobhidalgo.png');
         const documentDefinition: any = {
           content: [
-            { text: 'Coordinación General de Administración y Finanzas', bold: true, margin: [0, 0, 0, 0], alignment: 'left', color: '#621132' },
-            { text: 'Dirección General de Recursos Humanos', bold: true, margin: [0, 0, 0, 0], alignment: 'left', color: '#621132' },
-            { text: 'Dirección de Nómina y Control de Plazas', bold: true, margin: [0, 0, 0, 20], alignment: 'left', color: '#621132' },
-
             {
               table: {
-                widths: ['*', '*'], // Dos columnas de igual tamaño
+                widths: ['auto', '*'], // Asegura que solo haya dos columnas como especificado
                 body: [
                   [
                     {
-                      text: 'Para: Brenda Martínez Alavez\nTitular de la Unidad Técnica de Resguardo Documental',
-                      margin: [0, 0, 0, 0], // Sin margen
+                      image: imageBase64,
                       alignment: 'left',
-                      bold: true // Alinear a la izquierda
+                      width: 210,
+                      height: 50,
+                      margin: [0, 0, 0, 30]
                     },
                     {
-                      text: 'HOJA: 1',
-                      margin: [0, 0, 0, 0], // Sin margen
-                      alignment: 'right', // Alinear a la derecha
+                      text: 'Coordinación General de Administración y Finanzas\nDirección General de Recursos Humanos\nDirección de Nómina y Control de Plazas',
+                      alignment: 'right',
+                      bold: true,
+                      color: '#621132',
+                      margin: [0, 0, 0, 30]
                     }
                   ],
                   [
                     {
                       text: 'De: José Gabriel Castro Bautista\nDirector de Nómina y Control de Plazas',
-                      margin: [0, 0, 0, 0], // Sin margen
                       alignment: 'left',
-                      bold: true // Alinear a la izquierda
+                      bold: true
                     },
                     {
                       text: `NO. OFICIO: DNCP/SNI/0150/2024\nFECHA: ${formattedDate}`,
-                      margin: [0, 0, 0, 0], // Sin margen
-                      alignment: 'right', // Alinear a la derecha
+                      alignment: 'right'
                     }
                   ]
                 ]
               },
-              layout: 'noBorders', // Sin bordes para que parezca más limpio
+              layout: 'noBorders', // Sin bordes para la tabla de encabezado
             },
-            { text: '', margin: [0, 20, 0, 0] }, // Espacio de 20 unidades de margen arriba
+            { text: '', margin: [0, 30, 0, 0] }, // Espacio de 20 unidades de margen arriba
             {
               table: {
                 headerRows: 1,
-                widths: ['auto', '*', 'auto', 'auto', 'auto', 'auto', 'auto'],
+                widths: ['auto', '*', 'auto', 'auto', 'auto', 'auto', 'auto'], // Anchos para las columnas de la tabla
                 body: [
+                  // Encabezados de la tabla
                   [
-                    { text: 'No.', bold: true, color: '#FFFFFF' },
-                    { text: 'Nombre', bold: true, color: '#FFFFFF' },
-                    { text: 'RFC', bold: true, color: '#FFFFFF' },
-                    { text: 'FUPS', bold: true, color: '#FFFFFF' },
-                    { text: 'Nombramientos Definitivos', bold: true, color: '#FFFFFF' },
-                    { text: 'Licencias Médicas', bold: true, color: '#FFFFFF' },
-                    { text: 'Licencias Especiales', bold: true, color: '#FFFFFF' },
+                    { text: 'No.', bold: true, color: '#FFFFFF', fillColor: '#621132', alignment: 'center' },
+                    { text: 'Nombre', bold: true, color: '#FFFFFF', fillColor: '#621132', alignment: 'center' },
+                    { text: 'RFC', bold: true, color: '#FFFFFF', fillColor: '#621132', alignment: 'center' },
+                    { text: 'FUPS', bold: true, color: '#FFFFFF', fillColor: '#621132', alignment: 'center' },
+                    { text: 'Nombramientos Definitivos', bold: true, color: '#FFFFFF', fillColor: '#621132', alignment: 'center' },
+                    { text: 'Licencias Médicas', bold: true, color: '#FFFFFF', fillColor: '#621132', alignment: 'center' },
+                    { text: 'Licencias Especiales', bold: true, color: '#FFFFFF', fillColor: '#621132', alignment: 'center' },
                   ],
+                  // Filas de contenido de la tabla
                   ...data.map(item => [
-                    item.no,
-                    item.nombre,
-                    item.rfc,
-                    item.fups, // Columna vacía
-                    item.nombramientos, // Columna vacía
-                    item.licenciasMedicas,
-                    item.licenciasEspeciales // Columna vacía
+                    { text: item.no, color: '#000000', fillColor: '#FFFFFF', alignment: 'center' },
+                    { text: item.nombre, color: '#000000', fillColor: '#FFFFFF', alignment: 'center' },
+                    { text: item.rfc, color: '#000000', fillColor: '#FFFFFF', alignment: 'center' },
+                    { text: item.fups, color: '#000000', fillColor: '#FFFFFF', alignment: 'center' }, // Columna vacía
+                    { text: item.nombramientos, color: '#000000', fillColor: '#FFFFFF', alignment: 'center' }, // Columna vacía
+                    { text: item.licenciasMedicas, color: '#000000', fillColor: '#FFFFFF', alignment: 'center' },
+                    { text: item.licenciasEspeciales, color: '#000000', fillColor: '#FFFFFF', alignment: 'center' } // Columna vacía
                   ])
                 ]
               },
               layout: {
-                fillColor: (rowIndex: number) => {
-                  return (rowIndex % 2 === 0) ? '#621132' : null;
-                }
+                hLineWidth: () => 0.5, // Grosor de las líneas horizontales
+                vLineWidth: () => 0.5, // Grosor de las líneas verticales
+                hLineColor: () => '#000000', // Color de las líneas horizontales
+                vLineColor: () => '#000000', // Color de las líneas verticales
               }
             }
           ],
@@ -167,21 +169,33 @@ export class ArchivoLicenciasComponent implements OnInit {
         };
 
         pdfMake.createPdf(documentDefinition).open();
+
+
       }
     });
   }
 
   generatePdfFormato() {
-    this.LicenciasService.getLicenciasArchivo().subscribe(response => {
+    this.LicenciasService.getLicenciasArchivo().subscribe(async response => {
       if (response && response.message) {
         const messageNumber = response.message;
         const today = new Date();
         const formattedDate = today.toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' });
+        const imageBase64 = await this.ImageToBaseService.convertImageToBase64('assets/logo_gobhidalgo.png');
         const documentDefinition: any = {
           content: [
+            {
+              columns: [
+                {
+                  image: imageBase64, // Usar la imagen convertida
+                  alignment: 'right',
+                  width: 210, // Ajustar el ancho
+                  height: 50, // Ajustar la altura
+                }
+              ]
+            },
 
             { text: `Pachuca HGO., ${formattedDate}`, alignment: 'right', margin: [0, 10, 0, 10] },
-
             { text: 'Brenda Martínez Alavez', bold: true, margin: [0, 10, 0, 0] },
             { text: 'Jefa de la Unidad Técnica de Resguardo Documental' },
             { text: 'P R E S E N T E', bold: true, margin: [0, 0, 0, 90], }, // [izquierda, arriba, derecha, abajo]

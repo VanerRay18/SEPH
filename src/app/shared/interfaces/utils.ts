@@ -70,4 +70,28 @@ export interface OficioPdf {
   }>;
 }
 
+export interface historico {
+  data: {
+    nombre: string;
+    rfc: string;
+    fecha_ingreso: number;
+  };
+  licencias: Array<{
+    hasta: string;
+    desde: string;
+    periodo: number;
+    srl_emp: number;
+    nombre: string;
+    rfc: string;
+    foliolic: string;
+    oficio: number | null,
+    fechaCaptura: string;
+    observaciones: string;
+    apartir: string |null;
+    sumaDias: number;
+    accidente: number;
+    sep: number;
+    total_dias: number;
+  }>;
+}
 

@@ -94,6 +94,13 @@ export class LicenciasService {
     );
   }
 
+  getAcuerdos(srl_emp: string): Observable<ApiResponse> {//Historial actual de accidentes de trabajo
+    let headers = new HttpHeaders({'srl_emp': srl_emp})
+    return this.http.get<ApiResponse>(`${environment.baseService}${'/licMedicas/precidenciales'}`,
+      {headers}
+    );
+  }
+
   softdeletedByOficio(folio: string, userId: string): Observable<ApiResponse> { //elimina una licencia de manera general
     let headers = new HttpHeaders({'folio': folio, 'userId':userId})
     return this.http.patch<ApiResponse>(`${environment.baseService}${'/licMedicas/softdeletedByOficio'}`,null,
