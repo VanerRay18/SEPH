@@ -41,7 +41,7 @@ export class IngresoLicenciasComponent implements OnInit {
     { id: 'accidentes', title: 'Accidentes de Trabajo', icon: 'fas fa-exclamation-triangle' },
     { id: 'acuerdos', title: 'Acuerdos Precedenciales', icon: 'fas fa-handshake' }
   ];
- srl_emp: any = ""; 
+ srl_emp: any = "";
   constructor(
     private LicenciasService: LicenciasService,
     private fb: FormBuilder,
@@ -380,8 +380,9 @@ export class IngresoLicenciasComponent implements OnInit {
         Swal.fire({
           title: 'Error',
           text: error.error.message,
-          icon: 'error',
-          confirmButtonText: 'Aceptar'
+          showConfirmButton: false,
+          timer: 1500,
+          timerProgressBar: true
         });
       }
     );
@@ -589,12 +590,13 @@ export class IngresoLicenciasComponent implements OnInit {
       title: '¿Qué histórico desea ver?',
       html: `
         <div style="display: flex; align-items: center; margin-bottom: 10px;">
-        <label for="completo">Completo</label>
-        <input type="radio" id="completo" name="historico" value="completo" style="margin-left: 5px;">
+         <input type="radio" id="completo" name="historico" value="completo" style="margin-right: 5px;">
+         <label for="completo">Completo</label>
+
       </div>
       <div style="display: flex; align-items: center;">
+        <input type="radio" id="anterior" name="historico" value="anterior" style="margin-right: 5px;">
         <label for="anterior">Año anterior</label>
-        <input type="radio" id="anterior" name="historico" value="anterior" style="margin-left: 5px;">
       </div>
       `,
       showCancelButton: true,
@@ -719,7 +721,13 @@ export class IngresoLicenciasComponent implements OnInit {
             pdfMake.createPdf(documentDefinition).open();
           },
             error => {
-              console.error('Error al obtener el histórico:', error);  // Manejo de error
+              console.error('Error al obtener el histórico:', error);
+              Swal.fire({
+                title: 'No exite historico ',
+                text:  error.error.message,
+                icon: 'error',
+                confirmButtonText: 'OK'
+              });  // Manejo de error
             });
         } else if (opcionSeleccionada === 'anterior') {
           console.log('Opción seleccionada: Año anterior');
@@ -811,6 +819,12 @@ export class IngresoLicenciasComponent implements OnInit {
           },
             error => {
               console.error('Error al obtener el histórico:', error);  // Manejo de error
+              Swal.fire({
+                title: 'No exite historico Anterior',
+                text:  error.error.message,
+                icon: 'error',
+                confirmButtonText: 'OK'
+              });
             });
         }
       }

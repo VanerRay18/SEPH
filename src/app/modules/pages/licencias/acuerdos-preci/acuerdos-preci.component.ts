@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { LicenciasService } from 'src/app/services/licencias-service/licencias.service';
 import { Employee } from 'src/app/shared/interfaces/usuario.model';
 import { ApiResponse } from 'src/app/models/ApiResponse';
@@ -9,8 +9,8 @@ import { ApiResponse } from 'src/app/models/ApiResponse';
   styleUrls: ['./acuerdos-preci.component.css']
 })
 export class AcuerdosPreciComponent {
-  headers = ['No. de Licencia', 'Desde', 'Hasta', 'Días', 'Status de licencia','No. de oficio'];
-  displayedColumns = ['folio', 'desde', 'hasta', 'total_dias', 'status','oficio'];
+  headers = ['No. de Certificado','Acuerdo', 'Tipo', 'Desde', 'Hasta', 'Días','No. de oficio'];
+  displayedColumns = ['numero_certificado','acuerdo', 'tipo', 'desde', 'hasta', 'total_dias','oficio'];
   data = [];
 
 
@@ -31,7 +31,7 @@ export class AcuerdosPreciComponent {
     { id: 'accidentes', title: 'Accidentes de Trabajo', icon: 'fas fa-exclamation-triangle' },
     { id: 'acuerdos', title: 'Acuerdos Precedenciales', icon: 'fas fa-handshake' }
   ];
-  srl_emp:any ="";
+  @Input() srl_emp: any = "";
   constructor(
     private LicenciasService: LicenciasService
   ) {
@@ -39,14 +39,8 @@ export class AcuerdosPreciComponent {
   }
   ngOnInit() {
 
-     // Obtener datos del servicio cuando se inicializa el componente
-     this.LicenciasService.getUsers().subscribe((response: { data: Employee[] }) => {
-      this.items = response.data.map((user: Employee) => ({
-        rfc: user.rfc,
-        nombre: user.nombre,
-        srl_emp:user.srl_emp
-      }));
-    });
+    this.buscar(this.srl_emp)
+
   }
 // Filtrar RFC al escribir
 filterRFC() {
@@ -96,7 +90,7 @@ selectNombre(item: { rfc: string; nombre: string ; srl_emp:number}) {
 buscar(srl_emp:any) {
   console.log('Buscando por RFC:', this.rfcSearchTerm, 'y Nombre:', this.nombreSearchTerm);
 
-  this.LicenciasService.getLicencias(srl_emp).subscribe((response: ApiResponse) => {
+  this.LicenciasService.getAcuerdos(srl_emp).subscribe((response: ApiResponse) => {
     this.data = response.data; // Asegúrate de mapear correctamente los datos
     console.log(response)
   });
