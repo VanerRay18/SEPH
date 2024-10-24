@@ -20,6 +20,8 @@ export class TablesComponent {
 @Input() showActionsEdit: boolean = false;
 @Input() showActionsDeleted: boolean = false;
 @Input() showActionsPdf: boolean = false;
+
+@Input() maxHeight: string = '300px';
 // Outputs para emitir eventos de editar o eliminar
 @Output() edit: EventEmitter<any> = new EventEmitter();
 @Output() delete: EventEmitter<any> = new EventEmitter();
@@ -30,6 +32,7 @@ export class TablesComponent {
  enableScroll: boolean = false;
 
  ngOnChanges() {
+  console.log('maxHeight:', this.maxHeight);
    // Verificar si hay más de 10 filas
    this.enableScroll = this.data.length > 3;
  }

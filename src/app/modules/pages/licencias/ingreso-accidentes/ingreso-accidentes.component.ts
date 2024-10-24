@@ -18,9 +18,9 @@ export class IngresoAccidentesComponent{
   data = [];
   table:any = true;
   srl_emp: any; 
-  eliminar:any = false;
-  agregar:any = false;
-  modificar:any = false;
+  eliminar:boolean = false;
+  agregar:boolean = false;
+  modificar:boolean = false;
   activeTab: string = 'licencias'; // Pestaña activa por defecto
 
   tabs = [
