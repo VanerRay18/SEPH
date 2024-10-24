@@ -28,6 +28,7 @@ export interface Logs {
 }
 
 export interface LicMedica{
+sep?: any;
 sumaDias:any,
 total_dias:any,
 nueva:any,

@@ -24,7 +24,8 @@ export class IngresoLicenciasComponent {
   table:any = true;
   srl_emp: any;
   activeTab: string = 'licencias';
-
+  currentDate!: string;
+  sep: any;
   eliminar:any = false;
   agregar:any = false;
   modificar:any = false;
@@ -51,10 +52,11 @@ export class IngresoLicenciasComponent {
     this.modificar = this.PermisosUserService.edit();
     this.agregar = this.PermisosUserService.add();
     this.eliminar = this.PermisosUserService.deleted();
-
+    this.currentDate = this.getCurrentDate(this.sep).date; // Asigna la fecha actual
+    this.sep = ''; // Inicializa 'sep'
     this.BusquedaserlService.srlEmp$.subscribe(value => {
       this.showCard = value.mostrar;
-      
+
       if(value.mostrar == true){
         this.srl_emp = value.srl_emp;
         this.buscar(this.srl_emp);}
@@ -71,26 +73,46 @@ export class IngresoLicenciasComponent {
       formato: ['', Validators.required]
     });
   }
+
+  getCurrentDate(sep: any): { date: string; sep: any } {
+    const today = new Date();
+    const day = String(today.getDate()).padStart(2, '0');
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const year = today.getFullYear();
+
+    return {
+      date: `${day}/${month}/${year}`, // Formato: dd/mm/yyyy
+      sep: sep // Asigna el valor correcto para 'sep'
+    };
+  }
+
+
   // Método para buscar con los términos ingresados
   buscar(srl_emp: any) {
-    console.log("buscar: "+srl_emp)
-    
+    console.log("buscar: " + srl_emp);
     this.srl_emp = srl_emp;
 
     this.LicenciasService.getLicencias(srl_emp).subscribe((response: ApiResponse) => {
-      this.table = true
-      this.data = response.data.map((item: LicMedica) => ({
-        ...item,
-        rango_fechas: `${item.total_dias} -   ${item.accidente == 1? '':item.sumaDias}`
-      })); // Aquí concatenas las fechas
-
+      this.table = true;
+      this.data = response.data.map((item: LicMedica) => {
+        const currentDateInfo = this.getCurrentDate(item.sep); // Llama a getCurrentDate con "sep"
+        return {
+          ...item,
+          rango_fechas: `${item.total_dias} - ${item.accidente == 1 ? '' : item.sumaDias}`,
+          currentDate: currentDateInfo.date, // Guarda la fecha actual
+          sep: currentDateInfo.sep // Guarda el valor de "sep"
+        };
+      });
+      // Si necesitas usar 'sep' de alguna manera en el componente, asígnalo
+      this.sep = response.data[0]?.sep; // Asignar un valor por defecto de 'sep' del primer elemento, si existe
     },
     (error) => {
-      this.table = false; // Asegúrate de manejar el estado de la tabla en caso de error
+      this.table = false; // Manejo del estado de la tabla en caso de error
       console.error('Error al obtener los accidentes: ', error); // Manejo del error
-    }
-    );
+    });
   }
+
+
 
   onSumit(): void {
     if (this.insertarLic.valid) {
@@ -584,6 +606,9 @@ export class IngresoLicenciasComponent {
               (acc[licencia.periodo] = acc[licencia.periodo] || []).push(licencia);
               return acc;
             }, {});
+            const totalDiasSumados = licencias.reduce((acc: number, licencia: { total_dias: number }) => {
+              return acc + (licencia.total_dias || 0); // Asegúrate de sumar solo números
+            }, 0);
             const today = new Date();
             const formattedDate = today.toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' });
             const imageBase64 = await this.ImageToBaseService.convertImageToBase64('assets/logo_gobhidalgo.png');
@@ -614,6 +639,13 @@ export class IngresoLicenciasComponent {
                 text: `\nNombre: ${data.nombre.trim()}\nR.F.C. ${data.rfc}\nFecha de ingreso: ${data.fecha_ingreso}`,
                 style: 'subheader',
                 margin: [0, 20, 0, 20]
+              },
+              {
+                text: `Total de días de licencias: ${totalDiasSumados}`,
+                  alignment: 'right',
+                  style: 'subheader',
+                  bold: true,
+                  margin: [0, 20, 0, 20]
               }
             ];
 
