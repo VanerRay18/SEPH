@@ -405,6 +405,9 @@ export class IngresoLicenciasComponent {
       }
     });
   }
+  reload(){
+    this.buscar(this.srl_emp)
+  }
 
   sumitOficios() {
     let idsArray: number[] = []; // Array donde se guardarán los ids

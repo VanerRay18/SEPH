@@ -9,6 +9,7 @@ h5 {
   border: 10%; /* Esta propiedad no afecta el redondeo; probablemente querías usar border-width */
   border-radius: 10px; /* Ajusta el valor según el grado de redondeo deseado */
 }
+
 .card2 {
   background-color: #ffffff;
   border-top: none;
@@ -30,14 +31,7 @@ h5 {
   border: 1px solid #ccc; /* Borde para visualización */
 }
 
-@media (min-width: 768px) {
-  .Busq {
-    width: 78%; /* Cambia el ancho a 70% en pantallas de 768px o más */
-    margin: 10px; /* Centra el elemento */
-    padding: 5px; /* Espacio interior */
-  }
 
-}
 
 @media (min-width: 992px) {
   .form-control {
@@ -45,18 +39,25 @@ h5 {
     min-width: 200px; /* Asegurarse de que no sean demasiado pequeños */
   }
 
+  .row {
+    gap: 10px; /* Reducir el espacio entre los elementos */
+    align-items: center; /* Alinear verticalmente los elementos */
+  }
+
   .btn-success {
     padding-left: 30px;
     padding-right: 30px;
   }
-  
+  .card {
+    padding: 15px;
+    width: 100%;
+  }
 }
 
 .search-container {
   display: flex;
   flex-direction: row; /* Mantiene todos los elementos en una fila */
   align-items: center; /* Alinea verticalmente los elementos */
-  
   margin-bottom: 20px; /* Espacio debajo del contenedor */
 }
 

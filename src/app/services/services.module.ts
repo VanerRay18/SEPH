@@ -8,5 +8,8 @@ import { CommonModule } from '@angular/common';
   imports: [
     CommonModule
   ]
+
+  //ng build --configuration=produccion
+
 })
 export class ServicesModule { }
