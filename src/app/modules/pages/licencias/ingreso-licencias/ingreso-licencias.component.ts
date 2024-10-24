@@ -26,9 +26,9 @@ export class IngresoLicenciasComponent {
   activeTab: string = 'licencias';
   currentDate!: string;
   sep: any;
-  eliminar:any = false;
-  agregar:any = false;
-  modificar:any = false;
+  eliminar:boolean = false;
+  agregar:boolean = false;
+  modificar:boolean = false;
 
   tabs = [
     { id: 'licencias', title: 'Licencias Médicas', icon: 'fas fa-file-medical' },
@@ -433,10 +433,10 @@ export class IngresoLicenciasComponent {
         // Llama al servicio para crear un oficio
         this.LicenciasService.patchLicenciasOficio(licenciasid, userId, this.srl_emp).subscribe(
           (response: { data: { oficio: string } }) => { // Asegúrate de definir el tipo de respuesta
-            console.log('Respuesta del servicio:', response);
             const oficio = response.data.oficio; // Accede al 'oficio' dentro de 'data'
 
             if (oficio) {
+              this.buscar(this.srl_emp);
               this.onPdf(oficio); // Llama a onPdf con el oficio
             } else {
               console.error('No se recibió el número de oficio en la respuesta');

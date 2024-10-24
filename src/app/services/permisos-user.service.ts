@@ -7,16 +7,19 @@ export class PermisosUserService {
 
   constructor() { }
 
-  edit(){
-    return localStorage.getItem('editar') != null ?localStorage.getItem('editar'): true;
+  edit(): boolean {
+    const editarValue = localStorage.getItem('editar');
+    return editarValue !== null ? editarValue === 'true' : true;
   }
 
-  deleted(){
-    return localStorage.getItem('aliminar') != null ?localStorage.getItem('eliminar'): true;
+  deleted(): boolean {
+    const eliminarValue = localStorage.getItem('eliminar');
+    return eliminarValue !== null ? eliminarValue === 'true' : true;
   }
-
-  add(){
-    return localStorage.getItem('agregar') != null ?localStorage.getItem('agregar'): true;
+  
+  add(): boolean {
+    const agregarValue = localStorage.getItem('agregar');
+    return agregarValue !== null ? agregarValue === 'true' : true;
   }
 }
 
