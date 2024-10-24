@@ -1,11 +1,11 @@
 <div class="card">
   <div class="row">
     <div class="col-auto">
-      <h5 class="ms-2 mt-2">Ingresar un nuevo Accidente de
+      <h5 class="ms-2 mt-2" *ngIf="this.agregar == 'true'">Ingresar un nuevo Accidente de
         trabajo</h5>
     </div>
   </div>
-  <form [formGroup]="insertarLics" class="m-3" (ngSubmit)="onSumit()">
+  <form [formGroup]="insertarLics" class="m-3" (ngSubmit)="onSumit()" *ngIf="this.agregar == 'true'">
     <div class="row">
       <div class="col-auto">
         <label for="folio" class="form-label">Folio:</label>
@@ -53,9 +53,9 @@
   [headers]="headers" 
   [data]="data" 
   [displayedColums]="displayedColumns" 
-  [showActionsEdit]=true
+  [showActionsEdit]="modificar == 'true'?true:false"
     (edit)="onEdit($event)" 
-    [showActionsDeleted]=true
+    [showActionsDeleted]="eliminar== 'true'?true:false"
     (delete)="onDelete($event)"
      [showActionsPdf]=false></app-tables>
 

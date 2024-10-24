@@ -3,7 +3,7 @@ import { Router, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/services/auth.service';
 import Swal from 'sweetalert2';
-
+import { BusquedaserlService } from 'src/app/services/busquedaserl.service';
 export class TreeNode {
   moduleId!: number; // ID del módulo
   moduleName!: string; // Nombre del módulo
@@ -27,7 +27,8 @@ export class NavComponent implements OnInit, OnDestroy {
 
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private BusquedaserlService: BusquedaserlService,
   ) {     this.currentRoute = this.router.url;}
 
   ngOnInit(): void {
@@ -110,6 +111,7 @@ console.log(data)
   }
 
   ngOnDestroy(): void {
+    this.BusquedaserlService.clearSrlEmp()
     this.subs.forEach(sub => sub.unsubscribe());
   }
 }

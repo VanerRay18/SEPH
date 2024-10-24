@@ -1,33 +1,26 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { LicenciasService } from 'src/app/services/licencias-service/licencias.service';
-import { Employee } from 'src/app/shared/interfaces/usuario.model';
+import { BusquedaserlService } from 'src/app/services/busquedaserl.service';
 import { ApiResponse } from 'src/app/models/ApiResponse';
 import Swal from 'sweetalert2';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
-
+import { PermisosUserService } from 'src/app/services/permisos-user.service';
 @Component({
   selector: 'ingreso-accidentes',
   templateUrl: './ingreso-accidentes.component.html',
   styleUrls: ['./ingreso-accidentes.component.css']
 })
-export class IngresoAccidentesComponent implements OnChanges{
+export class IngresoAccidentesComponent{
   insertarLics!: FormGroup;
   headers = ['No. de Licencia', 'Desde', 'Hasta', 'Días', 'No. de oficio', 'Acciones'];
   displayedColumns = ['folio', 'desde', 'hasta', 'total_dias','oficio'];
   data = [];
   table:any = true;
-
-  rfcSearchTerm: string = '';
-  nombreSearchTerm: string = '';
-
-  // Aquí es donde se almacenarán los datos que lleguen del backend
-  items: { rfc: string; nombre: string ; srl_emp:number}[] = [];
-
-  // Sugerencias para dropdown
-  rfcSuggestions: { rfc: string; nombre: string; srl_emp:number }[] = [];
-  nombreSuggestions: { rfc: string; nombre: string ; srl_emp:number}[] = [];
-
+  srl_emp: any; 
+  eliminar:any = false;
+  agregar:any = false;
+  modificar:any = false;
   activeTab: string = 'licencias'; // Pestaña activa por defecto
 
   tabs = [
@@ -35,79 +28,34 @@ export class IngresoAccidentesComponent implements OnChanges{
     { id: 'accidentes', title: 'Accidentes de Trabajo', icon: 'fas fa-exclamation-triangle' },
     { id: 'acuerdos', title: 'Acuerdos Precedenciales', icon: 'fas fa-handshake' }
   ];
-  @Input() srl_emp: any = ""; 
+ 
   constructor(
     private fb: FormBuilder,
-    private LicenciasService: LicenciasService
+    private LicenciasService: LicenciasService,
+    private BusquedaserlService: BusquedaserlService,
+    private PermisosUserService:PermisosUserService
   ) {
     //this.fetchData(); // Si tienes un endpoint real, descomenta esto
   }
   ngOnInit() {
-    this.buscar(this.srl_emp)
-
+    this.modificar = this.PermisosUserService.edit();
+    this.agregar = this.PermisosUserService.add();
+    this.eliminar = this.PermisosUserService.deleted();
+    this.BusquedaserlService.srlEmp$.subscribe(value => {
+      if(value.mostrar == true){
+        this.srl_emp = value.srl_emp;
+        this.buscar(this.srl_emp);}
+    });
     this.HOLA();
-
   }
-  ngOnChanges(changes: SimpleChanges) {
-      this.buscar(changes['srl_emp']);
-    
-  }
-// Filtrar RFC al escribir
-filterRFC() {
-  if (this.rfcSearchTerm.length >= 3) { // Verificar si hay al menos 3 caracteres
-    this.rfcSuggestions = this.items.filter(item =>
-      item.rfc.toLowerCase().includes(this.rfcSearchTerm.toLowerCase())
-    );
-  } else {
-    this.rfcSuggestions = []; // Limpiar las sugerencias si no hay suficientes caracteres
-  }
-  this.nombreSuggestions = [];
-}
 
-// Filtrar Nombre al escribir
-filterNombre() {
-  if (this.nombreSearchTerm.length >= 4) { // Verificar si hay al menos 4 caracteres
-    this.nombreSuggestions = this.items.filter(item =>
-      item.nombre.toLowerCase().includes(this.nombreSearchTerm.toLowerCase())
-    );
-  } else {
-    this.nombreSuggestions = []; // Limpiar las sugerencias si no hay suficientes caracteres
-  }
-  this.rfcSuggestions = [];
-}
-
-// Seleccionar un RFC y completar el Nombre
-selectRFC(item: { rfc: string; nombre: string; srl_emp:number}) {
-  this.rfcSearchTerm = item.rfc;
-  this.nombreSearchTerm = item.nombre;
-  this.rfcSuggestions = [];
-  this.nombreSuggestions = [];
-  this.srl_emp = item.srl_emp
-}
-
-// Seleccionar un Nombre y completar el RFC
-selectNombre(item: { rfc: string; nombre: string ; srl_emp:number}) {
-  this.nombreSearchTerm = item.nombre;
-  this.rfcSearchTerm = item.rfc;
-  this.srl_emp = item.srl_emp
-
-
-  this.rfcSuggestions = [];
-  this.nombreSuggestions = [];
-}
-
-// Método para buscar con los términos ingresados
 buscar(srl_emp:any) {
-
-  console.log('Buscando por RFC:', this.rfcSearchTerm, 'y Nombre:', this.nombreSearchTerm);
-
   this.LicenciasService.getAccidentes(srl_emp).subscribe((response: ApiResponse) => {
     this.table=true
-    this.data = response.data; // Asegúrate de mapear correctamente los datos
+    this.data = response.data;
   },
   (error) => {
-    this.table = false; // Asegúrate de manejar el estado de la tabla en caso de error
-    console.error('Error al obtener los accidentes: ', error); // Manejo del error
+    this.table = false; 
   });
 }
 
@@ -116,8 +64,7 @@ buscar(srl_emp:any) {
     this.activeTab = tabId; // Cambia la pestaña activa
   }
 
-     // Método para editar un registro
-     onEdit(data: any) {
+  onEdit(data: any) {
       //AAGP790513HH4
           Swal.fire({
             title: 'Editar Registro',
@@ -175,20 +122,16 @@ buscar(srl_emp:any) {
           }).then((result) => {
             if (result.isConfirmed) {
               const dataEditada = result.value;
-              console.log(dataEditada)
-              console.log('Datos editados:', dataEditada);
-      
-              // Envío de los datos editados al backend
               this.guardarCambios(dataEditada,data.id);
             }
           });
-        }
-        guardarCambios(data: any,licenciaId:any) {
+  }
+
+  guardarCambios(data: any,licenciaId:any) {
           const userId = localStorage.getItem('userId')!;
       
           this.LicenciasService.updateLic(data,licenciaId, userId).subscribe(
             response => {
-              console.log('Se editó la licencia correctamente', response);
               this.buscar(this.srl_emp);
               this.HOLA();  // Si este método actualiza la tabla
               Swal.fire({
@@ -201,7 +144,6 @@ buscar(srl_emp:any) {
               });
             },
             error => {
-              console.error('Error al editar la licencia', error);
               Swal.fire({
                 title: 'Error',
                 text: error.error.message,
@@ -210,9 +152,9 @@ buscar(srl_emp:any) {
               });
             }
           );
-        }
+  }
 
-        onDelete(licenciaId: any) {
+  onDelete(licenciaId: any) {
           const userId = localStorage.getItem('userId')!; // Asegúrate de obtener el userId correcto
           Swal.fire({
             title: '¿Estás seguro?',
@@ -228,7 +170,6 @@ buscar(srl_emp:any) {
               // Llama al servicio para eliminar el registro
               this.LicenciasService.softDeleteLic(licenciaId.id, userId).subscribe(
                 response => {
-                  console.log('Licencia eliminada correctamente', response);
                   this.buscar(this.srl_emp); // Refresca los datos después de eliminar
                   Swal.fire(
                     '¡Eliminada!',
@@ -237,7 +178,6 @@ buscar(srl_emp:any) {
                   );
                 },
                 error => {
-                  console.error('Error al eliminar la licencia', error);
                   Swal.fire(
                     'Error',
                     'No se pudo eliminar la licencia.',
@@ -247,27 +187,18 @@ buscar(srl_emp:any) {
               );
             }
           });
-        }
+  }
 
-        HOLA(){
+  HOLA(){
           this.insertarLics = this.fb.group({
             folio: ['', Validators.required],
             fecha_inicio: ['', Validators.required],
             fecha_termino: ['', Validators.required],
             formato: ['', Validators.required]
           });
-        }
-    // Método para eliminar un registro
-    // onDelete(row: any) {
-    //   console.log('Deleting row', row);
-    //   this.LicenciasService.deleteLicencia(row.folio).subscribe(() => {
-    //     // Eliminar el registro del arreglo de datos localmente
-    //     this.data = this.data.filter(item => item.folio !== row.folio);
-    //   });
-    // }
+  }
 
-
-    onSumit(){
+  onSumit(){
       if (this.insertarLics.valid) {
         const userId=localStorage.getItem('userId')!
         const fechaInicio = new Date(this.insertarLics.value.fecha_inicio);
@@ -298,7 +229,6 @@ buscar(srl_emp:any) {
           // El usuario confirmó, proceder a enviar los datos
           this.LicenciasService.addLicencia(data, userId, this.srl_emp).subscribe(
             response => {
-              console.log('Licencia agregada con éxito', response);
               this.buscar(this.srl_emp)
               this.HOLA();
               Swal.fire({
@@ -311,7 +241,6 @@ buscar(srl_emp:any) {
               });
             },
             error => {
-              console.log(error)
               Swal.fire({
                 title: 'Error',
                 text: error.error.message,
@@ -320,12 +249,9 @@ buscar(srl_emp:any) {
               });
             }
           );
-        } else {
-          console.log('El usuario canceló la operación');
         }
       });
     } else {
-      console.error('El formulario no es válido');
       Swal.fire({
         title: 'Advertencia',
         text: 'Por favor, completa todos los campos requeridos.',
@@ -333,5 +259,5 @@ buscar(srl_emp:any) {
         confirmButtonText: 'Aceptar'
       });
     }
-    }
+  }
 }

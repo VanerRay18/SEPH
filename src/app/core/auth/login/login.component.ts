@@ -12,14 +12,14 @@ import { Module } from 'src/app/shared/interfaces/utils';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-
+  isLoading = false; 
   loginForm: FormGroup;
   username: string = '';
   password: string = '';
 
   constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
     this.loginForm = this.fb.group({
-      user: ['', [Validators.required]],
+      user: ['', [Validators.required , Validators.minLength(4) ]],
       password: ['', [Validators.required, Validators.minLength(6)]],
     });
   }
@@ -30,59 +30,63 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit() {
+    this.isLoading = true; // Activar el loader
     const loginButton = document.getElementById('loginButton') as HTMLButtonElement;
-    loginButton.disabled = true;
+    loginButton.disabled = true; // Deshabilitar el botón mientras se procesa
+
     if (this.loginForm.invalid) {
-      loginButton.disabled = false;
-      return;
+        this.isLoading = false; // Desactivar el loader si el formulario es inválido
+        loginButton.disabled = false; // Habilitar el botón nuevamente
+        return; // Salir si el formulario es inválido
     }
 
     const data = {
-      user: this.loginForm.value.user,
-      password: this.loginForm.value.password
-
+        user: this.loginForm.value.user,
+        password: this.loginForm.value.password
     };
-    
 
     this.authService.authLogg(data).subscribe(
-      (response) => {
-        // console.log('response; '+response)
-        // console.log(response.body.data.config.principal)
-        const token = response.headers.get('Authorization');
-        const tokenExpiration = new Date().getTime() + (2 * 60 * 60 * 1000) + (58 * 60 * 1000); // 2 horas y 58 minutos
-        const rolId = response.body.data.rolId;
-        const userId = response.body.data.userId;
-        const path = response.body.data.config.principal;
+        (response) => {
+            const token = response.headers.get('Authorization');
+            const tokenExpiration = new Date().getTime() + (2 * 60 * 60 * 1000) + (58 * 60 * 1000); // 2 horas y 58 minutos
+            const rolId = response.body.data.rolId;
+            const userId = response.body.data.userId;
+            const path = response.body.data.config.principal;
+            const editar = response.body.data.config.permisos.editar
+            const eliminar = response.body.data.config.permisos.eliminar
+            const agregar = response.body.data.config.permisos.agregar
+          
+            // Guardar el token y otros datos en localStorage
+            if (token) {
+                localStorage.setItem('userId', userId);
+                localStorage.setItem('editar', editar);
+                localStorage.setItem('eliminar', eliminar);
+                localStorage.setItem('agregar', agregar);
+                localStorage.setItem('rolId', rolId);
+                localStorage.setItem('token', token);
+                localStorage.setItem('tokenExpiration', tokenExpiration.toString());
 
-        // console.log(response.body.data.rolId)
-        this.router.navigate([path]);
-    if (token) {
-      // console.log('Token JWT:', token);
-      console.log('Expiración del token:', new Date(tokenExpiration));
-      // Guarda el token en localStorage o sessionStorage
-      localStorage.setItem('userId', userId);
-      localStorage.setItem('rolId', rolId);
-      localStorage.setItem('token', token);
-      localStorage.setItem('tokenExpiration', tokenExpiration.toString());
+                this.router.navigate([path]); // Navegar al nuevo path
+            } else {
+                console.warn('El token JWT no se encontró en los headers');
+            }
 
-    } else {
-      console.warn('El token JWT no se encontró en los headers');
-      loginButton.disabled = false;
-    }
-
-      },
-      (error) => {
-        Swal.fire({
-          title: 'Error!',
-          text:  error.error.message,
-          icon: 'error',
-          confirmButtonText: 'OK'
-        });
-        loginButton.disabled = false;
-      }
+            this.isLoading = false; // Desactivar el loader
+            loginButton.disabled = false; // Habilitar el botón nuevamente
+        },
+        (error) => {
+            Swal.fire({
+              title: error.error.message != null?'Error':'Error con el sistema...',
+                text: error.error.message != null? error.error.message:'Favor de acudir al area de mantenimiento',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            this.isLoading = false; // Desactivar el loader
+            loginButton.disabled = false; // Habilitar el botón nuevamente
+        }
     );
-
 }
+
 
 // Verifica la expiración del token
 checkTokenExpiration() {

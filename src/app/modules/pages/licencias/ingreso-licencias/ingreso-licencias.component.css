@@ -12,7 +12,7 @@ h5 {
 .card2 {
   background-color: #ffffff;
   border-top: none;
-  border-top-left-radius: 0;
+  border-radius: 0 20px 20px 20px; /* Redondea solo las esquinas especificadas */
   width: 100%;
 
   padding: 15px; /* Agregado para un mejor espaciado interno */
@@ -146,7 +146,7 @@ ng-container {
 }
 
 .nav-tabs {
-  
+  z-index: 10;
   width: 100%;
   color: #621132;
   cursor: pointer;

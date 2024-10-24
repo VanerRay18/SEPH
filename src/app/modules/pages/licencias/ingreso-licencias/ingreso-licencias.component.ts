@@ -1,64 +1,64 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { TablesComponent } from 'src/app/shared/componentes/tables/tables.component';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { LicenciasService } from 'src/app/services/licencias-service/licencias.service';
 import { ApiResponse } from 'src/app/models/ApiResponse';
-import { Employee } from 'src/app/shared/interfaces/usuario.model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { ImageToBaseService } from './../../../../services/image-to-base.service';
-import { content } from 'html2canvas/dist/types/css/property-descriptors/content';
+import { BusquedaserlService } from 'src/app/services/busquedaserl.service';
+import { PermisosUserService } from 'src/app/services/permisos-user.service';
 import { LicMedica } from 'src/app/shared/interfaces/utils';
 @Component({
   selector: 'ingreso-licencias',
   templateUrl: './ingreso-licencias.component.html',
   styleUrls: ['./ingreso-licencias.component.css']
 })
-export class IngresoLicenciasComponent implements OnInit {
+export class IngresoLicenciasComponent {
 
   insertarLic!: FormGroup;
   headers = ['No. de Licencia', 'Desde', 'Hasta', 'Días', 'Status de licencia', 'No. de oficio', 'Acciones'];
   displayedColumns = ['folio', 'desde', 'hasta', 'rango_fechas', 'observaciones', 'oficio'];
   data = [];
-  showCard: boolean = false;
+  showCard: any = false;
   table:any = true;
+  srl_emp: any;
+  activeTab: string = 'licencias';
 
-  rfcSearchTerm: string = '';
-  nombreSearchTerm: string = '';
-
-  // Aquí es donde se almacenarán los datos que lleguen del backend
-  items: { rfc: string; nombre: string; srl_emp: number }[] = [];
-
-  // Sugerencias para dropdown
-  rfcSuggestions: { rfc: string; nombre: string; srl_emp: number }[] = [];
-  nombreSuggestions: { rfc: string; nombre: string; srl_emp: number }[] = [];
-
-  activeTab: string = 'licencias'; // Pestaña activa por defecto
+  eliminar:any = false;
+  agregar:any = false;
+  modificar:any = false;
 
   tabs = [
     { id: 'licencias', title: 'Licencias Médicas', icon: 'fas fa-file-medical' },
     { id: 'accidentes', title: 'Accidentes de Trabajo', icon: 'fas fa-exclamation-triangle' },
-    { id: 'acuerdos', title: 'Acuerdos Precedenciales', icon: 'fas fa-handshake' }
+    { id: 'acuerdos', title: 'Acuerdos Presidenciales', icon: 'fas fa-handshake' }
   ];
- srl_emp: any = "";
+
   constructor(
     private LicenciasService: LicenciasService,
     private fb: FormBuilder,
-    private ImageToBaseService: ImageToBaseService
+    private ImageToBaseService: ImageToBaseService,
+    private BusquedaserlService: BusquedaserlService,
+    private PermisosUserService:PermisosUserService
   ) {
     (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
     //this.fetchData(); // Si tienes un endpoint real, descomenta esto
   }
-  ngOnInit() {
 
-    // Obtener datos del servicio cuando se inicializa el componente
-    this.LicenciasService.getUsers().subscribe((response: { data: Employee[] }) => {
-      this.items = response.data.map((user: Employee) => ({
-        rfc: user.rfc,
-        nombre: user.nombre,
-        srl_emp: user.srl_emp
-      }));
+
+  ngOnInit() {
+    this.modificar = this.PermisosUserService.edit();
+    this.agregar = this.PermisosUserService.add();
+    this.eliminar = this.PermisosUserService.deleted();
+
+    this.BusquedaserlService.srlEmp$.subscribe(value => {
+      this.showCard = value.mostrar;
+      
+      if(value.mostrar == true){
+        this.srl_emp = value.srl_emp;
+        this.buscar(this.srl_emp);}
+
     });
     this.HOLA()
   }
@@ -71,55 +71,11 @@ export class IngresoLicenciasComponent implements OnInit {
       formato: ['', Validators.required]
     });
   }
-  // Filtrar RFC al escribir
-  filterRFC() {
-    if (this.rfcSearchTerm.length >= 3) { // Verificar si hay al menos 3 caracteres
-      this.rfcSuggestions = this.items.filter(item =>
-        item.rfc.toLowerCase().includes(this.rfcSearchTerm.toLowerCase())
-      );
-    } else {
-      this.rfcSuggestions = []; // Limpiar las sugerencias si no hay suficientes caracteres
-    }
-    this.nombreSuggestions = [];
-  }
-
-  // Filtrar Nombre al escribir
-  filterNombre() {
-    if (this.nombreSearchTerm.length >= 4) { // Verificar si hay al menos 4 caracteres
-      this.nombreSuggestions = this.items.filter(item =>
-        item.nombre.toLowerCase().includes(this.nombreSearchTerm.toLowerCase())
-      );
-    } else {
-      this.nombreSuggestions = []; // Limpiar las sugerencias si no hay suficientes caracteres
-    }
-    this.rfcSuggestions = [];
-  }
-
-  // Seleccionar un RFC y completar el Nombre
-  selectRFC(item: { rfc: string; nombre: string; srl_emp: number }) {
-    this.rfcSearchTerm = item.rfc;
-    this.nombreSearchTerm = item.nombre;
-    this.rfcSuggestions = [];
-    this.nombreSuggestions = [];
-    this.srl_emp = item.srl_emp
-  }
-
-  // Seleccionar un Nombre y completar el RFC
-  selectNombre(item: { rfc: string; nombre: string; srl_emp: number }) {
-    this.nombreSearchTerm = item.nombre;
-    this.rfcSearchTerm = item.rfc;
-    this.srl_emp = item.srl_emp
-
-
-    this.rfcSuggestions = [];
-    this.nombreSuggestions = [];
-  }
-
   // Método para buscar con los términos ingresados
   buscar(srl_emp: any) {
-    this.showCard = true;
+    console.log("buscar: "+srl_emp)
+    
     this.srl_emp = srl_emp;
-    console.log('Buscando por RFC:', this.rfcSearchTerm, 'y Nombre:', this.nombreSearchTerm, 'y srl_emp:', this.srl_emp);
 
     this.LicenciasService.getLicencias(srl_emp).subscribe((response: ApiResponse) => {
       this.table = true
@@ -203,8 +159,6 @@ export class IngresoLicenciasComponent implements OnInit {
       });
     }
   }
-
-
 
   setActiveTab(tabId: string) {
     this.activeTab = tabId; // Cambia la pestaña activa
@@ -295,7 +249,7 @@ export class IngresoLicenciasComponent implements OnInit {
       }
     });
   }
-  // Método para editar un registro
+
   onEdit(data: any) {
     //AAGP790513HH4
     Swal.fire({
@@ -483,9 +437,6 @@ export class IngresoLicenciasComponent implements OnInit {
       }
     });
   }
-
-
-
 
   onPdf(oficio: any) {
     console.log(oficio);
@@ -836,18 +787,5 @@ export class IngresoLicenciasComponent implements OnInit {
     });
   }
 
-
 }
-
-
-
-
-// Método para eliminar un registro
-// onDelete(row: any) {
-//   console.log('Deleting row', row);
-//   this.LicenciasService.deleteLicencia(row.folio).subscribe(() => {
-//     // Eliminar el registro del arreglo de datos localmente
-//     this.data = this.data.filter(item => item.folio !== row.folio);
-//   });
-// }
 

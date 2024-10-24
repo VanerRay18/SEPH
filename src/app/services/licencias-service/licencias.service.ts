@@ -42,7 +42,7 @@ export class LicenciasService {
   }
 
 
-  addLicencia(data:any, userId: string, srl_emp:string): Observable<ApiResponse> { //agregar una nueva licencia
+  addLicencia(data:any, userId: string, srl_emp:any): Observable<ApiResponse> { //agregar una nueva licencia
     let headers = new HttpHeaders({'srl_emp': srl_emp, 'userId':userId})
     return this.http.post<ApiResponse>(`${environment.baseService}${'/licMedicas'}`,data,
       {headers}
@@ -50,7 +50,6 @@ export class LicenciasService {
   }
 
   softDeleteLic(licenciaId: string, userId: string): Observable<ApiResponse> { //agregar una nueva licencia
-    console.log(licenciaId)
     let headers = new HttpHeaders({'licenciaId': licenciaId, 'userId':userId})
     return this.http.patch<ApiResponse>(`${environment.baseService}${'/licMedicas/softdeleted'}`,null,
       {headers}
@@ -87,7 +86,7 @@ export class LicenciasService {
     );
   }
 
-  getAccidentes(srl_emp: string): Observable<ApiResponse> {//Historial actual de accidentes de trabajo
+  getAccidentes(srl_emp: any): Observable<ApiResponse> {//Historial actual de accidentes de trabajo
     let headers = new HttpHeaders({'srl_emp': srl_emp})
     return this.http.get<ApiResponse>(`${environment.baseService}${'/licMedicas/accidentes'}`,
       {headers}

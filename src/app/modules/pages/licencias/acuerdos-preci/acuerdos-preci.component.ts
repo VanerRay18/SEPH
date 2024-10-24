@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { LicenciasService } from 'src/app/services/licencias-service/licencias.service';
 import { Employee } from 'src/app/shared/interfaces/usuario.model';
 import { ApiResponse } from 'src/app/models/ApiResponse';
-
+import { BusquedaserlService } from 'src/app/services/busquedaserl.service';
 @Component({
   selector: 'app-acuerdos-preci',
   templateUrl: './acuerdos-preci.component.html',
@@ -31,79 +31,36 @@ export class AcuerdosPreciComponent {
     { id: 'accidentes', title: 'Accidentes de Trabajo', icon: 'fas fa-exclamation-triangle' },
     { id: 'acuerdos', title: 'Acuerdos Precedenciales', icon: 'fas fa-handshake' }
   ];
-  @Input() srl_emp: any = "";
+  srl_emp: any = "";
   constructor(
-    private LicenciasService: LicenciasService
+    private LicenciasService: LicenciasService,
+    private BusquedaserlService: BusquedaserlService,
   ) {
     //this.fetchData(); // Si tienes un endpoint real, descomenta esto
   }
   ngOnInit() {
-
-    this.buscar(this.srl_emp)
+    this.BusquedaserlService.srlEmp$.subscribe(value => {
+      if(value.mostrar == true){
+        this.srl_emp = value.srl_emp;
+        this.buscar(this.srl_emp);
+      }
+    });
 
   }
-// Filtrar RFC al escribir
-filterRFC() {
-  if (this.rfcSearchTerm.length >= 3) { // Verificar si hay al menos 3 caracteres
-    this.rfcSuggestions = this.items.filter(item =>
-      item.rfc.toLowerCase().includes(this.rfcSearchTerm.toLowerCase())
-    );
-  } else {
-    this.rfcSuggestions = []; // Limpiar las sugerencias si no hay suficientes caracteres
-  }
-  this.nombreSuggestions = [];
-}
 
-// Filtrar Nombre al escribir
-filterNombre() {
-  if (this.nombreSearchTerm.length >= 4) { // Verificar si hay al menos 4 caracteres
-    this.nombreSuggestions = this.items.filter(item =>
-      item.nombre.toLowerCase().includes(this.nombreSearchTerm.toLowerCase())
-    );
-  } else {
-    this.nombreSuggestions = []; // Limpiar las sugerencias si no hay suficientes caracteres
-  }
-  this.rfcSuggestions = [];
-}
-
-// Seleccionar un RFC y completar el Nombre
-selectRFC(item: { rfc: string; nombre: string; srl_emp:number}) {
-  this.rfcSearchTerm = item.rfc;
-  this.nombreSearchTerm = item.nombre;
-  this.rfcSuggestions = [];
-  this.nombreSuggestions = [];
-  this.srl_emp = item.srl_emp
-}
-
-// Seleccionar un Nombre y completar el RFC
-selectNombre(item: { rfc: string; nombre: string ; srl_emp:number}) {
-  this.nombreSearchTerm = item.nombre;
-  this.rfcSearchTerm = item.rfc;
-  this.srl_emp = item.srl_emp
-
-
-  this.rfcSuggestions = [];
-  this.nombreSuggestions = [];
-}
-
-// Método para buscar con los términos ingresados
 buscar(srl_emp:any) {
-  console.log('Buscando por RFC:', this.rfcSearchTerm, 'y Nombre:', this.nombreSearchTerm);
-
   this.LicenciasService.getAcuerdos(srl_emp).subscribe((response: ApiResponse) => {
     this.table = true
-    this.data = response.data; // Asegúrate de mapear correctamente los datos
-    console.log(response)
+    this.data = response.data;
   },
   (error) => {
-    this.table = false; // Asegúrate de manejar el estado de la tabla en caso de error
-    console.error('Error al obtener los accidentes: ', error); // Manejo del error
+    this.table = false;
   });
 }
 
 
   setActiveTab(tabId: string) {
-    this.activeTab = tabId; // Cambia la pestaña activa
+    this.activeTab = tabId;
   }
 
 }

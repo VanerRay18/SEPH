@@ -5,42 +5,12 @@
     <h1>Licencias medicas</h1>
     <h5>Ingreso de licencias medicas</h5>
   </div>
-  <div class="Busq card mt-3 ">
-    <h5 style="margin-top: .5% " class="ms-3">Busqueda de licencias</h5>
-    <div
-      class="search-container d-flex flex-column flex-md-row align-items-start ms-3">
-      <div class="RFC input-container">
-        <label class="text">RFC</label>
-        <input [(ngModel)]="rfcSearchTerm" (input)="filterRFC()"
-          type="text" placeholder="Buscar por RFC..." />
-        <div *ngIf="rfcSuggestions.length > 0" class="dropdown">
-          <ul>
-            <li *ngFor="let item of rfcSuggestions" (click)="selectRFC(item)">
-              {{ item.rfc }} - {{ item.nombre }}
-            </li>
-          </ul>
-        </div>
-      </div>
-      <div class="Nombre input-container mx-md-2">
-        <label class="text">Nombre</label>
-        <input [(ngModel)]="nombreSearchTerm"
-          (input)="filterNombre()" type="text"
-          placeholder="Buscar por Nombre..." />
-        <ul *ngIf="nombreSuggestions.length > 0" class="dropdown">
-          <li *ngFor="let item of nombreSuggestions"
-            (click)="selectNombre(item)">
-            {{ item.nombre }} - {{ item.rfc }}
-          </li>
-        </ul>
-      </div>
-      <div class="input-container buton">
-        <button class="btn btn-primary btn-sm btn-block busqueda"
-          (click)="buscar(srl_emp)">Buscar</button>
-      </div>
-    </div>
-  </div>
+   <ng-container>
+    <app-busqueda></app-busqueda>
+  </ng-container>
 
-  <div *ngIf="showCard" class="contLic">
+
+  <div *ngIf="showCard == true" class="contLic">
     <ul class="nav nav-tabs d-flex flex-row flex-wrap" role="tablist">
       <li class="nav-item" *ngFor="let tab of tabs">
         <a class="nav-link"
@@ -57,18 +27,18 @@
         <div class="card2">
           <div class="row">
             <div class="col-auto">
-              <h5 class="ms-2 mt-2">Ingresar una nueva licencia médica</h5>
+              <h5 class="ms-2 mt-2" *ngIf="this.agregar == 'true'">Ingresar una nueva licencia médica</h5>
             </div>
             <div class="col-auto">
                 <button type="button" (click)="historicopdf()" class="botones btn"><i
                     class="fa-solid fa-folder"></i></button>
             </div>
-            <div class="col-auto">
+            <div class="col-auto"  *ngIf="this.agregar == 'true'">
               <button type="button" (click)="sumitOficios()"
                 class="botones btn"><i
                   class="fa-solid fa-file"></i></button>
             </div>
-            <div class="col-auto">
+            <div class="col-auto"  *ngIf="this.eliminar == 'true'">
               <button type="button" (click)="trash()" class="botones btn"><i
                   class="fa-solid fa-trash"></i></button>
             </div>
@@ -77,7 +47,7 @@
                   class="fa-solid fa-magnifying-glass"></i></button>
             </div>
           </div>
-          <form [formGroup]="insertarLic" class="m-3" (ngSubmit)="onSumit()">
+          <form [formGroup]="insertarLic" class="m-3" (ngSubmit)="onSumit()" *ngIf="this.agregar == 'true'">
             <div class="tabla row">
               <div class="col-auto">
                 <label for="folio"
@@ -132,9 +102,9 @@
             [headers]="headers"
             [data]="data"
             [displayedColums]="displayedColumns"
-            [showActionsEdit]=true
+            [showActionsEdit]="modificar == 'true'?true:false"
             (edit)="onEdit($event)"
-            [showActionsDeleted]=true
+            [showActionsDeleted]="eliminar== 'true'?true:false"
             (delete)="onDelete($event)"
             [showActionsPdf]=false>
           </app-tables>
@@ -143,11 +113,11 @@
       </ng-container>
 
       <ng-container *ngIf="activeTab === 'accidentes'">
-        <ingreso-accidentes [srl_emp]="srl_emp"></ingreso-accidentes>
+        <ingreso-accidentes></ingreso-accidentes>
       </ng-container>
 
       <ng-container *ngIf="activeTab === 'acuerdos'">
-        <app-acuerdos-preci [srl_emp]="srl_emp"></app-acuerdos-preci>
+        <app-acuerdos-preci></app-acuerdos-preci>
       </ng-container>
     </div>
 
