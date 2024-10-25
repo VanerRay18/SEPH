@@ -50,7 +50,7 @@ export class BusquedaComponent {
 
   ngOnInit() {
     this.BusquedaserlService.srlEmp$.subscribe(value => {
-      console.log(value);
+    
       if (value != null) {
         this.rfcSearchTerm = value.rfc;
         this.nombreSearchTerm = value.nombre;
@@ -89,7 +89,7 @@ export class BusquedaComponent {
   }
 
   private performRFCSearch(searchTerm: string) {
-    if (searchTerm.length >= 5) { // Verificar si hay al menos 5 caracteres
+    if (searchTerm.length >= 3) { // Cambia de 5 a 3 caracteres
       this.rfcSuggestions = this.items.filter(item =>
         item.rfc.toLowerCase().includes(searchTerm.toLowerCase())
       );
@@ -98,20 +98,29 @@ export class BusquedaComponent {
     }
     this.nombreSuggestions = [];
   }
+  
 
   private performNombreSearch(searchTerm: string) {
-    if (searchTerm.length >= 4) { // Verificar si hay al menos 4 caracteres
-      this.nombreSuggestions = this.items.filter(item =>
-        item.nombre.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+    // Divide el término de búsqueda en palabras
+    
+    const searchTerms = searchTerm.toLowerCase().split(' ').filter(term => term.length > 0);
+
+    if (searchTerms.length > 0) { // Verifica que haya al menos un término de búsqueda
+        this.nombreSuggestions = this.items.filter(item => {
+          
+            const nombreCompleto = item.nombre.toLowerCase();
+            // Verifica que cada término de búsqueda esté en el nombre completo
+            return searchTerms.every(term => nombreCompleto.includes(term));
+        });
     } else {
-      this.nombreSuggestions = []; // Limpiar las sugerencias si no hay suficientes caracteres
+        this.nombreSuggestions = []; // Limpia las sugerencias si no hay términos de búsqueda válidos
     }
+
     this.rfcSuggestions = [];
-  }
+}
 
   private performRFCFavorSearch(searchTerm: string) {
-    if (searchTerm.length >= 5) { // Verificar si hay al menos 5 caracteres
+    if (searchTerm.length >= 3) { // Verificar si hay al menos 5 caracteres
       this.rfcFavorSuggestions = this.items.filter(item =>
         item.rfc.toLowerCase().includes(searchTerm.toLowerCase())
       );

@@ -26,6 +26,8 @@ export class IngresoLicenciasComponent {
   activeTab: string = 'licencias';
   currentDate!: string;
   sep: any;
+
+
   eliminar:boolean = false;
   agregar:boolean = false;
   modificar:boolean = false;
@@ -49,9 +51,11 @@ export class IngresoLicenciasComponent {
 
 
   ngOnInit() {
-    this.modificar = this.PermisosUserService.edit();
-    this.agregar = this.PermisosUserService.add();
-    this.eliminar = this.PermisosUserService.deleted();
+
+    this.modificar = this.PermisosUserService.getPermisos().Licencias.editar;
+    this.eliminar = this.PermisosUserService.getPermisos().Licencias.editar;
+    this.agregar = this.PermisosUserService.getPermisos().Licencias.editar;
+
     this.currentDate = this.getCurrentDate(this.sep).date; // Asigna la fecha actual
     this.sep = ''; // Inicializa 'sep'
     this.BusquedaserlService.srlEmp$.subscribe(value => {
@@ -89,7 +93,6 @@ export class IngresoLicenciasComponent {
 
   // Método para buscar con los términos ingresados
   buscar(srl_emp: any) {
-    console.log("buscar: " + srl_emp);
     this.srl_emp = srl_emp;
 
     this.LicenciasService.getLicencias(srl_emp).subscribe((response: ApiResponse) => {
@@ -108,7 +111,6 @@ export class IngresoLicenciasComponent {
     },
     (error) => {
       this.table = false; // Manejo del estado de la tabla en caso de error
-      console.error('Error al obtener los accidentes: ', error); // Manejo del error
     });
   }
 
@@ -145,7 +147,6 @@ export class IngresoLicenciasComponent {
           // El usuario confirmó, proceder a enviar los datos
           this.LicenciasService.addLicencia(data, userId, this.srl_emp).subscribe(
             response => {
-              console.log('Licencia agregada con éxito', response);
               this.buscar(this.srl_emp);
               this.HOLA();
               Swal.fire({
@@ -158,7 +159,6 @@ export class IngresoLicenciasComponent {
               });
             },
             error => {
-              console.log(error)
               Swal.fire({
                 title: 'Error',
                 text: error.error.message,
@@ -167,12 +167,10 @@ export class IngresoLicenciasComponent {
               });
             }
           );
-        } else {
-          console.log('El usuario canceló la operación');
-        }
+        } 
       });
     } else {
-      console.error('El formulario no es válido');
+
       Swal.fire({
         title: 'Advertencia',
         text: 'Por favor, completa todos los campos requeridos.',
@@ -197,7 +195,6 @@ export class IngresoLicenciasComponent {
       confirmButtonText: "Buscar",
     }).then((result) => {
       if (result.isConfirmed) {
-        console.log(result.value)
         this.LicenciasService.SearchLic(result.value).subscribe(
           response => {
             if (response.data.message) {
@@ -250,7 +247,7 @@ export class IngresoLicenciasComponent {
             const userId = localStorage.getItem('userId')!;
             this.LicenciasService.softdeletedByOficio(hola.value, userId).subscribe(
               response => {
-                console.log(response)
+
                 if (response.success == false) {
                   Swal.fire({
                     title: response.message!,
@@ -330,9 +327,6 @@ export class IngresoLicenciasComponent {
     }).then((result) => {
       if (result.isConfirmed) {
         const dataEditada = result.value;
-        console.log(dataEditada)
-        console.log('Datos editados:', dataEditada);
-
         // Envío de los datos editados al backend
         this.guardarCambios(dataEditada, data.id);
       }
@@ -344,7 +338,6 @@ export class IngresoLicenciasComponent {
 
     this.LicenciasService.updateLic(data, licenciaId, userId).subscribe(
       response => {
-        console.log('Se editó la licencia correctamente', response);
         this.buscar(this.srl_emp);
         this.HOLA();  // Si este método actualiza la tabla
         Swal.fire({
@@ -357,7 +350,6 @@ export class IngresoLicenciasComponent {
         });
       },
       error => {
-        console.error('Error al editar la licencia', error);
         Swal.fire({
           title: 'Error',
           text: error.error.message,
@@ -385,7 +377,6 @@ export class IngresoLicenciasComponent {
         // Llama al servicio para eliminar el registro
         this.LicenciasService.softDeleteLic(licenciaId.id, userId).subscribe(
           response => {
-            console.log('Licencia eliminada correctamente', response);
             this.buscar(this.srl_emp); // Refresca los datos después de eliminar
             Swal.fire(
               '¡Eliminada!',
@@ -394,7 +385,6 @@ export class IngresoLicenciasComponent {
             );
           },
           error => {
-            console.error('Error al eliminar la licencia', error);
             Swal.fire(
               'Error',
               'No se pudo eliminar la licencia.',
@@ -411,7 +401,6 @@ export class IngresoLicenciasComponent {
 
   sumitOficios() {
     let idsArray: number[] = []; // Array donde se guardarán los ids
-    console.log(this.data)
     this.data.forEach((data: { id: number, nueva: string }) => {
       if (data.nueva === "1") {
         idsArray.push(data.id); // Agrega data.id al array si nueva es 1
@@ -441,8 +430,6 @@ export class IngresoLicenciasComponent {
             if (oficio) {
               this.buscar(this.srl_emp);
               this.onPdf(oficio); // Llama a onPdf con el oficio
-            } else {
-              console.error('No se recibió el número de oficio en la respuesta');
             }
             // Swal.fire(
             //   '¡Oficio creado!',
@@ -451,7 +438,6 @@ export class IngresoLicenciasComponent {
             // );
           },
           error => {
-            console.error('Error al eliminar la licencia', error);
             Swal.fire(
               'Error',
               error.error,
@@ -464,7 +450,6 @@ export class IngresoLicenciasComponent {
   }
 
   onPdf(oficio: any) {
-    console.log(oficio);
     this.LicenciasService.getLicenciasOficioPdf(oficio).subscribe(async response => {
       const data = response.data;
       const claves = data.claves;
@@ -601,7 +586,6 @@ export class IngresoLicenciasComponent {
       if (result.isConfirmed) {
         const opcionSeleccionada = result.value;
         if (opcionSeleccionada === 'completo') {
-          console.log('Opción seleccionada: Completo');
           this.LicenciasService.getHistorico(this.srl_emp).subscribe(async response => {
             const data = response.data;
             const licencias = data.licencias;
@@ -712,7 +696,6 @@ export class IngresoLicenciasComponent {
             pdfMake.createPdf(documentDefinition).open();
           },
             error => {
-              console.error('Error al obtener el histórico:', error);
               Swal.fire({
                 title: 'No exite historico ',
                 text:  error.error.message,
@@ -721,7 +704,6 @@ export class IngresoLicenciasComponent {
               });  // Manejo de error
             });
         } else if (opcionSeleccionada === 'anterior') {
-          console.log('Opción seleccionada: Año anterior');
           this.LicenciasService.getHistoricoAnte(this.srl_emp).subscribe(async response => {
             const data = response.data;
             const licencias = data.licencias;
@@ -809,7 +791,6 @@ export class IngresoLicenciasComponent {
             pdfMake.createPdf(documentDefinition).open();
           },
             error => {
-              console.error('Error al obtener el histórico:', error);  // Manejo de error
               Swal.fire({
                 title: 'No exite historico Anterior',
                 text:  error.error.message,

@@ -32,8 +32,6 @@ export class TablesComponent {
  enableScroll: boolean = false;
 
  ngOnChanges() {
-  console.log('maxHeight:', this.maxHeight);
-   // Verificar si hay más de 10 filas
    this.enableScroll = this.data.length > 3;
  }
 

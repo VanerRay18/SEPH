@@ -8,7 +8,7 @@ export class BusquedaserlService {
 
   constructor() { }
 
-  private srlEmpSubject = new BehaviorSubject<any>(null);
+  private srlEmpSubject = new BehaviorSubject<any>(false);
   srlEmp$ = this.srlEmpSubject.asObservable();
 
   updateSrlEmp(values: { [key: string]: any }) {

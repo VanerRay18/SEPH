@@ -28,7 +28,6 @@ export class AuthService {
   ) {}
 
   authLogg(data: any): Observable<any> {
-    console.log(`${environment.baseService}${'/login'}`);
     return this.http.post<any>(`${environment.baseService}${'/login'}`, data, {observe:'response'})
   }
 
@@ -42,8 +41,8 @@ export class AuthService {
   //   return this.http.post<any>(`${environment.baseService}${'/login'}`, {headers});
   // }
 
-  getModulesByRole(rolId: string): Observable<ApiResponse> {
-    let headers = new HttpHeaders({'rolId': rolId})
+  getModulesByRole(rolId: any,extras:any): Observable<ApiResponse> {
+    let headers = new HttpHeaders({'rolId': rolId, 'extras':extras})
     return this.http.get<ApiResponse>(`${environment.baseService}${'/user/roleByModule'}`,
       {headers}
     );

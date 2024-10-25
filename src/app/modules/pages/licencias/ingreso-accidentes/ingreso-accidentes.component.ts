@@ -38,9 +38,10 @@ export class IngresoAccidentesComponent{
     //this.fetchData(); // Si tienes un endpoint real, descomenta esto
   }
   ngOnInit() {
-    this.modificar = this.PermisosUserService.edit();
-    this.agregar = this.PermisosUserService.add();
-    this.eliminar = this.PermisosUserService.deleted();
+    this.modificar = this.PermisosUserService.getPermisos().Licencias.editar;
+    this.eliminar = this.PermisosUserService.getPermisos().Licencias.editar;
+    this.agregar = this.PermisosUserService.getPermisos().Licencias.editar;
+    
     this.BusquedaserlService.srlEmp$.subscribe(value => {
       if(value.mostrar == true){
         this.srl_emp = value.srl_emp;

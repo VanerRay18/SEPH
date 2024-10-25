@@ -20,7 +20,7 @@ export class LoggedGuard implements CanActivate, CanLoad {
     Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
       const token = localStorage.getItem('token'); // Obtener el token del localStorage
       const rolId = localStorage.getItem('rolId'); // Obtener el rolId del localStorage
-
+      const extras = localStorage.getItem('extras')
       if (!token || !rolId) {
         console.error('El token o rolId no están definidos. Verifica el login y el almacenamiento local.');
         this.router.navigate(['/login']);
@@ -31,7 +31,7 @@ export class LoggedGuard implements CanActivate, CanLoad {
     const requestedModule = route.routeConfig?.path;
 
     return new Promise<boolean>((resolve, reject) => {
-      this.authService.getModulesByRole(rolId).subscribe(
+      this.authService.getModulesByRole(rolId,extras).subscribe(
         (response: ApiResponse) => {
           if (response.success) {
             const allowedModules: Module[] = response.data; // Módulos permitidos

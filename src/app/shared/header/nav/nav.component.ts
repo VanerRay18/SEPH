@@ -43,7 +43,6 @@ export class NavComponent implements OnInit, OnDestroy {
     const sub = this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         this.currentRoute = event.url; // Actualiza la ruta actual
-        console.log('Ruta actual:', this.currentRoute); // Agrega un log para verificar
       }
     });
     this.subs.push(sub);
@@ -54,9 +53,9 @@ export class NavComponent implements OnInit, OnDestroy {
   // Obtiene los módulos del usuario desde la API
   getUserModules() {
     const rolId = localStorage.getItem('rolId');
-
+    const extras = localStorage.getItem('extras')
     if (rolId) {
-      const sub = this.authService.getModulesByRole(rolId).subscribe({
+      const sub = this.authService.getModulesByRole(rolId,extras).subscribe({
         next: (result) => {
           const modules: TreeNode[] = result.data.map((item: any) => ({
             moduleId: item.moduleId,
@@ -72,7 +71,6 @@ export class NavComponent implements OnInit, OnDestroy {
           // Construye el árbol de módulos
           this.menuItems = this.buildTree(modules);
         },
-        error: (error) => console.error('Error al obtener los módulos:', error),
       });
       this.subs.push(sub);
     }
@@ -81,7 +79,6 @@ export class NavComponent implements OnInit, OnDestroy {
   // Construye el árbol de navegación a partir de los módulos obtenidos
   buildTree(data: TreeNode[]): TreeNode[] {
     const treeMap = new Map<number, TreeNode>();
-console.log(data)
     // Paso 1: Crea el mapa de módulos
     data.forEach((item: TreeNode) => {
       treeMap.set(item.moduleId, {

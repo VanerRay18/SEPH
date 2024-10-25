@@ -4,7 +4,7 @@
     <div class="search-container d-flex flex-column flex-md-row align-items-start ms-3">
       <div class="RFC input-container">
         <label class="text">RFC</label>
-        <input [(ngModel)]="rfcSearchTerm" (input)="filterRFC()"
+        <input [(ngModel)]="rfcSearchTerm" (input)="filterRFC() "style="text-transform: uppercase;"
           type="text" placeholder="Buscar por RFC..." />
         <div *ngIf="rfcSuggestions.length > 0" class="dropdown">
           <ul>
@@ -17,7 +17,7 @@
       <div class="Nombre input-container">
         <label class="text">Nombre</label>
         <input [(ngModel)]="nombreSearchTerm"
-          (input)="filterNombre()" type="text"
+          (input)="filterNombre()" type="text" style="text-transform: uppercase;"
           placeholder="Buscar por Nombre..." />
         <ul *ngIf="nombreSuggestions.length > 0" class="dropdown">
           <li *ngFor="let item of nombreSuggestions"
