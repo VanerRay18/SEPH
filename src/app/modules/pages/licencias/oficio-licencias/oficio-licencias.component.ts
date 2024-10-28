@@ -67,7 +67,7 @@ export class OficioLicenciasComponent {
       const licencias = data.licencias;
 
       // Convertir la imagen a base64
-      const imageBase64 = await this.ImageToBaseService.convertImageToBase64('assets/logo_gobhidalgo.png');
+      const imageBase64 = await this.ImageToBaseService.convertImageToBase64('assets/IHE_LOGO.png');
 
       const documentDefinition: any = {
         content: [

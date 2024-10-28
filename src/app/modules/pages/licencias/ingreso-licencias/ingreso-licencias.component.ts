@@ -169,7 +169,7 @@ export class IngresoLicenciasComponent {
               });
             }
           );
-        } 
+        }
       });
     } else {
 
@@ -600,7 +600,7 @@ export class IngresoLicenciasComponent {
             }, 0);
             const today = new Date();
             const formattedDate = today.toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' });
-            const imageBase64 = await this.ImageToBaseService.convertImageToBase64('assets/logo_gobhidalgo.png');
+            const imageBase64 = await this.ImageToBaseService.convertImageToBase64('assets/IHE_LOGO.png');
             const content: any[] = [
               {
                 columns: [
@@ -714,7 +714,7 @@ export class IngresoLicenciasComponent {
             }, 0);
             const today = new Date();
             const formattedDate = today.toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' });
-            const imageBase64 = await this.ImageToBaseService.convertImageToBase64('assets/logo_gobhidalgo.png');
+            const imageBase64 = await this.ImageToBaseService.convertImageToBase64('assets/IHE_LOGO.png');
             const documentDefinition: any = {
               content: [
                 {

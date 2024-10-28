@@ -74,7 +74,7 @@ export class ArchivoLicenciasComponent implements OnInit {
           licenciasEspeciales: '', // Campo vacío
           licenciasMedicas: item.folio
         }));
-        const imageBase64 = await this.ImageToBaseService.convertImageToBase64('assets/logo_gobhidalgo.png');
+        const imageBase64 = await this.ImageToBaseService.convertImageToBase64('assets/IHE_LOGO.png');
         const documentDefinition: any = {
           content: [
             {
@@ -85,7 +85,7 @@ export class ArchivoLicenciasComponent implements OnInit {
                     {
                       image: imageBase64,
                       alignment: 'left',
-                      width: 210,
+                      width: 170,
                       height: 50,
                       margin: [0, 0, 0, 30]
                     },
@@ -181,7 +181,7 @@ export class ArchivoLicenciasComponent implements OnInit {
         const messageNumber = response.message;
         const today = new Date();
         const formattedDate = today.toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' });
-        const imageBase64 = await this.ImageToBaseService.convertImageToBase64('assets/logo_gobhidalgo.png');
+        const imageBase64 = await this.ImageToBaseService.convertImageToBase64('assets/IHE_LOGO.png');
         const documentDefinition: any = {
           content: [
             {
@@ -189,7 +189,7 @@ export class ArchivoLicenciasComponent implements OnInit {
                 {
                   image: imageBase64, // Usar la imagen convertida
                   alignment: 'right',
-                  width: 210, // Ajustar el ancho
+                  width: 170, // Ajustar el ancho
                   height: 50, // Ajustar la altura
                 }
               ]
