@@ -8,7 +8,8 @@ h5 {
 .card {
   border: 10%; /* Esta propiedad no afecta el redondeo; probablemente querías usar border-width */
   border-radius: 10px; /* Ajusta el valor según el grado de redondeo deseado */
-}
+} 
+
 
 .card2 {
   background-color: #ffffff;
@@ -106,7 +107,7 @@ button {
 }
 
 .dropdown {
-  border-radius: 0 0 10px 10px; /* Quitar bordes superiores y redondear inferiores */
+  border-radius: 0 0 10px 10px; /* Quitaordes superiores y redondear inferiores */
   position: absolute; /* Permite colocar el dropdown debajo del input */
   top: 90%; /* Coloca el dropdown justo debajo del input */
   left: 0; /* Alinea el dropdown al lado izquierdo del input */
@@ -130,6 +131,9 @@ button {
   height: 40px; 
   width: 80px;
   
+}
+.hola{
+  margin-bottom: 50px;
 }
 .dropdown li {
   padding: 8px 25px; /* Espaciado interno para las sugerencias */

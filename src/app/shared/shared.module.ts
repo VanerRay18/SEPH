@@ -7,6 +7,7 @@ import { FomrsComponent } from './componentes/fomrs/fomrs.component';
 import { TablesComponent } from './componentes/tables/tables.component';
 import { FilterPipe } from './filter.pipe';
 import { BusquedaComponent } from './componentes/busqueda/busqueda.component';
+import { FooterComponent } from './header/footer/footer.component';
 
 @NgModule({
   declarations: [
@@ -14,7 +15,8 @@ import { BusquedaComponent } from './componentes/busqueda/busqueda.component';
     FomrsComponent,
     TablesComponent,
     FilterPipe,
-    BusquedaComponent
+    BusquedaComponent,
+    FooterComponent
   ],
   imports: [
     CommonModule,
@@ -24,7 +26,8 @@ import { BusquedaComponent } from './componentes/busqueda/busqueda.component';
   exports: [
     NavComponent,
     BusquedaComponent,
-    TablesComponent
+    TablesComponent,
+    FooterComponent
   ]
 })
 export class SharedModule { }
