@@ -52,9 +52,11 @@ export class IngresoLicenciasComponent {
 
   ngOnInit() {
 
-    this.modificar = this.PermisosUserService.getPermisos().Licencias.editar;
-    this.eliminar = this.PermisosUserService.getPermisos().Licencias.editar;
-    this.agregar = this.PermisosUserService.getPermisos().Licencias.editar;
+    this.PermisosUserService.getPermisosSpring(this.PermisosUserService.getPermisos().Licencias).subscribe((response: ApiResponse)=>{
+      this.eliminar = response.data.eliminar
+      this.modificar = response.data.editar
+      this.agregar = response.data.agregar
+  });
 
     this.currentDate = this.getCurrentDate(this.sep).date; // Asigna la fecha actual
     this.sep = ''; // Inicializa 'sep'

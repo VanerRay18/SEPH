@@ -1,11 +1,15 @@
 import { Injectable } from '@angular/core';
+import { ApiResponse } from '../models/ApiResponse';
+import { Observable } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from 'src/environments/enviroment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PermisosUserService {
 
-  constructor() { }
+  constructor(private http:HttpClient) { }
   permisos: any;
 
   save(permisos:any):any{
@@ -13,7 +17,7 @@ export class PermisosUserService {
   }
   getPermisos(): any {
     const permisosString = localStorage.getItem('permisos');
-    
+   
     if (permisosString) {
         try {
             this.permisos = JSON.parse(permisosString);
@@ -41,6 +45,13 @@ export class PermisosUserService {
   add(): boolean {
     const agregarValue = localStorage.getItem('agregar');
     return agregarValue !== null ? agregarValue === 'true' : true;
+  }
+
+  getPermisosSpring(permisoId: number): Observable<ApiResponse> {//Historial actual de licencias
+    let headers = new HttpHeaders({'permisoId': permisoId})
+    return this.http.get<ApiResponse>(`${environment.baseService}${'/user/permisosById'}`,
+      {headers}
+    );
   }
 }
 
