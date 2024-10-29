@@ -39,7 +39,6 @@ export class LoggedGuard implements CanActivate, CanLoad {
 
               // Verificar si el módulo solicitado coincide con algún módulo permitido
               const hasAccess = allowedModules.some((module: Module) => {
-                console.log(requestedPath +' == '+ module.config)
                 return requestedPath === module.config;
               });
 

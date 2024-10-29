@@ -228,7 +228,7 @@ export class IngresoLicenciasComponent {
 
   trash() {
     Swal.fire({
-      title: "Ingrese la licencia a eliminar",
+      title: "Ingrese el folio a eliminar",
       input: "text",
       inputAttributes: {
         autocapitalize: "off"
