@@ -110,6 +110,8 @@ export class IngresoLicenciasComponent {
       });
       // Si necesitas usar 'sep' de alguna manera en el componente, asígnalo
       this.sep = response.data[0]?.sep; // Asignar un valor por defecto de 'sep' del primer elemento, si existe
+
+
     },
     (error) => {
       this.table = false; // Manejo del estado de la tabla en caso de error
@@ -442,7 +444,7 @@ export class IngresoLicenciasComponent {
           error => {
             Swal.fire(
               'Error',
-              error.error,
+              error.error.message,
               'error'
             );
           }

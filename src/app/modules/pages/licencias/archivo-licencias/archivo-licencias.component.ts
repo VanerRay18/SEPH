@@ -13,7 +13,7 @@ import { ImageToBaseService } from './../../../../services/image-to-base.service
 })
 export class ArchivoLicenciasComponent implements OnInit {
   searchTerm: string = '';
-  headers = ['No.', 'Nombre', 'RFC', 'FI_PS', 'Nombraminetos definitivos', 'Licencias Medicas', 'Licencias Especiales'];
+  headers = ['No.', 'Nombre', 'RFC', 'FI_PS', 'Nombraminetos definitivos', 'Licencias Médicas', 'Licencias Especiales'];
   displayedColumns = ['no', 'nombre', 'rfc', '', ' ', 'folio'];
   data: any[] = [];
 

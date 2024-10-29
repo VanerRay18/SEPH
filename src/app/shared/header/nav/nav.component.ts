@@ -67,7 +67,7 @@ export class NavComponent implements OnInit, OnDestroy {
             parentName: item.parentName,
             children: []
           }));
-
+console.log(modules)
           // Construye el árbol de módulos
           this.menuItems = this.buildTree(modules);
         },

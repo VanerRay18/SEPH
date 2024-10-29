@@ -160,4 +160,7 @@ h1 {
     height: 38px;
     border-radius: 15px;
   }
+  .botones:hover {
+    background-color: #d4d4d4;
+  }
   
