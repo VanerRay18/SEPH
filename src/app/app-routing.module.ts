@@ -21,11 +21,7 @@ const routes: Routes = [
     component: LayoutComponent,
     canActivate: [LoggedGuard],
     children: [
-      {
-        path: 'Inicio',
-        loadChildren: () =>
-          import('./modules/pages/home/home.module').then((m) => m.HomeModule),
-      },
+
       {
         path:'Licencias',
         loadChildren:() =>
@@ -41,7 +37,7 @@ const routes: Routes = [
           ),
       },
       {
-        path:'**',
+        path:'Inicio',
         loadChildren:() =>
           import('./modules/pages/home/home.module').then(
             (m) => m.HomeModule
