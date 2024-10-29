@@ -4,10 +4,15 @@ import { LayoutComponent } from './modules/layout/layout.component';
 import { LoginComponent } from './core/auth/login/login.component';
 import { IngresoLicenciasComponent } from './modules/pages/licencias/ingreso-licencias/ingreso-licencias.component';
 import { LoggedGuard } from './core/guards/logged.guard';
+import { UsersComponent } from './modules/pages/administration/users/users.component';
+import { HomeModule } from './modules/pages/home/home.module';
+import { AdministrationModule } from './modules/pages/administration/administration.module';
+
+
 
 const routes: Routes = [
   {path:'',redirectTo:'/login',pathMatch:'full'},
-  { path: 'Test', component: IngresoLicenciasComponent },
+  { path: 'Test', component: UsersComponent },
   {path: 'login',
     component: LoginComponent,
   },
@@ -33,6 +38,20 @@ const routes: Routes = [
         loadChildren:() =>
           import('./modules/pages/extras/extras.module').then(
             (m) => m.ExtrasModule
+          ),
+      },
+      {
+        path:'**',
+        loadChildren:() =>
+          import('./modules/pages/home/home.module').then(
+            (m) => m.HomeModule
+          ),
+      },
+      {
+        path:'Admin',
+        loadChildren:() =>
+          import('./modules/pages/administration/administration.module').then(
+            (m) => m.AdministrationModule
           ),
       }
     ],

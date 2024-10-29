@@ -16,15 +16,16 @@ import { ExtrasRoutingModule } from './modules/pages/extras/extras-routing.modul
 import { LayoutModule } from './modules/layout/layout.module';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { TokenInterceptor } from './core/interceptor/token.interceptor';
-
-
 import { ReactiveFormsModule } from '@angular/forms';
+import { AdminRoutingModule } from './modules/pages/administration/admin-routing.module';
+import { AdministrationModule } from './modules/pages/administration/administration.module';
 
 @NgModule({
   declarations: [
     AppComponent,
   ],
   imports: [
+    AdministrationModule,
     AuthModule,
     SharedModule,
     BrowserModule,
@@ -38,7 +39,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     ExtrasRoutingModule,
     LayoutModule,
 
-    ReactiveFormsModule
+    ReactiveFormsModule,
+      AdminRoutingModule
   ],
   providers: [
     {

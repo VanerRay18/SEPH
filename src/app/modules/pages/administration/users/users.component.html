@@ -1,0 +1,153 @@
+<div class="cont col-auto row  mt-4 ms-4">
+  <div class="titulos">
+    <h1>Crear o modificar un nuevo usuario</h1>
+    <h5>Formulario de registro de un usuario</h5>
+  </div>
+  <div
+    class="card d-flex d-flex flex-column align-items-center justify-content-center mt-2">
+    <form class="m-5">
+      <div class="row ">
+        <div class="col-auto col-lg-2">
+          <label for="name" class="form-label">Nombre:</label>
+          <input formControlName="name" type="text" class="form-control"
+            placeholder="Ingrese el nombre "
+            aria-label="First name" required>
+        </div>
+        <div class="col-auto col-lg-3">
+          <label for="lastName" class="form-label">Apellidos:</label>
+          <input formControlName="lastName" type="text" class="form-control"
+            placeholder="Ingrese los apellidos "
+            aria-label="lastName" required>
+        </div>
+        <div class="col-auto">
+          <label for="rfc" class="form-label">RFC:</label>
+          <input formControlName="rfc" type="text" class="form-control"
+            placeholder="Ingrese el rfc de usuario"
+            aria-label="rfc" required>
+        </div>
+        <div class="col-auto col-lg-3">
+          <label for="position" class="form-label">Cargo:</label>
+          <input formControlName="position" type="text" class="form-control"
+            placeholder="Jefe de ofina"
+            aria-label="position" required>
+        </div>
+
+        <div class="col-auto col-lg-4">
+          <label for="area" class="form-label">Area:</label>
+          <input formControlName="area" type="text" class="form-control"
+            placeholder="Recursos Humanos/Nomina"
+            aria-label="area" required>
+        </div>
+        <div class="col-auto col-lg-5">
+          <label for="fuction" class="form-label">Funciones:</label>
+          <input formControlName="fuction" type="text" class="form-control"
+            placeholder="Encargado de ingresar datos"
+            aria-label="fuction" required>
+        </div>
+
+      </div>
+    </form>
+    <div class="row justify-content-center ">
+      <div class="col-lg-6 col-md-12">
+        <div class="draggable card col-lg-6 col-auto">
+          <h5>Roles asignados:</h5>
+          <div class="assigned-roles">
+            <div
+              *ngFor="let role of assignedRoles"
+              draggable="true"
+              (dragstart)="onDragStart($event, role)"
+              class="custom-checkbox draggable-role assigned-role">
+              <input type="checkbox" checked disabled /> {{ role }}
+            </div>
+            <!-- Área de drop para asignar roles -->
+            <div
+              class="drop-area"
+              (dragover)="onDragOver($event)"
+              (drop)="onDrop($event, 'assigned')">
+              <p>Arrastra aquí para asignar roles</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 col-md-12">
+        <div class="draggable card col-lg-6 col-auto ">
+          <h5>Todos los roles:</h5>
+          <div class="all-roles">
+            <div
+              *ngFor="let role of allRoles"
+              draggable="true"
+              (dragstart)="onDragStart($event, role)"
+              class="custom-checkbox draggable-role">
+              <input type="checkbox" disabled /> {{ role }}
+            </div>
+            <!-- Área de drop para quitar roles -->
+            <div
+              class="drop-area"
+              (dragover)="onDragOver($event)"
+              (drop)="onDrop($event, 'all')">
+              <p>Arrastra aquí para quitar roles</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-auto">
+      <div class="question">
+        <h5>¿El usuario necesita modulos en epecial?</h5>
+        <label class="option">
+          <input type="radio" name="activate" (change)="toggleCards(true)" /> Sí
+        </label>
+        <label class="option">
+          <input type="radio" name="activate" (change)="toggleCards(false)" /> No
+        </label>
+      </div>
+    </div>
+
+    <div class="row justify-content-center" *ngIf="showCards">
+      <div class="col-lg-6 col-md-12">
+        <div class="draggable card col-lg-6 col-auto">
+          <h5>Roles asignados:</h5>
+          <div class="assigned-roles">
+            <div
+              *ngFor="let modulo of assignedModules"
+              draggable="true"
+              (dragstart)="onDragStartM($event,modulo)"
+              class="custom-checkbox draggable-role assigned-role">
+              <input type="checkbox" checked disabled /> {{ modulo }}
+            </div>
+            <!-- Área de drop para asignar roles -->
+            <div
+              class="drop-area"
+              (dragover)="onDragOverM($event)"
+              (drop)="onDropM($event, 'assigned')">
+              <p>Arrastra aquí para asignar roles</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 col-md-12">
+        <div class="draggable card col-lg-6 col-auto ">
+          <h5>Todos los modulos:</h5>
+          <div class="all-roles">
+            <div
+              *ngFor="let modulo of allModules"
+              draggable="true"
+              (dragstart)="onDragStartM($event, modulo)"
+              class="custom-checkbox draggable-role">
+              <input type="checkbox" disabled /> {{ modulo }}
+            </div>
+            <!-- Área de drop para quitar roles -->
+            <div
+              class="drop-area"
+              (dragover)="onDragOverM($event)"
+              (drop)="onDropM($event, 'all')">
+              <p>Arrastra aquí para quitar modulos</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
