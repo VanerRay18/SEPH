@@ -18,50 +18,53 @@ export class LoggedGuard implements CanActivate, CanLoad {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot):
     Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-      const token = localStorage.getItem('token'); // Obtener el token del localStorage
-      const rolId = localStorage.getItem('rolId'); // Obtener el rolId del localStorage
-      const extras = localStorage.getItem('extras')
+      const token = localStorage.getItem('token');
+      const rolId = localStorage.getItem('rolId');
+      const extras = localStorage.getItem('extras');
+
       if (!token || !rolId) {
-        console.error('El token o rolId no están definidos. Verifica el login y el almacenamiento local.');
+        console.error('El token o rolId no están definidos.');
         this.router.navigate(['/login']);
-        return false; // Redirigir si no hay token o rolId
+        return false;
       }
 
-      // Obtener el módulo solicitado
-    const requestedModule = route.routeConfig?.path;
+      // Obtener la ruta completa solicitada
+      const requestedPath = state.url.slice(1); // Remueve el primer '/'
 
-    return new Promise<boolean>((resolve, reject) => {
-      this.authService.getModulesByRole(rolId,extras).subscribe(
-        (response: ApiResponse) => {
-          if (response.success) {
-            const allowedModules: Module[] = response.data; // Módulos permitidos
+      return new Promise<boolean>((resolve) => {
+        this.authService.getModulesByRole(rolId, extras).subscribe(
+          (response: ApiResponse) => {
+            if (response.success) {
+              const allowedModules: Module[] = response.data;
 
-            // Verificar si el módulo solicitado está en los módulos permitidos
-            const hasAccess = allowedModules.some((module: Module)  => {
-              return requestedModule && requestedModule.includes(module.config);
-            });
+              // Verificar si el módulo solicitado coincide con algún módulo permitido
+              const hasAccess = allowedModules.some((module: Module) => {
+                console.log(requestedPath +' == '+ module.config)
+                return requestedPath === module.config;
+              });
 
-            if (hasAccess) {
-              resolve(true); // Permitir el acceso
+              if (hasAccess) {
+                resolve(true);
+              } else {
+                console.warn('Acceso denegado a la ruta:', requestedPath);
+                this.router.navigate(['/login']);
+                resolve(false);
+              }
             } else {
-              console.warn('Acceso denegado a la ruta:', requestedModule);
-              this.router.navigate(['/login']); // Redirigir si no tiene acceso
+              console.error('Error al obtener los módulos:', response.message);
+              this.router.navigate(['/login']);
               resolve(false);
             }
-          } else {
-            console.error('Error al obtener los módulos:', response.message);
+          },
+          (error) => {
+            console.error('Error en la solicitud:', error);
             this.router.navigate(['/login']);
             resolve(false);
           }
-        },
-        (error) => {
-          console.error('Error en la solicitud:', error);
-          this.router.navigate(['/login']);
-          resolve(false);
-        }
-      );
-    });
+        );
+      });
   }
+
   canLoad(
     route: Route,
     segments: UrlSegment[]): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
