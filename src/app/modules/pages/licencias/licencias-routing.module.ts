@@ -8,10 +8,10 @@ import { LoggedGuard } from 'src/app/core/guards/logged.guard';
 
 
 const routes: Routes = [
-{path: 'Ingreso-Licencias',component:IngresoLicenciasComponent, canActivate: [LoggedGuard]},
-{path: 'Archivo-Licencias',component:ArchivoLicenciasComponent, canActivate: [LoggedGuard]},
-{path: 'Oficios-Licencias',component:OficioLicenciasComponent, canActivate: [LoggedGuard]},
-{path: 'Registro-Logs',component:ResgistrosLogsComponent, canActivate: [LoggedGuard]},
+{path: 'Ingreso-Licencias',component:IngresoLicenciasComponent},
+{path: 'Archivo-Licencias',component:ArchivoLicenciasComponent},
+{path: 'Oficios-Licencias',component:OficioLicenciasComponent},
+{path: 'Registro-Logs',component:ResgistrosLogsComponent},
 ];
 
 @NgModule({
