@@ -1,10 +1,13 @@
 <div class="cont col-auto row  mt-4 ms-4">
-  <div class="titulos">
+  <div class="titulos ">
     <h1>Crear o modificar un nuevo usuario</h1>
     <h5>Formulario de registro de un usuario</h5>
   </div>
+  <ng-container class="mt-3">
+    <app-busqueda></app-busqueda>
+  </ng-container>
   <div
-    class="card d-flex flex-column mt-2">
+    class="card d-flex flex-column mt-1">
     <form class="m-5">
       <div class="row ">
         <div class="col-auto col-lg-2">
@@ -24,6 +27,12 @@
           <input formControlName="rfc" type="text" class="form-control"
             placeholder="Ingrese el rfc de usuario"
             aria-label="rfc" required>
+        </div>
+        <div class="col-auto ">
+          <label for="srl_emp" class="form-label">Srl_emp:</label>
+          <input formControlName="srl_emp" type="text" class="form-control"
+            placeholder="1344"
+            aria-label="srl_emp" required>
         </div>
         <div class="col-auto col-lg-3">
           <label for="position" class="form-label">Cargo:</label>
@@ -107,7 +116,7 @@
     <div class="row justify-content-center" *ngIf="showCards">
       <div class="col-lg-6 col-md-12">
         <div class="draggable card col-lg-6 col-auto">
-          <h5>Roles asignados:</h5>
+          <h5>Modulos asignados:</h5>
           <div class="assigned-roles">
             <div
               *ngFor="let modulo of assignedModules"
@@ -121,7 +130,7 @@
               class="drop-area"
               (dragover)="onDragOverM($event)"
               (drop)="onDropM($event, 'assigned')">
-              <p>Arrastra aquí para asignar roles</p>
+              <p>Arrastra aquí para asignar modulos</p>
             </div>
           </div>
         </div>

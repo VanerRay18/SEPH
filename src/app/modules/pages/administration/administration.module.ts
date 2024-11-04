@@ -6,6 +6,13 @@ import { ModulesComponent } from './modules/modules.component';
 import { EndpointComponent } from './endpoint/endpoint.component';
 import { HomeAdminComponent } from './home-admin/home-admin.component';
 import { AdminRoutingModule } from './admin-routing.module';
+import { SharedModule } from "../../../shared/shared.module";
+import { UserCRUDComponent } from './user-crud/user-crud.component';
+import { RolesCRUDComponent } from './roles-crud/roles-crud.component';
+import { ModulesCRUDComponent } from './modules-crud/modules-crud.component';
+import { EndopointCRUDComponent } from './endopoint-crud/endopoint-crud.component';
+import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 
@@ -15,11 +22,18 @@ import { AdminRoutingModule } from './admin-routing.module';
     RolesComponent,
     ModulesComponent,
     EndpointComponent,
-    HomeAdminComponent
+    HomeAdminComponent,
+    UserCRUDComponent,
+    RolesCRUDComponent,
+    ModulesCRUDComponent,
+    EndopointCRUDComponent
   ],
   imports: [
+    FormsModule,
+    ReactiveFormsModule,
     CommonModule,
-    AdminRoutingModule
-  ]
+    AdminRoutingModule,
+    SharedModule
+]
 })
 export class AdministrationModule { }

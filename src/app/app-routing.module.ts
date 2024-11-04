@@ -7,12 +7,13 @@ import { LoggedGuard } from './core/guards/logged.guard';
 import { UsersComponent } from './modules/pages/administration/users/users.component';
 import { HomeModule } from './modules/pages/home/home.module';
 import { AdministrationModule } from './modules/pages/administration/administration.module';
+import { UserCRUDComponent } from './modules/pages/administration/user-crud/user-crud.component';
 
 
 
 const routes: Routes = [
   {path:'',redirectTo:'/login',pathMatch:'full'},
-  { path: 'Test', component: UsersComponent },
+  { path: 'Test', component: UserCRUDComponent },
   {path: 'login',
     component: LoginComponent,
   },
