@@ -8,12 +8,15 @@ import { UsersComponent } from './modules/pages/administration/users/users.compo
 import { HomeModule } from './modules/pages/home/home.module';
 import { AdministrationModule } from './modules/pages/administration/administration.module';
 import { UserCRUDComponent } from './modules/pages/administration/user-crud/user-crud.component';
+import { RolesCRUDComponent } from './modules/pages/administration/roles-crud/roles-crud.component';
+import { ModulesCRUDComponent } from './modules/pages/administration/modules-crud/modules-crud.component';
+import { EndopointCRUDComponent } from './modules/pages/administration/endopoint-crud/endopoint-crud.component';
 
 
 
 const routes: Routes = [
   {path:'',redirectTo:'/login',pathMatch:'full'},
-  { path: 'Test', component: UserCRUDComponent },
+  { path: 'Test', component: EndopointCRUDComponent },
   {path: 'login',
     component: LoginComponent,
   },
