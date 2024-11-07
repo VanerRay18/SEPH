@@ -767,8 +767,8 @@ export class IngresoLicenciasComponent implements OnInit{
           this.LicenciasService.getHistoricoAnte(this.srl_emp).subscribe(async response => {
             const data = response.data;
             const licencias = data.licencias;
-            const totalDias = licencias.reduce((acc: any, licencia: { total_dias: any; }) => {
-              return acc + (licencia.total_dias || 0); // Asegúrate de que total_dias tenga un valor
+            const totalDias = licencias.reduce((acc: any, licencia: { total_days: any; }) => {
+              return acc + (licencia.total_days || 0); // Asegúrate de que total_dias tenga un valor
             }, 0);
             const today = new Date();
             const formattedDate = today.toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' });
