@@ -7,7 +7,7 @@
     </thead>
     <tbody class="table-responsive"  style=" overflow-y: auto;">
       <tr *ngFor="let row of data | filter: searchTerm : displayedColums">
-        
+
         <!-- Ciclo para mostrar cada columna -->
         <td *ngFor="let key of displayedColums">
           <!-- Si la columna es 'rango_fechas', se muestra el valor y el ícono solo si accidente == 1 -->
@@ -15,19 +15,19 @@
             {{ row[key] }}
             <!-- Mostrar ícono si accidente == 1 -->
             <i *ngIf="row.accidente == 1" class="fa-solid fa-triangle-exclamation" style="color: rgb(255, 145, 0);"></i>
-            
+
           </ng-container>
-          
+
           <ng-container *ngIf="key === 'folio'">
-            <i *ngIf="row.nueva == 1" class="fa-solid fa-circle" style="color: rgb(255, 145, 0); font-size: 10px;"></i>
+            <i *ngIf="row.nueva == 1 and (row.observaciones == 'SIN SUELDO' || row.observaciones == 'MEDIO SUELDO')" class="fa-solid fa-circle" style="color: rgb(255, 145, 0); font-size: 10px;"></i>
           </ng-container>
-          
+
           <!-- Para las demás columnas, mostrar normalmente -->
           <ng-container *ngIf="key !== 'rango_fechas'">
             {{ row[key] }}
           </ng-container>
         </td>
-        
+
         <!-- Acciones de editar, eliminar, PDF -->
         <td>
           <button class="edit" *ngIf="showActionsEdit" (click)="onEdit(row)">

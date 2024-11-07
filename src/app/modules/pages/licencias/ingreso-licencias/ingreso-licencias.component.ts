@@ -14,23 +14,23 @@ import { LicMedica } from 'src/app/shared/interfaces/utils';
   templateUrl: './ingreso-licencias.component.html',
   styleUrls: ['./ingreso-licencias.component.css']
 })
-export class IngresoLicenciasComponent {
+export class IngresoLicenciasComponent implements OnInit{
 
   insertarLic!: FormGroup;
-  headers = ['No. de Licencia', 'Desde', 'Hasta', 'Días', 'Status de licencia', 'No. de oficio', 'Acciones'];
-  displayedColumns = ['folio', 'desde', 'hasta', 'rango_fechas', 'observaciones', 'oficio'];
+  headers = ['No. de Licencia', 'Desde', 'Hasta', 'Días', 'No. de oficio', 'Acciones'];
+  displayedColumns = ['folio', 'desde', 'hasta', 'rango_fechas','oficio'];
   data = [];
   showCard: any = false;
   table:any = true;
   srl_emp: any;
   activeTab: string = 'licencias';
   currentDate!: string;
-  sep: any;
+  fecha_ingreso: any;
 
 
-  eliminar:boolean = false;
-  agregar:boolean = false;
-  modificar:boolean = false;
+  eliminar: boolean = false;
+  agregar: boolean = false;
+  modificar: boolean = false;
 
   tabs = [
     { id: 'licencias', title: 'Licencias Médicas', icon: 'fas fa-file-medical' },
@@ -43,7 +43,7 @@ export class IngresoLicenciasComponent {
     private fb: FormBuilder,
     private ImageToBaseService: ImageToBaseService,
     private BusquedaserlService: BusquedaserlService,
-    private PermisosUserService:PermisosUserService
+    private PermisosUserService: PermisosUserService
   ) {
     (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
     //this.fetchData(); // Si tienes un endpoint real, descomenta esto
@@ -52,20 +52,19 @@ export class IngresoLicenciasComponent {
 
   ngOnInit() {
 
-    this.PermisosUserService.getPermisosSpring(this.PermisosUserService.getPermisos().Licencias).subscribe((response: ApiResponse)=>{
+    this.PermisosUserService.getPermisosSpring(this.PermisosUserService.getPermisos().Licencias).subscribe((response: ApiResponse) => {
       this.eliminar = response.data.eliminar
       this.modificar = response.data.editar
       this.agregar = response.data.agregar
-  });
+    });
 
-    this.currentDate = this.getCurrentDate(this.sep).date; // Asigna la fecha actual
-    this.sep = ''; // Inicializa 'sep'
     this.BusquedaserlService.srlEmp$.subscribe(value => {
       this.showCard = value.mostrar;
 
-      if(value.mostrar == true){
+      if (value.mostrar == true) {
         this.srl_emp = value.srl_emp;
-        this.buscar(this.srl_emp);}
+        this.buscar(this.srl_emp);
+      }
 
     });
     this.HOLA()
@@ -80,15 +79,15 @@ export class IngresoLicenciasComponent {
     });
   }
 
-  getCurrentDate(sep: any): { date: string; sep: any } {
+  getCurrentDate(fecha_ingreso: any): { date: string; fecha_ingreso: any } {
     const today = new Date();
     const day = String(today.getDate()).padStart(2, '0');
     const month = String(today.getMonth() + 1).padStart(2, '0');
     const year = today.getFullYear();
 
     return {
-      date: `${day}/${month}/${year}`, // Formato: dd/mm/yyyy
-      sep: sep // Asigna el valor correcto para 'sep'
+      date: `${day}/${month}/${year}`, // Fecha actual en formato dd/mm/yyyy
+      fecha_ingreso: fecha_ingreso // Devuelve `fecha_ingreso`
     };
   }
 
@@ -96,29 +95,42 @@ export class IngresoLicenciasComponent {
   // Método para buscar con los términos ingresados
   buscar(srl_emp: any) {
     this.srl_emp = srl_emp;
-
+    console.log(this.srl_emp)
     this.LicenciasService.getLicencias(srl_emp).subscribe((response: ApiResponse) => {
+      console.log("Respuesta de la API:", response);
       this.table = true;
-      this.data = response.data.map((item: LicMedica) => {
-        const currentDateInfo = this.getCurrentDate(item.sep); // Llama a getCurrentDate con "sep"
-        return {
-          ...item,
-          rango_fechas: `${item.total_dias} - ${item.accidente == 1 ? '' : item.sumaDias}`,
-          currentDate: currentDateInfo.date, // Guarda la fecha actual
-          sep: currentDateInfo.sep // Guarda el valor de "sep"
-        };
-      });
-      // Si necesitas usar 'sep' de alguna manera en el componente, asígnalo
-      this.sep = response.data[0]?.sep; // Asignar un valor por defecto de 'sep' del primer elemento, si existe
 
+      if (response.data && response.data.fecha_ingreso) {
+        this.fecha_ingreso = response.data.fecha_ingreso; // Guarda `fecha_ingreso` en el componente
+        this.currentDate = this.getCurrentDate(this.fecha_ingreso).date; // Usa `getCurrentDate` para formatear la fecha
+      }
+      // Asegúrate de que `licencias` existe en `response.data` antes de usar `map`
+    if (response.data && response.data.licencias) {
+      this.data = response.data.licencias.map((item: LicMedica) => ({
+        ...item,
+        desde:this.formatDate(item.desde),
+        hasta:this.formatDate(item.hasta),
+        rango_fechas: `${item.total_days}  ${item.accidente === 1 ? '-' : ''}`
+      }));
+    } else {
+      this.data = []; // Inicializa como un array vacío si `licencias` no está en `data`
+    }
 
+      this.table = true;
     },
-    (error) => {
-      this.table = false; // Manejo del estado de la tabla en caso de error
-    });
+      (error) => {
+        this.table = false; // Manejo del estado de la tabla en caso de error
+      });
   }
 
+  formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Mes en formato de 2 dígitos
+    const day = String(date.getDate()).padStart(2, '0'); // Día en formato de 2 dígitos
+    const year = date.getFullYear();
 
+    return `${month}-${day}-${year}`;
+  }
 
   onSumit(): void {
     if (this.insertarLic.valid) {
@@ -313,7 +325,7 @@ export class IngresoLicenciasComponent {
         const fecha_inicio = ((document.getElementById('fecha_inicioId') as HTMLInputElement).value) + 'T00:00:00';
         const fecha_termino = ((document.getElementById('fecha_terminoId') as HTMLInputElement).value) + 'T00:00:00';
         const formato = parseInt((document.querySelector('input[name="formato"]:checked') as HTMLInputElement).value);
-      const accidente = 0;
+        const accidente = 0;
         // Validación de campos
         if (!folio || !fecha_inicio || !fecha_termino) {
           Swal.showValidationMessage('Todos los campos son obligatorios');
@@ -399,59 +411,89 @@ export class IngresoLicenciasComponent {
       }
     });
   }
-  reload(){
+  reload() {
     this.buscar(this.srl_emp)
   }
 
-  sumitOficios() {
+  submitOficios() {
     let idsArray: number[] = []; // Array donde se guardarán los ids
-    this.data.forEach((data: { id: number, nueva: string }) => {
-      if (data.nueva === "1") {
-        idsArray.push(data.id); // Agrega data.id al array si nueva es 1
-      }
-    });
 
-    const licenciasid = {
-      licenciasId: idsArray
-    };
+    // Llamar al servicio para obtener las licencias nuevamente usando srl_emp
+    this.LicenciasService.getLicencias(this.srl_emp).subscribe((response: ApiResponse) => {
+      // Verifica si la propiedad licencias existe en la respuesta y si tiene elementos
+      if (response.data && response.data.licencias && response.data.licencias.length > 0) {
+        // Verifica si alguna licencia tiene las observaciones "SIN SUELDO" o "MEDIO SUELDO"
+        const canSendToOficio = response.data.licencias.some((item: LicMedica) =>
+          item.observaciones === "SIN SUELDO" || item.observaciones === "MEDIO SUELDO"
+        );
 
-    const userId = localStorage.getItem('userId')!; // Asegúrate de obtener el userId correcto
-    Swal.fire({
-      title: '¿Está seguro de crear el oficio?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Sí, estoy seguro',
-      cancelButtonText: 'Cancelar',
-      iconColor: '#dc3545',
-      confirmButtonColor: '#dc3545'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // Llama al servicio para crear un oficio
-        this.LicenciasService.patchLicenciasOficio(licenciasid, userId, this.srl_emp).subscribe(
-          (response: { data: { oficio: string } }) => { // Asegúrate de definir el tipo de respuesta
-            const oficio = response.data.oficio; // Accede al 'oficio' dentro de 'data'
+        if (!canSendToOficio) {
+          Swal.fire({
+            title: 'No se puede enviar a oficio',
+            text: 'La licencia debe tener la observación "SIN SUELDO" o "MEDIO SUELDO" para poder enviar a oficio.',
+            icon: 'error',
+            confirmButtonText: 'Entendido',
+            confirmButtonColor: '#dc3545'
+          });
+          return; // Detener la ejecución si no cumple la condición
+        }
 
-            if (oficio) {
-              this.buscar(this.srl_emp);
-              this.onPdf(oficio); // Llama a onPdf con el oficio
-            }
-            // Swal.fire(
-            //   '¡Oficio creado!',
-            //   'Se creo un oficio correctamente.',
-            //   'success'
-            // );
-          },
-          error => {
-            Swal.fire(
-              'Error',
-              error.error.message,
-              'error'
+        // Si cumple la condición, continuar con el procesamiento de los IDs
+        response.data.licencias.forEach((item: LicMedica) => {
+          if (item.nueva === "1") {
+            idsArray.push(item.id); // Agrega item.id al array si nueva es "1"
+          }
+        });
+
+        const licenciasid = {
+          licenciasId: idsArray
+        };
+
+        const userId = localStorage.getItem('userId')!; // Asegúrate de obtener el userId correcto
+        Swal.fire({
+          title: '¿Está seguro de crear el oficio?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Sí, estoy seguro',
+          cancelButtonText: 'Cancelar',
+          iconColor: '#dc3545',
+          confirmButtonColor: '#dc3545'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Llama al servicio para crear un oficio
+            this.LicenciasService.patchLicenciasOficio(licenciasid, userId, this.srl_emp).subscribe(
+              (response: { data: { oficio: string } }) => { // Asegúrate de definir el tipo de respuesta
+                const oficio = response.data.oficio; // Accede al 'oficio' dentro de 'data'
+
+                if (oficio) {
+                  this.buscar(this.srl_emp);
+                  this.onPdf(oficio); // Llama a onPdf con el oficio
+                }
+              },
+              error => {
+                Swal.fire(
+                  'Error',
+                  error.error.message,
+                  'error'
+                );
+              }
             );
           }
-        );
+        });
+
+      } else {
+        Swal.fire({
+          title: 'Error',
+          text: 'No se encontraron licencias válidas para el usuario.',
+          icon: 'error',
+          confirmButtonText: 'Entendido',
+          confirmButtonColor: '#dc3545'
+        });
       }
     });
   }
+
+
 
   onPdf(oficio: any) {
     this.LicenciasService.getLicenciasOficioPdf(oficio).subscribe(async response => {
@@ -589,6 +631,17 @@ export class IngresoLicenciasComponent {
     }).then((result) => {
       if (result.isConfirmed) {
         const opcionSeleccionada = result.value;
+        // Mostrar un spinner mientras se cargan los datos
+        Swal.fire({
+          title: 'Generando PDF...',
+          html: 'Por favor, espere mientras se genera el reporte.',
+          didOpen: () => {
+            Swal.showLoading(); // Mostrar el spinner de carga
+          },
+          allowOutsideClick: false, // Evitar que el usuario cierre la alerta
+          showConfirmButton: false // No mostrar botón de confirmación
+        });
+
         if (opcionSeleccionada === 'completo') {
           this.LicenciasService.getHistorico(this.srl_emp).subscribe(async response => {
             const data = response.data;
@@ -632,19 +685,19 @@ export class IngresoLicenciasComponent {
                 margin: [0, 20, 0, 20]
               },
               {
-                text: `Total de días de licencias: ${totalDiasSumados}`,
-                  alignment: 'right',
-                  style: 'subheader',
-                  bold: true,
-                  margin: [0, 20, 0, 20]
+                text: `Total de días de licencias: ${response.message}`,
+                alignment: 'right',
+                style: 'subheader',
+                bold: true,
+                margin: [0, 20, 0, 20]
               }
             ];
 
             // Para cada periodo, agregar un bloque de contenido con una tabla de licencias
             Object.keys(licenciasPorPeriodo).forEach(periodo => {
               const licencias = licenciasPorPeriodo[periodo] || []; // Asignar un arreglo vacío si no hay licencias
-              const totalDias = licencias.reduce((acc: any, licencia: { total_dias: any; }) => {
-                return acc + (licencia.total_dias || 0); // Asegúrate de que total_dias tenga un valor
+              const totalDias = licencias.reduce((acc: any, licencia: { total_days: any; }) => {
+                return acc + (licencia.total_days || 0); // Asegúrate de que total_dias tenga un valor
               }, 0);
               content.push(
                 { text: `Periodo: ${periodo}`, style: 'subheader', margin: [0, 20, 0, 10] },
@@ -662,10 +715,10 @@ export class IngresoLicenciasComponent {
                         { text: 'Fecha de captura', bold: true, fillColor: '#eeeeee', alignment: 'center' },
                       ],
                       // Agregar cada licencia correspondiente a este periodo
-                      ...licenciasPorPeriodo[periodo].map((licencia: { foliolic: any, desde: any, hasta: any, total_dias: any, oficio: any, fechaCaptura: any, apartir: any }) => [
-                        { text: licencia.foliolic, alignment: 'center' },
+                      ...licenciasPorPeriodo[periodo].map((licencia: { folio: any, desde: any, hasta: any, total_days: any, oficio: any, fechaCaptura: any, apartir: any }) => [
+                        { text: licencia.folio, alignment: 'center' },
                         { text: `${licencia.desde} - ${licencia.hasta}`, alignment: 'center' },
-                        { text: licencia.total_dias, alignment: 'center' },
+                        { text: licencia.total_days, alignment: 'center' },
                         { text: licencia.oficio, alignment: 'center' },
                         { text: licencia.fechaCaptura, alignment: 'center' },
                       ])
@@ -698,14 +751,16 @@ export class IngresoLicenciasComponent {
             };
 
             pdfMake.createPdf(documentDefinition).open();
+            Swal.close();
           },
             error => {
               Swal.fire({
                 title: 'No exite historico ',
-                text:  error.error.message,
+                text: error.error.message,
                 icon: 'error',
                 confirmButtonText: 'OK'
               });  // Manejo de error
+
             });
         } else if (opcionSeleccionada === 'anterior') {
           this.LicenciasService.getHistoricoAnte(this.srl_emp).subscribe(async response => {
@@ -793,11 +848,12 @@ export class IngresoLicenciasComponent {
             };
             // Generar y descargar el PDF
             pdfMake.createPdf(documentDefinition).open();
+            Swal.close();
           },
             error => {
               Swal.fire({
                 title: 'No exite historico Anterior',
-                text:  error.error.message,
+                text: error.error.message,
                 icon: 'error',
                 confirmButtonText: 'OK'
               });

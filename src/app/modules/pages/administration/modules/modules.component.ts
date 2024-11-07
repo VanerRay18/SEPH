@@ -14,8 +14,11 @@ export class ModulesComponent {
 
   constructor(private fb: FormBuilder) {
     this.roleForm = this.fb.group({
-      selectedOption: ['', Validators.required], // Control para el dropdown
-      // otros controles...
+      selectedOption: ['', Validators.required], // Dropdown de módulo padre
+      name: ['', [Validators.required, Validators.minLength(3)]], // Nombre del módulo, requerido, mínimo 3 caracteres
+      description: ['', [Validators.required, Validators.minLength(10)]], // Descripción, requerido, mínimo 10 caracteres
+      path: ['', [Validators.required, Validators.pattern(/^[\w\/-]+$/)]], // Path, requerido, solo letras, números, / y -
+      isModulePapa: [false] // Control adicional para almacenar el valor del radio
     });
   }
 
