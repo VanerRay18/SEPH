@@ -76,7 +76,7 @@ export class OficioLicenciasComponent {
               {
                 image: imageBase64,
                 alignment: 'right',
-                width: 210,
+                width: 180,
                 height: 50,
               },
               {
@@ -101,7 +101,7 @@ export class OficioLicenciasComponent {
               widths: ['*', '*'],
               body: [
                 // Agregar una fila de cabecera si 'claves' no está vacío
-                [{ text: 'PLAZA', alignment: 'center', bold: true }, { text: 'CT', alignment: 'center', bold: true }],
+                [{ text: 'PLAZA', alignment: 'center', bold: true, fillColor: '#eeeeee'}, { text: 'CT', alignment: 'center', bold: true, fillColor: '#eeeeee' }],
                 ...claves.map((clave: { PLAZA: any; CT: any; }) => [
                   { text: clave.PLAZA, alignment: 'center', bold: true },
                   { text: clave.CT, alignment: 'center', bold: true }
