@@ -76,7 +76,7 @@ export class IngresoLicenciasComponent {
       folio: ['', Validators.required],
       fecha_inicio: ['', Validators.required],
       fecha_termino: ['', Validators.required],
-      formato: ['', Validators.required]
+      formato: ['0', Validators.required]
     });
   }
 
