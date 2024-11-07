@@ -124,12 +124,8 @@ export class IngresoLicenciasComponent implements OnInit{
   }
 
   formatDate(dateString: string): string {
-    const date = new Date(dateString);
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Mes en formato de 2 dígitos
-    const day = String(date.getDate()).padStart(2, '0'); // Día en formato de 2 dígitos
-    const year = date.getFullYear();
-
-    return `${month}-${day}-${year}`;
+    const [year, month, day] = dateString.split('-');
+    return `${day}-${month}-${year}`; // Formato día/mes/año
   }
 
   onSumit(): void {
