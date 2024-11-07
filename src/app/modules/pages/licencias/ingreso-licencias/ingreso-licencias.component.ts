@@ -15,9 +15,11 @@ import { LicMedica } from 'src/app/shared/interfaces/utils';
   styleUrls: ['./ingreso-licencias.component.css']
 })
 export class IngresoLicenciasComponent implements OnInit{
-
+  eliminar: boolean = false;
+  agregar: boolean = false;
+  modificar: boolean = false;
   insertarLic!: FormGroup;
-  headers = ['No. de Licencia', 'Desde', 'Hasta', 'Días', 'No. de oficio', 'Acciones'];
+  headers = ['No. de Licencia', 'Desde', 'Hasta', 'Días', 'No. de oficio'];
   displayedColumns = ['folio', 'desde', 'hasta', 'rango_fechas','oficio'];
   data = [];
   showCard: any = false;
@@ -26,9 +28,7 @@ export class IngresoLicenciasComponent implements OnInit{
   activeTab: string = 'licencias';
   currentDate!: string;
   fecha_ingreso: any;
-  eliminar: boolean = false;
-  agregar: boolean = false;
-  modificar: boolean = false;
+
 
   tabs = [
     { id: 'licencias', title: 'Licencias Médicas', icon: 'fas fa-file-medical' },
@@ -54,6 +54,8 @@ export class IngresoLicenciasComponent implements OnInit{
       this.eliminar = response.data.eliminar
       this.modificar = response.data.editar
       this.agregar = response.data.agregar
+      if(this.modificar == true || this.eliminar == true)
+      this.headers.push('Acciones');
     });
 
     this.BusquedaserlService.srlEmp$.subscribe(value => {
@@ -815,10 +817,10 @@ export class IngresoLicenciasComponent implements OnInit{
                         { text: 'Fecha de captura', bold: true, fillColor: '#eeeeee', alignment: 'center' },
                       ],
                       // Agregar cada licencia correspondiente a este periodo
-                      ...licencias.map((licencia: { foliolic: any, desde: any, hasta: any, total_dias: any, oficio: any, fechaCaptura: any, apartir: any }) => [
-                        { text: licencia.foliolic, alignment: 'center' },
+                      ...licencias.map((licencia: { folio: any, desde: any, hasta: any, total_days: any, oficio: any, fechaCaptura: any, apartir: any }) => [
+                        { text: licencia.folio, alignment: 'center' },
                         { text: `${licencia.desde} - ${licencia.hasta}`, alignment: 'center' },
-                        { text: licencia.total_dias, alignment: 'center' },
+                        { text: licencia.total_days, alignment: 'center' },
                         { text: licencia.oficio, alignment: 'center' },
                         { text: licencia.fechaCaptura, alignment: 'center' },
                       ])
