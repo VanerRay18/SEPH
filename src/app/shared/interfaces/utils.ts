@@ -30,9 +30,13 @@ export interface Logs {
 export interface LicMedica{
 sep?: any;
 sumaDias:any,
-total_dias:any,
+desde:any,
+hasta:any,
+total_days:any,
 nueva:any,
-accidente:any
+accidente:any,
+observaciones: any,
+id: any
 }
 
 // export interface clave{
