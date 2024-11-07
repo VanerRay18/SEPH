@@ -22,25 +22,26 @@ export class BusquedaComponent {
   nombreSearchTerm: string = '';
   rfcFavorSearchTerm: string = ''; // Nuevo término de búsqueda para RFC de favor
 
-  items: { rfc: string; nombre: string; srl_emp: number }[] = [];
-  rfcSuggestions: { rfc: string; nombre: string; srl_emp: number }[] = [];
-  nombreSuggestions: { rfc: string; nombre: string; srl_emp: number }[] = [];
-  rfcFavorSuggestions: { rfc: string; nombre: string; srl_emp: number }[] = []; // Sugerencias para RFC de favor
+  items: { rfc: string; nombre: string; srl_emp: number; fecha_ingreso: number}[] = [];
+  rfcSuggestions: { rfc: string; nombre: string; srl_emp: number ;fecha_ingreso: number}[] = [];
+  nombreSuggestions: { rfc: string; nombre: string; srl_emp: number;fecha_ingreso: number }[] = [];
+  rfcFavorSuggestions: { rfc: string; nombre: string; srl_emp: number;fecha_ingreso: number }[] = []; // Sugerencias para RFC de favor
 
   private rfcSearchSubject: Subject<string> = new Subject<string>();
   private nombreSearchSubject: Subject<string> = new Subject<string>();
   private rfcFavorSearchSubject: Subject<string> = new Subject<string>(); // Subject para RFC de favor
 
   @Output() srl_emp: EventEmitter<any> = new EventEmitter();
+  @Output() fecha_ingreso: EventEmitter<any> = new EventEmitter();
 
-  constructor( 
+  constructor(
     private LicenciasService: LicenciasService,
     private BusquedaserlService: BusquedaserlService,
     public PermisosUserService: PermisosUserService
   ) {
     // Configurar debounce para el término de búsqueda de RFC
     this.rfcSearchSubject.pipe(debounceTime(300)).subscribe(searchTerm => this.performRFCSearch(searchTerm));
-    
+
     // Configurar debounce para el término de búsqueda de Nombre
     this.nombreSearchSubject.pipe(debounceTime(300)).subscribe(searchTerm => this.performNombreSearch(searchTerm));
 
@@ -50,7 +51,7 @@ export class BusquedaComponent {
 
   ngOnInit() {
     this.BusquedaserlService.srlEmp$.subscribe(value => {
-    
+
       if (value != null) {
         this.rfcSearchTerm = value.rfc;
         this.nombreSearchTerm = value.nombre;
@@ -61,7 +62,8 @@ export class BusquedaComponent {
       this.items = response.data.map((user: Employee) => ({
         rfc: user.rfc,
         nombre: user.nombre,
-        srl_emp: user.srl_emp
+        srl_emp: user.srl_emp,
+        fecha_ingreso: user.fecha_ingreso
       }));
     });
   }
@@ -98,16 +100,16 @@ export class BusquedaComponent {
     }
     this.nombreSuggestions = [];
   }
-  
+
 
   private performNombreSearch(searchTerm: string) {
     // Divide el término de búsqueda en palabras
-    
+
     const searchTerms = searchTerm.toLowerCase().split(' ').filter(term => term.length > 0);
 
     if (searchTerms.length > 0) { // Verifica que haya al menos un término de búsqueda
         this.nombreSuggestions = this.items.filter(item => {
-          
+
             const nombreCompleto = item.nombre.toLowerCase();
             // Verifica que cada término de búsqueda esté en el nombre completo
             return searchTerms.every(term => nombreCompleto.includes(term));
@@ -129,33 +131,37 @@ export class BusquedaComponent {
     }
   }
 
-  selectRFC(item: { rfc: string; nombre: string; srl_emp: number }) {
+  selectRFC(item: { rfc: string; nombre: string; srl_emp: number; fecha_ingreso: number }) {
     this.rfcSearchTerm = item.rfc;
     this.nombreSearchTerm = item.nombre;
     this.rfcSuggestions = [];
     this.nombreSuggestions = [];
     this.srl_emp.emit(item.srl_emp);
-    
+    this.fecha_ingreso.emit(item.fecha_ingreso);
+
     const valores = {
       srl_emp: item.srl_emp,
       rfc: item.rfc,
       nombre: item.nombre,
+      fecha_ingreso: item.fecha_ingreso,
       mostrar: true
     };
-    
+
     this.BusquedaserlService.updateSrlEmp(valores);
   }
 
   // Seleccionar un Nombre y completar el RFC
-  selectNombre(item: { rfc: string; nombre: string; srl_emp: number }) {
+  selectNombre(item: { rfc: string; nombre: string; srl_emp: number; fecha_ingreso: number }) {
     this.nombreSearchTerm = item.nombre;
     this.rfcSearchTerm = item.rfc;
     this.srl_emp.emit(item.srl_emp);
-    
+    this.fecha_ingreso.emit(item.fecha_ingreso);
+
     const valores = {
       srl_emp: item.srl_emp,
       rfc: item.rfc,
       nombre: item.nombre,
+      fecha_ingreso: item.fecha_ingreso,
       mostrar: true
     };
 
@@ -226,7 +232,7 @@ export class BusquedaComponent {
 //   nombreSuggestions: { rfc: string; nombre: string; srl_emp: number }[] = [];
 
 //   @Output() srl_emp: EventEmitter<any> = new EventEmitter();
-//   constructor( 
+//   constructor(
 //     private LicenciasService: LicenciasService,
 //     private BusquedaserlService: BusquedaserlService,
 //     public PermisosUserService :PermisosUserService
@@ -234,7 +240,7 @@ export class BusquedaComponent {
 
 
 //   ngOnInit() {
-    
+
 
 //     this.BusquedaserlService.srlEmp$.subscribe(value => {
 //       console.log(value)
@@ -250,14 +256,14 @@ export class BusquedaComponent {
 //         srl_emp: user.srl_emp
 //       }));
 //     });
-    
+
 //   }
 
 //   clean(){
 //     this.rfcSearchTerm= ''
 //     this.nombreSearchTerm= ''
 //     this.BusquedaserlService.clearSrlEmp()
-    
+
 //   }
 
 //     // Filtrar RFC al escribir
@@ -271,7 +277,7 @@ export class BusquedaComponent {
 //       }
 //       this.nombreSuggestions = [];
 //     }
-  
+
 //     // Filtrar Nombre al escribir
 //     filterNombre() {
 //       if (this.nombreSearchTerm.length >= 4) { // Verificar si hay al menos 4 caracteres
@@ -296,10 +302,10 @@ export class BusquedaComponent {
 //         nombre:item.nombre,
 //         mostrar:true
 //       }
-      
+
 //       this.BusquedaserlService.updateSrlEmp(valores)
 //     }
-  
+
 //     // Seleccionar un Nombre y completar el RFC
 //     selectNombre(item: { rfc: string; nombre: string; srl_emp: number }) {
 //       this.nombreSearchTerm = item.nombre;
@@ -313,7 +319,7 @@ export class BusquedaComponent {
 //       }
 
 //       this.BusquedaserlService.updateSrlEmp(valores)
-  
+
 //       this.rfcSuggestions = [];
 //       this.nombreSuggestions = [];
 //     }
@@ -322,14 +328,14 @@ export class BusquedaComponent {
 //       this.showCard = true;
 //       this.srl_emp = srl_emp;
 //       console.log('Buscando por RFC:', this.rfcSearchTerm, 'y Nombre:', this.nombreSearchTerm, 'y srl_emp:', this.srl_emp);
-  
+
 //       this.LicenciasService.getLicencias(srl_emp).subscribe((response: ApiResponse) => {
 //         this.table = true
 //         this.data = response.data.map((item: LicMedica) => ({
 //           ...item,
 //           rango_fechas: `${item.total_dias} -   ${item.accidente == 1? '':item.sumaDias}`
 //         })); // Aquí concatenas las fechas
-  
+
 //       },
 //       (error) => {
 //         this.table = false; // Asegúrate de manejar el estado de la tabla en caso de error

@@ -19,6 +19,7 @@ export class BusquedaserlService {
       rfc: '',
       nombre: '',
       srl_emp: '',
+      fecha_ingreso:'',
       mostrar:false
     }
     this.srlEmpSubject.next(values); // O puedes usar un valor predeterminado

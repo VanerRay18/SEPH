@@ -26,8 +26,6 @@ export class IngresoLicenciasComponent implements OnInit{
   activeTab: string = 'licencias';
   currentDate!: string;
   fecha_ingreso: any;
-
-
   eliminar: boolean = false;
   agregar: boolean = false;
   modificar: boolean = false;
@@ -59,8 +57,8 @@ export class IngresoLicenciasComponent implements OnInit{
     });
 
     this.BusquedaserlService.srlEmp$.subscribe(value => {
+      this.fecha_ingreso = value.fecha_ingreso
       this.showCard = value.mostrar;
-
       if (value.mostrar == true) {
         this.srl_emp = value.srl_emp;
         this.buscar(this.srl_emp);
@@ -95,15 +93,17 @@ export class IngresoLicenciasComponent implements OnInit{
   // Método para buscar con los términos ingresados
   buscar(srl_emp: any) {
     this.srl_emp = srl_emp;
+
+    this.currentDate = this.getCurrentDate(this.fecha_ingreso).date; // Usa `getCurrentDate` para formatear la fecha
     console.log(this.srl_emp)
     this.LicenciasService.getLicencias(srl_emp).subscribe((response: ApiResponse) => {
       console.log("Respuesta de la API:", response);
       this.table = true;
 
-      if (response.data && response.data.fecha_ingreso) {
-        this.fecha_ingreso = response.data.fecha_ingreso; // Guarda `fecha_ingreso` en el componente
-        this.currentDate = this.getCurrentDate(this.fecha_ingreso).date; // Usa `getCurrentDate` para formatear la fecha
-      }
+      // if (response.data && response.data.fecha_ingreso) {
+      //   this.fecha_ingreso = response.data.fecha_ingreso; // Guarda `fecha_ingreso` en el componente
+      //   this.currentDate = this.getCurrentDate(this.fecha_ingreso).date; // Usa `getCurrentDate` para formatear la fecha
+      // }
       // Asegúrate de que `licencias` existe en `response.data` antes de usar `map`
     if (response.data && response.data.licencias) {
       this.data = response.data.licencias.map((item: LicMedica) => ({
@@ -492,23 +492,24 @@ export class IngresoLicenciasComponent implements OnInit{
 
 
   onPdf(oficio: any) {
+    console.log(oficio);
     this.LicenciasService.getLicenciasOficioPdf(oficio).subscribe(async response => {
       const data = response.data;
-      const claves = data.claves;
-      const licencias = data.licencias;
+      const claves = data.claves || []; // Asegura que 'claves' esté definido
+      const licencias = data.licencias || []; // Asegura que 'licencias' esté definido
 
       // Convertir la imagen a base64
-      const imageBase64 = await this.ImageToBaseService.convertImageToBase64('assets/logo_gobhidalgo.png');
+      const imageBase64 = await this.ImageToBaseService.convertImageToBase64('assets/IHE_LOGO.png');
 
       const documentDefinition: any = {
         content: [
           {
             columns: [
               {
-                image: imageBase64, // Usar la imagen convertida
+                image: imageBase64,
                 alignment: 'right',
-                width: 210, // Ajustar el ancho
-                height: 50, // Ajustar la altura
+                width: 210,
+                height: 50,
               },
               {
                 text: `Pachuca HGO. ${data.impresion}.\nOficio Num: ${data.oficio}.`,
@@ -531,7 +532,8 @@ export class IngresoLicenciasComponent implements OnInit{
               headerRows: 1,
               widths: ['*', '*'],
               body: [
-                // Llena la tabla con los datos de 'claves'
+                // Agregar una fila de cabecera si 'claves' no está vacío
+                [{ text: 'PLAZA', alignment: 'center', bold: true }, { text: 'CT', alignment: 'center', bold: true }],
                 ...claves.map((clave: { PLAZA: any; CT: any; }) => [
                   { text: clave.PLAZA, alignment: 'center', bold: true },
                   { text: clave.CT, alignment: 'center', bold: true }
@@ -547,7 +549,7 @@ export class IngresoLicenciasComponent implements OnInit{
           {
             table: {
               headerRows: 1,
-              widths: ['auto', 'auto', '*', '*', 'auto'], // Ajuste de anchos de columnas
+              widths: ['auto', 'auto', '*', '*', 'auto'],
               body: [
                 // Cabeceras de la tabla
                 [
@@ -557,7 +559,7 @@ export class IngresoLicenciasComponent implements OnInit{
                   { text: 'Observaciones', bold: true, fillColor: '#eeeeee', alignment: 'center' },
                   { text: 'A partir de', bold: true, fillColor: '#eeeeee', alignment: 'center' }
                 ],
-                // Llena la tabla con los datos de 'licencias'
+                // Agregar filas si 'licencias' no está vacío
                 ...licencias.map((licencia: { foliolic: any; total_dias: any; desde: any; hasta: any; observaciones: any; apartir: any; }) => [
                   { text: licencia.foliolic, alignment: 'center' },
                   { text: licencia.total_dias, alignment: 'center' },
@@ -592,6 +594,7 @@ export class IngresoLicenciasComponent implements OnInit{
       pdfMake.createPdf(documentDefinition).open();
     });
   }
+
 
   historicopdf() {
     Swal.fire({

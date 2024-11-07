@@ -63,8 +63,8 @@ export class OficioLicenciasComponent {
     console.log(oficio);
     this.LicenciasService.getLicenciasOficioPdf(oficio).subscribe(async response => {
       const data = response.data;
-      const claves = data.claves;
-      const licencias = data.licencias;
+      const claves = data.claves || []; // Asegura que 'claves' esté definido
+      const licencias = data.licencias || []; // Asegura que 'licencias' esté definido
 
       // Convertir la imagen a base64
       const imageBase64 = await this.ImageToBaseService.convertImageToBase64('assets/IHE_LOGO.png');
@@ -74,10 +74,10 @@ export class OficioLicenciasComponent {
           {
             columns: [
               {
-                image: imageBase64, // Usar la imagen convertida
+                image: imageBase64,
                 alignment: 'right',
-                width: 210, // Ajustar el ancho
-                height: 50, // Ajustar la altura
+                width: 210,
+                height: 50,
               },
               {
                 text: `Pachuca HGO. ${data.impresion}.\nOficio Num: ${data.oficio}.`,
@@ -100,7 +100,8 @@ export class OficioLicenciasComponent {
               headerRows: 1,
               widths: ['*', '*'],
               body: [
-                // Llena la tabla con los datos de 'claves'
+                // Agregar una fila de cabecera si 'claves' no está vacío
+                [{ text: 'PLAZA', alignment: 'center', bold: true }, { text: 'CT', alignment: 'center', bold: true }],
                 ...claves.map((clave: { PLAZA: any; CT: any; }) => [
                   { text: clave.PLAZA, alignment: 'center', bold: true },
                   { text: clave.CT, alignment: 'center', bold: true }
@@ -116,7 +117,7 @@ export class OficioLicenciasComponent {
           {
             table: {
               headerRows: 1,
-              widths: ['auto', 'auto', '*', '*', 'auto'], // Ajuste de anchos de columnas
+              widths: ['auto', 'auto', '*', '*', 'auto'],
               body: [
                 // Cabeceras de la tabla
                 [
@@ -126,7 +127,7 @@ export class OficioLicenciasComponent {
                   { text: 'Observaciones', bold: true, fillColor: '#eeeeee', alignment: 'center' },
                   { text: 'A partir de', bold: true, fillColor: '#eeeeee', alignment: 'center' }
                 ],
-                // Llena la tabla con los datos de 'licencias'
+                // Agregar filas si 'licencias' no está vacío
                 ...licencias.map((licencia: { foliolic: any; total_dias: any; desde: any; hasta: any; observaciones: any; apartir: any; }) => [
                   { text: licencia.foliolic, alignment: 'center' },
                   { text: licencia.total_dias, alignment: 'center' },
@@ -161,6 +162,7 @@ export class OficioLicenciasComponent {
       pdfMake.createPdf(documentDefinition).open();
     });
   }
+
 
 
 

@@ -9,4 +9,5 @@ export interface User {
     rfc: string;
     nombre: string;
     srl_emp: number;
+    fecha_ingreso: number;
   }
