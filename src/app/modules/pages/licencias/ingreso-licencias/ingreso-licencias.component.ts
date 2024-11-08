@@ -15,9 +15,11 @@ import { LicMedica } from 'src/app/shared/interfaces/utils';
   styleUrls: ['./ingreso-licencias.component.css']
 })
 export class IngresoLicenciasComponent implements OnInit{
-
+  eliminar: boolean = false;
+  agregar: boolean = false;
+  modificar: boolean = false;
   insertarLic!: FormGroup;
-  headers = ['No. de Licencia', 'Desde', 'Hasta', 'Días', 'No. de oficio', 'Acciones'];
+  headers = ['No. de Licencia', 'Desde', 'Hasta', 'Días', 'No. de oficio'];
   displayedColumns = ['folio', 'desde', 'hasta', 'rango_fechas','oficio'];
   data = [];
   showCard: any = false;
@@ -26,9 +28,7 @@ export class IngresoLicenciasComponent implements OnInit{
   activeTab: string = 'licencias';
   currentDate!: string;
   fecha_ingreso: any;
-  eliminar: boolean = false;
-  agregar: boolean = false;
-  modificar: boolean = false;
+
 
   tabs = [
     { id: 'licencias', title: 'Licencias Médicas', icon: 'fas fa-file-medical' },
@@ -54,6 +54,8 @@ export class IngresoLicenciasComponent implements OnInit{
       this.eliminar = response.data.eliminar
       this.modificar = response.data.editar
       this.agregar = response.data.agregar
+      if(this.modificar == true || this.eliminar == true)
+      this.headers.push('Acciones');
     });
 
     this.BusquedaserlService.srlEmp$.subscribe(value => {
@@ -765,8 +767,8 @@ export class IngresoLicenciasComponent implements OnInit{
           this.LicenciasService.getHistoricoAnte(this.srl_emp).subscribe(async response => {
             const data = response.data;
             const licencias = data.licencias;
-            const totalDias = licencias.reduce((acc: any, licencia: { total_dias: any; }) => {
-              return acc + (licencia.total_dias || 0); // Asegúrate de que total_dias tenga un valor
+            const totalDias = licencias.reduce((acc: any, licencia: { total_days: any; }) => {
+              return acc + (licencia.total_days || 0); // Asegúrate de que total_dias tenga un valor
             }, 0);
             const today = new Date();
             const formattedDate = today.toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' });
@@ -815,10 +817,10 @@ export class IngresoLicenciasComponent implements OnInit{
                         { text: 'Fecha de captura', bold: true, fillColor: '#eeeeee', alignment: 'center' },
                       ],
                       // Agregar cada licencia correspondiente a este periodo
-                      ...licencias.map((licencia: { foliolic: any, desde: any, hasta: any, total_dias: any, oficio: any, fechaCaptura: any, apartir: any }) => [
-                        { text: licencia.foliolic, alignment: 'center' },
+                      ...licencias.map((licencia: { folio: any, desde: any, hasta: any, total_days: any, oficio: any, fechaCaptura: any, apartir: any }) => [
+                        { text: licencia.folio, alignment: 'center' },
                         { text: `${licencia.desde} - ${licencia.hasta}`, alignment: 'center' },
-                        { text: licencia.total_dias, alignment: 'center' },
+                        { text: licencia.total_days, alignment: 'center' },
                         { text: licencia.oficio, alignment: 'center' },
                         { text: licencia.fechaCaptura, alignment: 'center' },
                       ])

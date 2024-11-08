@@ -19,7 +19,7 @@
           </ng-container>
 
           <ng-container *ngIf="key === 'folio'">
-            <i *ngIf="row.nueva == 1 and (row.observaciones == 'SIN SUELDO' || row.observaciones == 'MEDIO SUELDO')" class="fa-solid fa-circle" style="color: rgb(255, 145, 0); font-size: 10px;"></i>
+            <i *ngIf="row.nueva == 1 && (row.observaciones === 'SIN SUELDO' || row.observaciones === 'MEDIO SUELDO')" class="fa-solid fa-circle" style="color: rgb(255, 145, 0); font-size: 10px;"></i>
           </ng-container>
 
           <!-- Para las demás columnas, mostrar normalmente -->
