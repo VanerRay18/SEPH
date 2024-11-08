@@ -60,8 +60,20 @@ export class ArchivoLicenciasComponent implements OnInit {
     return `${day}/${month}/${year}`;
   }
 
+  generateDailyNumber(): string {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth() + 1; // Los meses comienzan desde 0, por lo que sumamos 1
+    const day = today.getDate();
+
+    // Generar un número basado en la fecha y sumar 1000 para empezar desde 1000
+    const number = ((year * 10000 + month * 100 + day) % 1000) + 1000; // Genera un número entre 1000 y 1999
+    return number.toString();
+  }
+
 
   generatePdfLicencias() {
+    const dailyNumber = this.generateDailyNumber();
     const formattedDate = this.getCurrentFormattedDate();
     this.LicenciasService.getLicenciasArchivo().subscribe(async response => {
       if (response && response.data && Array.isArray(response.data)) {
@@ -104,7 +116,7 @@ export class ArchivoLicenciasComponent implements OnInit {
                       bold: true
                     },
                     {
-                      text: `NO. OFICIO: DNCP/SNI/0150/2024\nFECHA: ${formattedDate}`,
+                      text: `NO. OFICIO: DNCP/SNI/${dailyNumber}/2024\nFECHA: ${formattedDate}`,
                       alignment: 'right'
                     }
                   ]
