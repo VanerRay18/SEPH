@@ -36,6 +36,7 @@ total_days:any,
 nueva:any,
 accidente:any,
 observaciones: any,
+fechaCaptura: any,
 id: any
 }
 

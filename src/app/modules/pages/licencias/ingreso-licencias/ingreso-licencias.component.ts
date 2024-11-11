@@ -19,8 +19,8 @@ export class IngresoLicenciasComponent implements OnInit{
   agregar: boolean = false;
   modificar: boolean = false;
   insertarLic!: FormGroup;
-  headers = ['No. de Licencia', 'Desde', 'Hasta', 'Días', 'No. de oficio'];
-  displayedColumns = ['folio', 'desde', 'hasta', 'rango_fechas','oficio'];
+  headers = ['No. de Licencia', 'Desde', 'Hasta', 'Días', 'Fecha de captura', 'No. de oficio'];
+  displayedColumns = ['folio', 'desde', 'hasta', 'rango_fechas','fechaCaptura','oficio'];
   data = [];
   showCard: any = false;
   table:any = true;
@@ -28,6 +28,7 @@ export class IngresoLicenciasComponent implements OnInit{
   activeTab: string = 'licencias';
   currentDate!: string;
   fecha_ingreso: any;
+  Total_lic!:any;
 
 
   tabs = [
@@ -101,7 +102,7 @@ export class IngresoLicenciasComponent implements OnInit{
     this.LicenciasService.getLicencias(srl_emp).subscribe((response: ApiResponse) => {
       console.log("Respuesta de la API:", response);
       this.table = true;
-
+      this.Total_lic = response.message
       // if (response.data && response.data.fecha_ingreso) {
       //   this.fecha_ingreso = response.data.fecha_ingreso; // Guarda `fecha_ingreso` en el componente
       //   this.currentDate = this.getCurrentDate(this.fecha_ingreso).date; // Usa `getCurrentDate` para formatear la fecha
@@ -110,6 +111,7 @@ export class IngresoLicenciasComponent implements OnInit{
     if (response.data && response.data.licencias) {
       this.data = response.data.licencias.map((item: LicMedica) => ({
         ...item,
+        fechaCaptura:this.formatDate(item.fechaCaptura),
         desde:this.formatDate(item.desde),
         hasta:this.formatDate(item.hasta),
         rango_fechas: `${item.total_days}  ${item.accidente === 1 ? '-' : ''}`
