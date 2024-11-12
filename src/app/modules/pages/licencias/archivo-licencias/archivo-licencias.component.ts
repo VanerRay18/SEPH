@@ -110,8 +110,9 @@ export class ArchivoLicenciasComponent implements OnInit {
                     }
                   ],
                   [
+
                     {
-                      text: 'De: José Gabriel Castro Bautista\nDirector de Nómina y Control de Plazas',
+                      text: 'Para: Lic. Brenda Martínez Alvaréz Jefa de la unidad técnica de resguardo documental\n\n De: Ing. José Gabriel Castro Bautista\nDirector de Nómina y Control de Plazas',
                       alignment: 'left',
                       bold: true
                     },
