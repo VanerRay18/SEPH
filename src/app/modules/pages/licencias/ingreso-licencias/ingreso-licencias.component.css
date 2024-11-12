@@ -8,8 +8,17 @@ h5 {
 .card {
   border: 10%; /* Esta propiedad no afecta el redondeo; probablemente querías usar border-width */
   border-radius: 10px; /* Ajusta el valor según el grado de redondeo deseado */
-} 
+}
 
+.dias-input {
+  width: 40px; /* Ajusta el ancho a un tamaño menor */
+  text-align: center; /* Centra el texto */
+  font-size: 0.875rem; /* Tamaño de fuente ajustado */
+  padding: 0.25rem; /* Padding reducido */
+  background-color: #f8f9fa; /* Color de fondo para que parezca deshabilitado */
+  border: 1px solid #ced4da; /* Borde estándar de Bootstrap */
+  cursor: not-allowed; /* Cambia el cursor para enfatizar que está deshabilitado */
+}
 
 .card2 {
   background-color: #ffffff;
@@ -68,7 +77,7 @@ h5 {
 }
 
 .Nombre {
-  
+
   flex-grow: 1; /* Permite que el input de Nombre crezca */
 }
 .buton{
@@ -96,7 +105,7 @@ input {
 
 button {
   border-radius: .5em;
-  
+
   height: 50%; /* Ajusta la altura del botón */
   cursor: pointer;
 }
@@ -128,9 +137,9 @@ button {
 }
 .busqueda{
   margin-top: 8px;
-  height: 40px; 
+  height: 40px;
   width: 80px;
-  
+
 }
 .hola{
   margin-bottom: 50px;

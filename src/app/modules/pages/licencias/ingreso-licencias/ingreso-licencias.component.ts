@@ -28,7 +28,8 @@ export class IngresoLicenciasComponent implements OnInit{
   activeTab: string = 'licencias';
   currentDate!: string;
   fecha_ingreso: any;
-  Total_lic!:any;
+  diasRegistrados: number = 0;
+  Total_lic: any | null;
 
 
   tabs = [
@@ -78,7 +79,21 @@ export class IngresoLicenciasComponent implements OnInit{
       fecha_termino: ['', Validators.required],
       formato: ['0', Validators.required]
     });
+    this.insertarLic.get('fecha_inicio')?.valueChanges.subscribe(() => this.calcularDias());
+    this.insertarLic.get('fecha_termino')?.valueChanges.subscribe(() => this.calcularDias());
   }
+  calcularDias() {
+    const fechaInicio = new Date(this.insertarLic.get('fecha_inicio')?.value);
+    const fechaTermino = new Date(this.insertarLic.get('fecha_termino')?.value);
+
+    if (fechaInicio && fechaTermino) {
+      const diferenciaEnTiempo = fechaTermino.getTime() - fechaInicio.getTime();
+      this.diasRegistrados = diferenciaEnTiempo / (1000 * 3600 * 24) + 1;
+    } else {
+      this.diasRegistrados = 0;
+    }
+  }
+
 
   getCurrentDate(fecha_ingreso: any): { date: string; fecha_ingreso: any } {
     const today = new Date();
@@ -96,19 +111,20 @@ export class IngresoLicenciasComponent implements OnInit{
   // Método para buscar con los términos ingresados
   buscar(srl_emp: any) {
     this.srl_emp = srl_emp;
-
+    this.Total_lic = 0;
     this.currentDate = this.getCurrentDate(this.fecha_ingreso).date; // Usa `getCurrentDate` para formatear la fecha
     console.log(this.srl_emp)
     this.LicenciasService.getLicencias(srl_emp).subscribe((response: ApiResponse) => {
       console.log("Respuesta de la API:", response);
       this.table = true;
-      this.Total_lic = response.message
+
       // if (response.data && response.data.fecha_ingreso) {
       //   this.fecha_ingreso = response.data.fecha_ingreso; // Guarda `fecha_ingreso` en el componente
       //   this.currentDate = this.getCurrentDate(this.fecha_ingreso).date; // Usa `getCurrentDate` para formatear la fecha
       // }
       // Asegúrate de que `licencias` existe en `response.data` antes de usar `map`
     if (response.data && response.data.licencias) {
+      this.Total_lic = response.message || 0;
       this.data = response.data.licencias.map((item: LicMedica) => ({
         ...item,
         fechaCaptura:this.formatDate(item.fechaCaptura),
@@ -117,6 +133,7 @@ export class IngresoLicenciasComponent implements OnInit{
         rango_fechas: `${item.total_days}  ${item.accidente === 1 ? '-' : ''}`
       }));
     } else {
+      this.Total_lic = 0;
       this.data = []; // Inicializa como un array vacío si `licencias` no está en `data`
     }
 
@@ -226,9 +243,9 @@ export class IngresoLicenciasComponent implements OnInit{
                     <strong>Folio:</strong> ${response.data.folio} <br>
                     <strong>RFC:</strong> ${response.data.rfc} <br>
                     <strong>Nombre:</strong> ${response.data.nombre.trim()} <br>
-                    <strong>Fecha de captura:</strong> ${new Date(response.data.fechaCaptura).toLocaleDateString()} <br>
-                    <strong>Válida desde:</strong> ${new Date(response.data.desde).toLocaleDateString()} <br>
-                    <strong>Hasta:</strong> ${new Date(response.data.hasta).toLocaleDateString()} <br>
+                    <strong>Fecha de captura:</strong> ${this.formatDate(response.data.fechaCaptura)}<br>
+                    <strong>Válida desde:</strong> ${this.formatDate(response.data.desde)} <br>
+                    <strong>Hasta:</strong> ${this.formatDate(response.data.hasta)} <br>
                     <strong>Total de días:</strong> ${response.data.total_dias}
                   </div>
                 `,

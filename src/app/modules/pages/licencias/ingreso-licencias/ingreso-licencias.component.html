@@ -80,6 +80,12 @@
                   placeholder="dd/mm/yyyy"
                   class="form-control" required>
               </div>
+              <div class="col-auto ">
+
+                <input type="text" id="dias" name="dias"
+                  [value]="diasRegistrados"
+                  class=" dias-input" readonly>
+              </div>
               <div class="col-auto">
                 <label for="formatoLic" class="form-label">Formato:</label>
                 <div class="form-check">
@@ -118,8 +124,9 @@
             [maxHeight]="'400px'"
             [showActionsPdf]=false>
           </app-tables>
-          <h1 *ngIf="table == false" class="ms-3">El usuario no cuenta con licencias medicas </h1>
           <h5>Total de dias usados en licencias: {{ Total_lic }}</h5>
+          <h1 *ngIf="table == false" class="ms-3">El usuario no cuenta con licencias medicas </h1>
+
         </div>
       </ng-container>
 
