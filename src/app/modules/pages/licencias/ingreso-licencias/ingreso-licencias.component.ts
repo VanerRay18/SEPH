@@ -162,14 +162,17 @@ export class IngresoLicenciasComponent implements OnInit{
         "accidente": 0
 
       };
+      // Convertir las fechas a formato 'YYYY-MM-DD' para usar en formatDate
+    const formattedFechaInicio = this.formatDate(fechaInicio.toISOString().split('T')[0]);
+    const formattedFechaTermino = this.formatDate(fechaTermino.toISOString().split('T')[0]);
 
       // Mostrar alerta de confirmación
       Swal.fire({
         title: 'Confirmar',
         html: `¿Está seguro de que desea agregar la siguiente licencia?<br><br>` +
           `Folio: ${data.folio}<br>` +
-          `Fecha de Inicio: ${fechaInicio.toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' })}<br>` +
-          `Fecha de Término: ${fechaTermino.toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' })}<br>` +
+          `Fecha de Inicio: ${formattedFechaInicio}<br>` +
+          `Fecha de Término:${formattedFechaTermino}<br>` +
           `Formato: ${data.formato === 0 ? 'Físico' : ''}`,
         icon: 'warning',
         showCancelButton: true,

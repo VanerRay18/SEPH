@@ -13,8 +13,8 @@ import { ImageToBaseService } from './../../../../services/image-to-base.service
 })
 export class ArchivoLicenciasComponent implements OnInit {
   searchTerm: string = '';
-  headers = ['No.', 'Nombre', 'RFC', 'FI_PS', 'Nombraminetos definitivos', 'Licencias Médicas', 'Licencias Especiales'];
-  displayedColumns = ['no', 'nombre', 'rfc', '', ' ', 'folio'];
+  headers = ['No.', 'Nombre', 'RFC','Licencias Médicas'];
+  displayedColumns = ['no', 'nombre', 'rfc','folio'];
   data: any[] = [];
 
   constructor(
@@ -128,27 +128,23 @@ export class ArchivoLicenciasComponent implements OnInit {
             {
               table: {
                 headerRows: 1,
-                widths: ['auto', '*', 'auto', 'auto', 'auto', 'auto', 'auto'], // Anchos para las columnas de la tabla
+                widths: ['auto', '*', 'auto', 'auto'], // Anchos para las columnas de la tabla
                 body: [
                   // Encabezados de la tabla
                   [
                     { text: 'No.', bold: true, color: '#FFFFFF', fillColor: '#621132', alignment: 'center' },
                     { text: 'Nombre', bold: true, color: '#FFFFFF', fillColor: '#621132', alignment: 'center' },
                     { text: 'RFC', bold: true, color: '#FFFFFF', fillColor: '#621132', alignment: 'center' },
-                    { text: 'FUPS', bold: true, color: '#FFFFFF', fillColor: '#621132', alignment: 'center' },
-                    { text: 'Nombramientos Definitivos', bold: true, color: '#FFFFFF', fillColor: '#621132', alignment: 'center' },
                     { text: 'Licencias Médicas', bold: true, color: '#FFFFFF', fillColor: '#621132', alignment: 'center' },
-                    { text: 'Licencias Especiales', bold: true, color: '#FFFFFF', fillColor: '#621132', alignment: 'center' },
+
                   ],
                   // Filas de contenido de la tabla
                   ...data.map(item => [
                     { text: item.no, color: '#000000', fillColor: '#FFFFFF', alignment: 'center' },
                     { text: item.nombre, color: '#000000', fillColor: '#FFFFFF', alignment: 'center' },
                     { text: item.rfc, color: '#000000', fillColor: '#FFFFFF', alignment: 'center' },
-                    { text: item.fups, color: '#000000', fillColor: '#FFFFFF', alignment: 'center' }, // Columna vacía
-                    { text: item.nombramientos, color: '#000000', fillColor: '#FFFFFF', alignment: 'center' }, // Columna vacía
                     { text: item.licenciasMedicas, color: '#000000', fillColor: '#FFFFFF', alignment: 'center' },
-                    { text: item.licenciasEspeciales, color: '#000000', fillColor: '#FFFFFF', alignment: 'center' } // Columna vacía
+
                   ])
                 ]
               },
