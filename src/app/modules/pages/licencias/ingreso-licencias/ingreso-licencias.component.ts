@@ -435,6 +435,84 @@ export class IngresoLicenciasComponent implements OnInit{
     this.buscar(this.srl_emp)
   }
 
+  submitOficiosAnte() {
+    let idsArray: number[] = []; // Array donde se guardarán los ids
+
+    // Llamar al servicio para obtener las licencias nuevamente usando srl_emp
+    this.LicenciasService.getHistoricoAnte(this.srl_emp).subscribe((response: ApiResponse) => {
+      // Verifica si la propiedad licencias existe en la respuesta y si tiene elementos
+      if (response.data && response.data.licencias && response.data.licencias.length > 0) {
+        // Verifica si alguna licencia tiene las observaciones "SIN SUELDO" o "MEDIO SUELDO"
+        const canSendToOficio = response.data.licencias.some((item: LicMedica) =>
+          item.observaciones === "SIN SUELDO" || item.observaciones === "MEDIO SUELDO"
+        );
+
+        if (!canSendToOficio) {
+          Swal.fire({
+            title: 'No se puede enviar a oficio',
+            text: 'La licencia debe tener la observación "SIN SUELDO" o "MEDIO SUELDO" para poder enviar a oficio.',
+            icon: 'error',
+            confirmButtonText: 'Entendido',
+            confirmButtonColor: '#dc3545'
+          });
+          return; // Detener la ejecución si no cumple la condición
+        }
+
+        // Si cumple la condición, continuar con el procesamiento de los IDs
+        response.data.licencias.forEach((item: LicMedica) => {
+          if (item.nueva === "1") {
+            idsArray.push(item.id); // Agrega item.id al array si nueva es "1"
+          }
+        });
+
+        const licenciasid = {
+          licenciasId: idsArray
+        };
+
+        const userId = localStorage.getItem('userId')!; // Asegúrate de obtener el userId correcto
+        Swal.fire({
+          title: '¿Está seguro de crear el oficio?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Sí, estoy seguro',
+          cancelButtonText: 'Cancelar',
+          iconColor: '#dc3545',
+          confirmButtonColor: '#dc3545'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Llama al servicio para crear un oficio
+            this.LicenciasService.patchLicenciasOficio(licenciasid, userId, this.srl_emp).subscribe(
+              (response: { data: { oficio: string } }) => { // Asegúrate de definir el tipo de respuesta
+                const oficio = response.data.oficio; // Accede al 'oficio' dentro de 'data'
+
+                if (oficio) {
+                  this.buscar(this.srl_emp);
+                  this.onPdf(oficio); // Llama a onPdf con el oficio
+                }
+              },
+              error => {
+                Swal.fire(
+                  'Error',
+                  error.error.message,
+                  'error'
+                );
+              }
+            );
+          }
+        });
+
+      } else {
+        Swal.fire({
+          title: 'Error',
+          text: 'No se encontraron licencias válidas para el usuario.',
+          icon: 'error',
+          confirmButtonText: 'Entendido',
+          confirmButtonColor: '#dc3545'
+        });
+      }
+    });
+  }
+
   submitOficios() {
     let idsArray: number[] = []; // Array donde se guardarán los ids
 

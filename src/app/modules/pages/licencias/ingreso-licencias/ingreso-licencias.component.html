@@ -5,10 +5,9 @@
     <h1>Licencias médicas</h1>
     <h5>Ingreso de licencias médicas</h5>
   </div>
-   <ng-container>
+  <ng-container>
     <app-busqueda></app-busqueda>
   </ng-container>
-
 
   <div *ngIf="showCard == true" class="contLic m-3">
     <ul class="nav nav-tabs d-flex flex-row flex-wrap" role="tablist">
@@ -27,18 +26,23 @@
         <div class="card2">
           <div class="row">
             <div class="col-auto">
-              <h5 class="ms-2 mt-2" >Ingresar una nueva licencia médica</h5>
+              <h5 class="ms-2 mt-2">Ingresar una nueva licencia médica</h5>
             </div>
             <div class="col-auto">
-                <button type="button" (click)="historicopdf()" class="botones btn"><i
-                    class="fa-solid fa-folder"></i></button>
+              <button type="button" (click)="historicopdf()"
+                class="botones btn"><i
+                  class="fa-solid fa-folder"></i></button>
             </div>
-            <div class="col-auto"  *ngIf="this.agregar">
+            <div class="col-auto" *ngIf="this.agregar">
               <button type="button" (click)="submitOficios()"
                 class="botones btn"><i
                   class="fa-solid fa-file"></i></button>
             </div>
-            <div class="col-auto"  *ngIf="this.eliminar">
+            <div class="col-auto" *ngIf="this.agregar">
+              <button type="button" (click)="submitOficiosAnte()"
+                class="botones btn"><i class="fa-solid fa-file-arrow-down"></i></button>
+            </div>
+            <div class="col-auto" *ngIf="this.eliminar">
               <button type="button" (click)="trash()" class="botones btn"><i
                   class="fa-solid fa-trash"></i></button>
             </div>
@@ -50,11 +54,13 @@
               <button type="button" class="botones btn">
                 <i class="fa-solid fa-arrows-rotate"></i></button>
             </div>
-            <div class="col-auto" >
-              <h5>{{ currentDate }} &nbsp;&nbsp; Fecha de ingreso: {{ fecha_ingreso }}</h5>
+            <div class="col-auto">
+              <h5>{{ currentDate }} &nbsp;&nbsp; Fecha de ingreso: {{
+                fecha_ingreso }}</h5>
             </div>
           </div>
-          <form [formGroup]="insertarLic" class="m-3" (ngSubmit)="onSumit()" *ngIf="this.agregar">
+          <form [formGroup]="insertarLic" class="m-3" (ngSubmit)="onSumit()"
+            *ngIf="this.agregar">
             <div class="tabla row">
               <div class="col-auto">
                 <label for="folio"
@@ -125,7 +131,8 @@
             [showActionsPdf]=false>
           </app-tables>
           <h5>Total de dias usados en licencias: {{ Total_lic }}</h5>
-          <h1 *ngIf="table == false" class="ms-3">El usuario no cuenta con licencias medicas </h1>
+          <h1 *ngIf="table == false" class="ms-3">El usuario no cuenta con
+            licencias medicas </h1>
 
         </div>
       </ng-container>
