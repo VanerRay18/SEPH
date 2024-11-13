@@ -1,10 +1,12 @@
 import { ImageToBaseService } from './../../../../services/image-to-base.service';
 import { Component } from '@angular/core';
-import { LicenciasService } from 'src/app/services/licencias-service/licencias.service';
+import { AdminService } from 'src/app/services/admin.service';
 import { ApiResponse } from 'src/app/models/ApiResponse';
 import { Oficio } from 'src/app/shared/interfaces/utils';
+import { LicenciasService } from 'src/app/services/licencias-service/licencias.service';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
+import { User } from 'src/app/shared/interfaces/usuario.model';
 
 @Component({
   selector: 'app-user-crud',
@@ -13,8 +15,8 @@ import Swal from 'sweetalert2';
 })
 export class UserCRUDComponent {
   searchTerm: string = '';
-  headers = ['Srl_emp', 'Nombre', 'Apellidos', 'RFC', 'Cargo','Area','Funciones','Rol/Roles','Modulos extra','Acciones'];
-  displayedColumns = ['srl_emp', 'nombre', 'apellidos', 'rfc','cargo','area','funciones','rol','extra'];
+  headers = ['Srl_emp', 'Nombre Completo', 'RFC', 'Cargo','Area','Funciones','Rol/Roles','Modulos extra','Acciones'];
+  displayedColumns = ['srlEmp', 'nombre', 'rfc','cargo','area','funciones','rolesNombres','extrasName'];
   data = [];
   eliminar: boolean = false;
   agregar: boolean = false;
@@ -23,6 +25,7 @@ export class UserCRUDComponent {
   srl_emp: any;
 
   constructor(
+    private AdminService: AdminService,
     private LicenciasService: LicenciasService,
     private router: Router
   ) {
@@ -32,23 +35,14 @@ export class UserCRUDComponent {
     this.fetchData();
   }
 
-  buscar(srl_emp:any) {
-    this.LicenciasService.getAccidentes(srl_emp).subscribe((response: ApiResponse) => {
-      this.table=true
-      this.data = response.data;
-    },
-    (error) => {
-      this.table = false;
-    });
-  }
-
 
   fetchData() {
-    this.LicenciasService.getLicenciasOficio().subscribe((response: ApiResponse) => {
-      this.data = response.data.map((item: Oficio) => ({
+    this.AdminService.getAllUser().subscribe((response: ApiResponse) => {
+      this.data = response.data.map((item: User) => ({
         ...item,
-        rango_fechas: `${item.fecha_primera_licencia} al ${item.fecha_ultima_licencia}`
-      })); // Aquí concatenas las fechas
+        rolesNombres: item.rolesNombres && Array.isArray(item.rolesNombres) ? item.rolesNombres.join(', ') : '',
+        extrasName: item.extrasName && Array.isArray(item.extrasName) ? item.extrasName.join(', ') : ''
+      }));
     },
       (error) => {
         console.error('Error al obtener los datos:', error);
@@ -75,7 +69,7 @@ export class UserCRUDComponent {
         // Llama al servicio para eliminar el registro
         this.LicenciasService.softDeleteLic(srl_emp.id, userId).subscribe(
           response => {
-            this.buscar(this.srl_emp); // Refresca los datos después de eliminar
+            // this.buscar(this.srl_emp); // Refresca los datos después de eliminar
             Swal.fire(
               '¡Eliminada!',
               'La licencia ha sido eliminada correctamente.',

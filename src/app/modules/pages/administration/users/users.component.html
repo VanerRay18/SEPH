@@ -8,44 +8,74 @@
   </ng-container>
   <div
     class="card d-flex flex-column mt-1">
-    <form [formGroup]="UserForm" class="m-5">
+    <form [formGroup]="UserForm" class="m-5 needs-validation" novalidate>
       <div class="row ">
         <div class="col-auto col-lg-4">
           <label for="name" class="form-label">Nombre completo:</label>
-          <input formControlName="name" type="text" class="form-control"
-            placeholder="Ingrese el nombre "
-            aria-label="First name" required>
+          <div class="input-group has-validation">
+            <input formControlName="name" type="text" class="form-control"
+              placeholder="Ingrese el nombre "
+              aria-label="First name" required>
+            <div class="invalid-feedback">
+              Ingrese el nombre completo
+            </div>
+          </div>
         </div>
         <div class="col-auto">
           <label for="rfc" class="form-label">RFC:</label>
-          <input formControlName="rfc" type="text" class="form-control"
-            placeholder="Ingrese el rfc de usuario"
-            aria-label="rfc" required>
+          <div class="input-group has-validation">
+            <input formControlName="rfc" type="text" class="form-control"
+              placeholder="Ingrese el rfc de usuario"
+              aria-label="rfc" required>
+            <div class="invalid-feedback">
+              Ingrese el RFC
+            </div>
+          </div>
         </div>
         <div class="col-auto ">
           <label for="srl_emp" class="form-label">Srl_emp:</label>
+          <div class="input-group has-validation">
           <input formControlName="srl_emp" type="text" class="form-control"
             placeholder="1344"
             aria-label="srl_emp" required>
+            <div class="invalid-feedback">
+              Ingrese el Srl_emp
+            </div>
+          </div>
         </div>
         <div class="col-auto col-lg-3">
           <label for="position" class="form-label">Cargo:</label>
+          <div class="input-group has-validation">
           <input formControlName="position" type="text" class="form-control"
             placeholder="Jefe de ofina"
             aria-label="position" required>
+            <div class="invalid-feedback">
+              Ingrese el Cargo
+            </div>
+          </div>
         </div>
 
         <div class="col-auto col-lg-4">
           <label for="area" class="form-label">Area:</label>
+          <div class="input-group has-validation">
           <input formControlName="area" type="text" class="form-control"
             placeholder="Recursos Humanos/Nomina"
             aria-label="area" required>
+            <div class="invalid-feedback">
+              Ingrese la Area
+            </div>
+          </div>
         </div>
         <div class="col-auto col-lg-5">
           <label for="fuction" class="form-label">Funciones:</label>
+          <div class="input-group has-validation">
           <input formControlName="fuction" type="text" class="form-control"
             placeholder="Encargado de ingresar datos"
             aria-label="fuction" required>
+            <div class="invalid-feedback">
+              Ingrese las funciones
+            </div>
+          </div>
         </div>
         <div class="col-auto ">
           <label for="user" class="form-label">Usuario:</label>
@@ -55,14 +85,22 @@
         </div>
         <div class="col-auto ">
           <label for="pass" class="form-label">Contraseña:</label>
-          <input formControlName="pass" type="text" class="form-control"
+          <div class="input-group has-validation">
+          <input formControlName="pass" type="password" class="form-control"
             placeholder="*****"
             aria-label="pass" required>
+            <div class="invalid-feedback">
+              Ingrese la Contraseña
+            </div>
+          </div>
         </div>
         <div class="form-check form-switch col-auto">
-          <input formControlName="On" class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked>
-          <label *ngIf="UserForm.get('On')?.value" for="On" class="form-label">El usuario está habilitado</label>
-          <label *ngIf="!UserForm.get('On')?.value" for="On" class="form-label">El usuario está deshabilitado</label>
+          <input formControlName="On" class="form-check-input" type="checkbox"
+            role="switch" id="flexSwitchCheckChecked" checked>
+          <label *ngIf="UserForm.get('On')?.value" for="On"
+            class="form-label">El usuario está habilitado</label>
+          <label *ngIf="!UserForm.get('On')?.value" for="On"
+            class="form-label">El usuario está deshabilitado</label>
         </div>
 
       </div>
@@ -77,7 +115,7 @@
               draggable="true"
               (dragstart)="onDragStart($event, role)"
               class="custom-checkbox draggable-role assigned-role">
-              <input type="checkbox" checked disabled /> {{ role }}
+              <input type="checkbox" checked disabled /> {{ role.name }}
             </div>
             <!-- Área de drop para asignar roles -->
             <div
@@ -98,7 +136,7 @@
               draggable="true"
               (dragstart)="onDragStart($event, role)"
               class="custom-checkbox draggable-role">
-              <input type="checkbox" disabled /> {{ role }}
+              <input type="checkbox" disabled /> {{ role.name }}
             </div>
             <!-- Área de drop para quitar roles -->
             <div
@@ -119,7 +157,8 @@
           <input type="radio" name="activate" (change)="toggleCards(true)" /> Sí
         </label>
         <label class="option">
-          <input type="radio" name="activate" (change)="toggleCards(false)" /> No
+          <input type="radio" name="activate" (change)="toggleCards(false)" />
+          No
         </label>
       </div>
     </div>
@@ -134,7 +173,7 @@
               draggable="true"
               (dragstart)="onDragStartM($event,modulo)"
               class="custom-checkbox draggable-role assigned-role">
-              <input type="checkbox" checked disabled /> {{ modulo }}
+              <input type="checkbox" checked disabled /> {{ modulo.name }}
             </div>
             <!-- Área de drop para asignar roles -->
             <div
@@ -155,7 +194,7 @@
               draggable="true"
               (dragstart)="onDragStartM($event, modulo)"
               class="custom-checkbox draggable-role">
-              <input type="checkbox" disabled /> {{ modulo }}
+              <input type="checkbox" disabled /> {{ modulo.name }}
             </div>
             <!-- Área de drop para quitar roles -->
             <div
@@ -170,7 +209,7 @@
     </div>
 
     <div class="boton-container col-auto m-3">
-      <button type="submit" class="btn  btn-sm">Guardar</button>
+      <button type="submit" class="btn  btn-sm" (click)="createUser()">Guardar</button>
     </div>
 
   </div>
