@@ -5,7 +5,8 @@
   </div>
   <div class="card d-flex ">
     <div class="d-flex mt-4">
-      <button type="button" class="botones btn me-2" (click)="  generatePdfLicencias()">
+      <button type="button" class="botones btn me-2"
+        (click)="  generatePdfLicencias()">
         <i class="fa-solid fa-file-lines"></i> Imprimir tabla de Licencias
       </button>
       <button type="button" class="botones btn me-2"
@@ -13,11 +14,28 @@
         <i class="fa-solid fa-file-pdf"></i> Imprimir formato para archivo
       </button>
     </div>
-    <div class="form-floating col-auto mt-4">
-      <input type="text" class=" buscar form-control" id="busqueda"
-        placeholder="Buscar"
-        [(ngModel)]="searchTerm" name="busqueda">
-      <label for="User"><i class="fa-solid fa-magnifying-glass"></i>  Buscar</label>
+    <div class="row" >
+      <div class="form-floating col-auto col-lg-2 mt-4 me-4">
+        <input type="text" class=" buscar form-control" id="busqueda"
+          placeholder="Buscar"
+          [(ngModel)]="searchTerm" name="busqueda">
+        <label for="User"><i class="fa-solid fa-magnifying-glass"></i>
+          Buscar</label>
+      </div>
+      <div [formGroup]="fechaform" class="col-auto  mt-3">
+        <label for="dia_arch" class="form-label">Seleccione dia a
+          imprimir</label>
+        <input type="date" id="dia_arch" name="dia_arch"
+          formControlName="dia_arch"
+          placeholder="dd/mm/yyyy"
+          class="form-control" required>
+      </div>
+      <div class="col-auto mt-5">
+        <button type="button" class="botones btn me-2"
+        (click)="  generatePdfLicenciasAnt()">
+        <i class="fa-solid fa-file-lines"></i> Imprimir
+      </button>
+      </div>
     </div>
     <div class="col-auto mt-4 ">
       <app-tables

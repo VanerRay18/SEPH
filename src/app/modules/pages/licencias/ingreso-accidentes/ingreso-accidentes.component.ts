@@ -6,6 +6,9 @@ import Swal from 'sweetalert2';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { PermisosUserService } from 'src/app/services/permisos-user.service';
+import * as pdfMake from 'pdfmake/build/pdfmake';
+import * as pdfFonts from 'pdfmake/build/vfs_fonts';
+import { ImageToBaseService } from './../../../../services/image-to-base.service';
 @Component({
   selector: 'ingreso-accidentes',
   templateUrl: './ingreso-accidentes.component.html',
@@ -17,7 +20,7 @@ export class IngresoAccidentesComponent{
   displayedColumns = ['folio', 'desde', 'hasta', 'total_dias','oficio'];
   data = [];
   table:any = true;
-  srl_emp: any; 
+  srl_emp: any;
   eliminar:boolean = false;
   agregar:boolean = false;
   modificar:boolean = false;
@@ -28,12 +31,13 @@ export class IngresoAccidentesComponent{
     { id: 'accidentes', title: 'Accidentes de Trabajo', icon: 'fas fa-exclamation-triangle' },
     { id: 'acuerdos', title: 'Acuerdos Precedenciales', icon: 'fas fa-handshake' }
   ];
- 
+
   constructor(
     private fb: FormBuilder,
     private LicenciasService: LicenciasService,
     private BusquedaserlService: BusquedaserlService,
-    private PermisosUserService:PermisosUserService
+    private PermisosUserService:PermisosUserService,
+    private ImageToBaseService: ImageToBaseService
   ) {
     //this.fetchData(); // Si tienes un endpoint real, descomenta esto
   }
@@ -46,7 +50,7 @@ export class IngresoAccidentesComponent{
     // this.modificar = this.PermisosUserService.getPermisos().Licencias.editar;
     // this.eliminar = this.PermisosUserService.getPermisos().Licencias.editar;
     // this.agregar = this.PermisosUserService.getPermisos().Licencias.editar;
-    
+
     this.BusquedaserlService.srlEmp$.subscribe(value => {
       if(value.mostrar == true){
         this.srl_emp = value.srl_emp;
@@ -61,7 +65,7 @@ buscar(srl_emp:any) {
     this.data = response.data;
   },
   (error) => {
-    this.table = false; 
+    this.table = false;
   });
 }
 
@@ -79,17 +83,17 @@ buscar(srl_emp:any) {
               <label style="margin-left:33px;" for="folio">Folio</label>
               <input id="folioId" class="swal2-input" value="${data.folio}" style="padding: 0px; font-size: 16px;">
             </div>
-      
+
             <div style="display: flex; flex-direction: column; text-align: left;">
               <label style="margin-left:33px;" for="fecha_inicio">Fecha Inicio</label>
               <input id="fecha_inicioId" type="date" class="swal2-input" value="${data.desde}" style="padding: 0px; font-size: 16px;">
             </div>
-      
+
             <div style="display: flex; flex-direction: column; text-align: left;">
               <label style="margin-left:33px;" for="fecha_termino">Fecha Término</label>
               <input id="fecha_terminoId" type="date" class="swal2-input" value="${data.hasta}" style="padding: 0px; font-size: 16px;">
             </div>
-      
+
             <div style="display: flex; flex-direction: column; text-align: left;">
               <label style="margin-left:33px;" for="formato">Formato</label>
               <div style="display: flex; align-items: center; margin-top: 10px; margin-left:33px;">
@@ -101,7 +105,7 @@ buscar(srl_emp:any) {
                 <label class="form-check-label" for="formatoEmail">Email</label>
               </div>
             </div>`,
-      
+
           showCancelButton: true,
           confirmButtonText: 'Guardar',
           cancelButtonText: 'Cancelar',
@@ -116,7 +120,7 @@ buscar(srl_emp:any) {
                 Swal.showValidationMessage('Todos los campos son obligatorios');
                 return false;
               }
-      
+
               return {
                 folio,
                 fecha_inicio,
@@ -135,7 +139,7 @@ buscar(srl_emp:any) {
 
   guardarCambios(data: any,licenciaId:any) {
           const userId = localStorage.getItem('userId')!;
-      
+
           this.LicenciasService.updateLic(data,licenciaId, userId).subscribe(
             response => {
               this.buscar(this.srl_emp);
@@ -194,13 +198,144 @@ buscar(srl_emp:any) {
             }
           });
   }
+  getCurrentFormattedDate() {
+    const today = new Date();
+    const day = String(today.getDate()).padStart(2, '0');
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // Los meses empiezan en 0
+    const year = today.getFullYear();
+    return `${day}/${month}/${year}`;
+  }
+
+  generateDailyNumber(): string {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth() + 1; // Los meses comienzan desde 0, por lo que sumamos 1
+    const day = today.getDate();
+
+    // Generar un número basado en la fecha y sumar 1000 para empezar desde 1000
+    const number = ((year * 10000 + month * 100 + day) % 1000) + 1000; // Genera un número entre 1000 y 1999
+    return number.toString();
+  }
+
+  onPdf(accidente: any) {
+    const dailyNumber = this.generateDailyNumber();
+    const formattedDate = this.getCurrentFormattedDate();
+    this.LicenciasService.getLicenciasArchivo().subscribe(async response => {
+      if (response && response.data && Array.isArray(response.data)) {
+        const data = response.data.map((item, index) => ({
+          no: index + 1, // Número autoincremental
+          nombre: item.nombre,
+          rfc: item.rfc,
+          fups: '', // Campo vacío
+          nombramientos: '', // Campo vacío
+          licenciasEspeciales: '', // Campo vacío
+          licenciasMedicas: item.folio
+        }));
+        const imageBase64 = await this.ImageToBaseService.convertImageToBase64('assets/IHE_LOGO.png');
+        const documentDefinition: any = {
+          pageOrientation: 'landscape',
+          content: [
+            {
+              table: {
+                widths: ['auto', '*'], // Asegura que solo haya dos columnas como especificado
+                body: [
+                  [
+                    {
+                      image: imageBase64,
+                      alignment: 'left',
+                      width: 170,
+                      height: 50,
+                      margin: [0, 0, 0, 30]
+                    },
+                    {
+                      text: 'Coordinación General de Administración y Finanzas\nDirección General de Recursos Humanos\nDirección de Nómina y Control de Plazas',
+                      alignment: 'right',
+                      bold: true,
+                      color: '#621132',
+                      margin: [0, 0, 0, 30]
+                    }
+                  ],
+                  [
+
+                    {
+                      text: 'Para: Lic. Brenda Martínez Alvaréz\nJefa de la unidad técnica de resguardo documental\n\n De: Ing. José Gabriel Castro Bautista\nDirector de Nómina y Control de Plazas',
+                      alignment: 'left',
+                      bold: true
+                    },
+                    {
+                      text: `NO. OFICIO: DNCP/SNI/${dailyNumber}/2024\nFECHA: ${formattedDate}`,
+                      alignment: 'right'
+                    }
+                  ]
+                ]
+              },
+              layout: 'noBorders', // Sin bordes para la tabla de encabezado
+            },
+            { text: '', margin: [0, 30, 0, 0] }, // Espacio de 20 unidades de margen arriba
+            {
+              table: {
+                headerRows: 1,
+                widths: ['auto', '*', 'auto', 'auto'], // Anchos para las columnas de la tabla
+                body: [
+                  // Encabezados de la tabla
+                  [
+                    { text: 'No.', bold: true, color: '#FFFFFF', fillColor: '#621132', alignment: 'center' },
+                    { text: 'Nombre', bold: true, color: '#FFFFFF', fillColor: '#621132', alignment: 'center' },
+                    { text: 'RFC', bold: true, color: '#FFFFFF', fillColor: '#621132', alignment: 'center' },
+                    { text: 'Licencias Médicas', bold: true, color: '#FFFFFF', fillColor: '#621132', alignment: 'center' },
+
+                  ],
+                  // Filas de contenido de la tabla
+                  ...data.map(item => [
+                    { text: item.no, color: '#000000', fillColor: '#FFFFFF', alignment: 'center' },
+                    { text: item.nombre, color: '#000000', fillColor: '#FFFFFF', alignment: 'center' },
+                    { text: item.rfc, color: '#000000', fillColor: '#FFFFFF', alignment: 'center' },
+                    { text: item.licenciasMedicas, color: '#000000', fillColor: '#FFFFFF', alignment: 'center' },
+
+                  ])
+                ]
+              },
+              layout: {
+                hLineWidth: () => 0.5, // Grosor de las líneas horizontales
+                vLineWidth: () => 0.5, // Grosor de las líneas verticales
+                hLineColor: () => '#000000', // Color de las líneas horizontales
+                vLineColor: () => '#000000', // Color de las líneas verticales
+              }
+            }
+          ],
+          styles: {
+            header: {
+              fontSize: 18,
+              bold: true,
+              alignment: 'center'
+            },
+            subheader: {
+              fontSize: 14,
+              bold: true,
+              alignment: 'center'
+            },
+            tableHeader: {
+              bold: true,
+              fontSize: 12,
+              fillColor: '#621132',
+              color: 'white'
+            }
+          }
+        };
+
+        pdfMake.createPdf(documentDefinition).open();
+
+
+      }
+    });
+  }
 
   HOLA(){
           this.insertarLics = this.fb.group({
             folio: ['', Validators.required],
             fecha_inicio: ['', Validators.required],
             fecha_termino: ['', Validators.required],
-            formato: ['', Validators.required]
+            formato: ['0', Validators.required]
           });
   }
 
@@ -215,9 +350,9 @@ buscar(srl_emp:any) {
           fecha_termino: fechaTermino.toISOString(),
           formato: parseInt(this.insertarLics.value.formato, 10),
           "accidente":1
-  
+
         };
-  
+
       // Mostrar alerta de confirmación
       Swal.fire({
         title: 'Confirmar',

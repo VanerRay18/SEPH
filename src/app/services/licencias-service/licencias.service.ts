@@ -69,6 +69,13 @@ export class LicenciasService {
     );
   }
 
+  getLicenciasArchivoDate(fecha: string): Observable<ApiResponse> { //Pdf de oficio
+    let headers = new HttpHeaders({'fecha': fecha})
+    return this.http.get<ApiResponse>(`${environment.baseService}${'/licMedicas/archivoByDate'}`,
+      {headers}
+    );
+  }
+
   getLicenciasOficio(): Observable<ApiResponse> {//Licencias de oficio
     return this.http.get<ApiResponse>(`${environment.baseService}${'/licMedicas/oficios'}`
     );

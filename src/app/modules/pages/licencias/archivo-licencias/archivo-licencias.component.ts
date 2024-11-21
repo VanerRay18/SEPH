@@ -4,6 +4,8 @@ import { ApiResponse } from 'src/app/models/ApiResponse';
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { ImageToBaseService } from './../../../../services/image-to-base.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
 
 
 @Component({
@@ -18,6 +20,7 @@ export class ArchivoLicenciasComponent implements OnInit {
   data: any[] = [];
 
   constructor(
+    private fb: FormBuilder,
     private LicenciasService: LicenciasService,
     private ImageToBaseService: ImageToBaseService
   ) {
@@ -25,11 +28,20 @@ export class ArchivoLicenciasComponent implements OnInit {
     (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
   }
 
+  date: string = '';
+  fechaform!: FormGroup;
 
   ngOnInit(): void {
     this.fetchData();
+    this.form();
   }
 
+  form() {
+    this.fechaform = this.fb.group({
+      dia_arch: ['', Validators.required],
+
+    });
+  }
 
 
   fetchData() {
@@ -88,6 +100,7 @@ export class ArchivoLicenciasComponent implements OnInit {
         }));
         const imageBase64 = await this.ImageToBaseService.convertImageToBase64('assets/IHE_LOGO.png');
         const documentDefinition: any = {
+          pageOrientation: 'landscape',
           content: [
             {
               table: {
@@ -112,12 +125,126 @@ export class ArchivoLicenciasComponent implements OnInit {
                   [
 
                     {
-                      text: 'Para: Lic. Brenda Martínez Alvaréz Jefa de la unidad técnica de resguardo documental\n\n De: Ing. José Gabriel Castro Bautista\nDirector de Nómina y Control de Plazas',
+                      text: 'Para: Lic. Brenda Martínez Alvaréz\nJefa de la unidad técnica de resguardo documental\n\n De: Ing. José Gabriel Castro Bautista\nDirector de Nómina y Control de Plazas',
                       alignment: 'left',
                       bold: true
                     },
                     {
                       text: `NO. OFICIO: DNCP/SNI/${dailyNumber}/2024\nFECHA: ${formattedDate}`,
+                      alignment: 'right'
+                    }
+                  ]
+                ]
+              },
+              layout: 'noBorders', // Sin bordes para la tabla de encabezado
+            },
+            { text: '', margin: [0, 30, 0, 0] }, // Espacio de 20 unidades de margen arriba
+            {
+              table: {
+                headerRows: 1,
+                widths: ['auto', '*', 'auto', 'auto'], // Anchos para las columnas de la tabla
+                body: [
+                  // Encabezados de la tabla
+                  [
+                    { text: 'No.', bold: true, color: '#FFFFFF', fillColor: '#621132', alignment: 'center' },
+                    { text: 'Nombre', bold: true, color: '#FFFFFF', fillColor: '#621132', alignment: 'center' },
+                    { text: 'RFC', bold: true, color: '#FFFFFF', fillColor: '#621132', alignment: 'center' },
+                    { text: 'Licencias Médicas', bold: true, color: '#FFFFFF', fillColor: '#621132', alignment: 'center' },
+
+                  ],
+                  // Filas de contenido de la tabla
+                  ...data.map(item => [
+                    { text: item.no, color: '#000000', fillColor: '#FFFFFF', alignment: 'center' },
+                    { text: item.nombre, color: '#000000', fillColor: '#FFFFFF', alignment: 'center' },
+                    { text: item.rfc, color: '#000000', fillColor: '#FFFFFF', alignment: 'center' },
+                    { text: item.licenciasMedicas, color: '#000000', fillColor: '#FFFFFF', alignment: 'center' },
+
+                  ])
+                ]
+              },
+              layout: {
+                hLineWidth: () => 0.5, // Grosor de las líneas horizontales
+                vLineWidth: () => 0.5, // Grosor de las líneas verticales
+                hLineColor: () => '#000000', // Color de las líneas horizontales
+                vLineColor: () => '#000000', // Color de las líneas verticales
+              }
+            }
+          ],
+          styles: {
+            header: {
+              fontSize: 18,
+              bold: true,
+              alignment: 'center'
+            },
+            subheader: {
+              fontSize: 14,
+              bold: true,
+              alignment: 'center'
+            },
+            tableHeader: {
+              bold: true,
+              fontSize: 12,
+              fillColor: '#621132',
+              color: 'white'
+            }
+          }
+        };
+
+        pdfMake.createPdf(documentDefinition).open();
+
+
+      }
+    });
+  }
+
+  generatePdfLicenciasAnt() {
+    const dailyNumber = this.generateDailyNumber();
+    const formattedDate = this.getCurrentFormattedDate();
+    const fecha = this.fechaform.get('dia_arch')?.value;
+    this.LicenciasService.getLicenciasArchivoDate(fecha).subscribe(async response => {
+      if (response && response.data && Array.isArray(response.data)) {
+        const data = response.data.map((item, index) => ({
+          no: index + 1, // Número autoincremental
+          nombre: item.nombre,
+          rfc: item.rfc,
+          fups: '', // Campo vacío
+          nombramientos: '', // Campo vacío
+          licenciasEspeciales: '', // Campo vacío
+          licenciasMedicas: item.folio
+        }));
+        const imageBase64 = await this.ImageToBaseService.convertImageToBase64('assets/IHE_LOGO.png');
+        const documentDefinition: any = {
+          pageOrientation: 'landscape',
+          content: [
+            {
+              table: {
+                widths: ['auto', '*'], // Asegura que solo haya dos columnas como especificado
+                body: [
+                  [
+                    {
+                      image: imageBase64,
+                      alignment: 'left',
+                      width: 150,
+                      height: 50,
+                      margin: [0, 0, 0, 30]
+                    },
+                    {
+                      text: 'Coordinación General de Administración y Finanzas\nDirección General de Recursos Humanos\nDirección de Nómina y Control de Plazas',
+                      alignment: 'right',
+                      bold: true,
+                      color: '#621132',
+                      margin: [0, 0, 0, 30]
+                    }
+                  ],
+                  [
+
+                    {
+                      text: 'Para: Lic. Brenda Martínez Alvaréz\nJefa de la unidad técnica de resguardo documental\n\n De: Ing. José Gabriel Castro Bautista\nDirector de Nómina y Control de Plazas',
+                      alignment: 'left',
+                      bold: true
+                    },
+                    {
+                      text: `NO. OFICIO: DNCP/SNI/${dailyNumber}/2024\nFECHA: ${fecha}`,
                       alignment: 'right'
                     }
                   ]
