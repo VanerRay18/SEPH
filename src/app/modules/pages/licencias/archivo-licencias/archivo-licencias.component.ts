@@ -83,24 +83,41 @@ export class ArchivoLicenciasComponent implements OnInit {
     return number.toString();
   }
 
+  generateDailyNumber2(): string {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth() + 1; // Los meses comienzan desde 0, por lo que sumamos 1
+    const day = today.getDate();
+    const milliseconds = today.getMilliseconds(); // Añadimos los milisegundos
+
+    // Generar un número único basado en la fecha y hora actual
+    const number = ((year * 10000 + month * 100 + day + milliseconds) % 1000) + 1000; // Entre 1000 y 1999
+    return number.toString();
+  }
 
   generatePdfLicencias() {
     const dailyNumber = this.generateDailyNumber();
     const formattedDate = this.getCurrentFormattedDate();
     this.LicenciasService.getLicenciasArchivo().subscribe(async response => {
       if (response && response.data && Array.isArray(response.data)) {
-        const data = response.data.map((item, index) => ({
+
+        const sortedData = response.data.sort((a, b) => {
+          const nameA = a.nombre.toLowerCase();
+          const nameB = b.nombre.toLowerCase();
+          return nameA.localeCompare(nameB); // Orden alfabético
+        });
+
+
+        const data = sortedData.map((item, index) => ({
           no: index + 1, // Número autoincremental
           nombre: item.nombre,
           rfc: item.rfc,
-          fups: '', // Campo vacío
-          nombramientos: '', // Campo vacío
-          licenciasEspeciales: '', // Campo vacío
           licenciasMedicas: item.folio
         }));
         const imageBase64 = await this.ImageToBaseService.convertImageToBase64('assets/IHE_LOGO.png');
         const documentDefinition: any = {
           pageOrientation: 'landscape',
+
           content: [
             {
               table: {
@@ -154,10 +171,10 @@ export class ArchivoLicenciasComponent implements OnInit {
                   ],
                   // Filas de contenido de la tabla
                   ...data.map(item => [
-                    { text: item.no, color: '#000000', fillColor: '#FFFFFF', alignment: 'center' },
-                    { text: item.nombre, color: '#000000', fillColor: '#FFFFFF', alignment: 'center' },
-                    { text: item.rfc, color: '#000000', fillColor: '#FFFFFF', alignment: 'center' },
-                    { text: item.licenciasMedicas, color: '#000000', fillColor: '#FFFFFF', alignment: 'center' },
+                    { text: item.no, color: '#000000', fillColor: '#FFFFFF', alignment: 'left' },
+                    { text: item.nombre, color: '#000000', fillColor: '#FFFFFF', alignment: 'left' },
+                    { text: item.rfc, color: '#000000', fillColor: '#FFFFFF', alignment: 'left' },
+                    { text: item.licenciasMedicas, color: '#000000', fillColor: '#FFFFFF', alignment: 'left' },
 
                   ])
                 ]
@@ -198,12 +215,19 @@ export class ArchivoLicenciasComponent implements OnInit {
   }
 
   generatePdfLicenciasAnt() {
-    const dailyNumber = this.generateDailyNumber();
+    const dailyNumber = this.generateDailyNumber2();
     const formattedDate = this.getCurrentFormattedDate();
     const fecha = this.fechaform.get('dia_arch')?.value;
     this.LicenciasService.getLicenciasArchivoDate(fecha).subscribe(async response => {
       if (response && response.data && Array.isArray(response.data)) {
-        const data = response.data.map((item, index) => ({
+
+        const sortedData = response.data.sort((a, b) => {
+          const nameA = a.nombre.toLowerCase();
+          const nameB = b.nombre.toLowerCase();
+          return nameA.localeCompare(nameB); // Orden alfabético
+        });
+
+        const data = sortedData.map((item, index) => ({
           no: index + 1, // Número autoincremental
           nombre: item.nombre,
           rfc: item.rfc,
@@ -268,10 +292,10 @@ export class ArchivoLicenciasComponent implements OnInit {
                   ],
                   // Filas de contenido de la tabla
                   ...data.map(item => [
-                    { text: item.no, color: '#000000', fillColor: '#FFFFFF', alignment: 'center' },
-                    { text: item.nombre, color: '#000000', fillColor: '#FFFFFF', alignment: 'center' },
-                    { text: item.rfc, color: '#000000', fillColor: '#FFFFFF', alignment: 'center' },
-                    { text: item.licenciasMedicas, color: '#000000', fillColor: '#FFFFFF', alignment: 'center' },
+                    { text: item.no, color: '#000000', fillColor: '#FFFFFF', alignment: 'left' },
+                    { text: item.nombre, color: '#000000', fillColor: '#FFFFFF', alignment: 'left' },
+                    { text: item.rfc, color: '#000000', fillColor: '#FFFFFF', alignment: 'left' },
+                    { text: item.licenciasMedicas, color: '#000000', fillColor: '#FFFFFF', alignment: 'left' },
 
                   ])
                 ]
