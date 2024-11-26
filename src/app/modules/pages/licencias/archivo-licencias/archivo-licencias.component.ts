@@ -84,32 +84,32 @@ export class ArchivoLicenciasComponent implements OnInit {
     return number.toString();
   }
 
-  generateOrRetrieveNumber(pdfId: string): string {
-    // Intenta recuperar el número único del localStorage
-    const storedNumber = localStorage.getItem(`pdfNumber_${this.pdfId}`);
+  generateUniqueNumber(fecha: string): string {
+    // Convertir fecha en suma única (día + mes + año)
+    const [year, month, day] = fecha.split('-').map(Number);
+    const fechaSuma = day + month + year;
 
-    if (storedNumber) {
-      // Si ya existe, retorna el número almacenado
-      return storedNumber;
-    } else {
-      // Si no existe, genera un número único
-      const today = new Date();
-      const year = today.getFullYear();
-      const month = today.getMonth() + 1; // Los meses comienzan desde 0
-      const day = today.getDate();
-      const milliseconds = today.getMilliseconds();
-      const uniqueNumber = ((year * 10000 + month * 100 + day + milliseconds) % 1000) + 1000;
-
-      // Guarda el número en el localStorage
-      localStorage.setItem(`pdfNumber_${this.pdfId}`, uniqueNumber.toString());
-
-      return uniqueNumber.toString();
+    // Verificar si ya existe un número asociado a esta suma
+    const storedNumbers = JSON.parse(localStorage.getItem('pdfNumbers') || '{}');
+    if (storedNumbers[fechaSuma]) {
+      // Retorna el número existente
+      return storedNumbers[fechaSuma];
     }
+
+    // Si no existe, genera uno nuevo
+    const newNumber = Object.keys(storedNumbers).length + 1000; // Ejemplo: empieza en 1000
+    storedNumbers[fechaSuma] = newNumber;
+
+    // Guarda el nuevo número en el localStorage
+    localStorage.setItem('pdfNumbers', JSON.stringify(storedNumbers));
+
+    return newNumber.toString();
   }
 
 
+
   generatePdfLicencias() {
-    const dailyNumber = this.generateOrRetrieveNumber(this.pdfId);
+    const dailyNumber = this.generateDailyNumber();
     const formattedDate = this.getCurrentFormattedDate();
     this.LicenciasService.getLicenciasArchivo().subscribe(async response => {
       if (response && response.data && Array.isArray(response.data)) {
@@ -228,10 +228,9 @@ export class ArchivoLicenciasComponent implements OnInit {
   }
 
   generatePdfLicenciasAnt() {
-    const pdfId = new Date().getTime().toString(); // Genera un ID basado en el tiempo actual
-  const dailyNumber = this.generateOrRetrieveNumber(pdfId); // Obtén el número único
-    const formattedDate = this.getCurrentFormattedDate();
     const fecha = this.fechaform.get('dia_arch')?.value;
+    const dailyNumber = this.generateUniqueNumber(fecha);
+    const formattedDate = this.getCurrentFormattedDate();
     this.LicenciasService.getLicenciasArchivoDate(fecha).subscribe(async response => {
       if (response && response.data && Array.isArray(response.data)) {
 
