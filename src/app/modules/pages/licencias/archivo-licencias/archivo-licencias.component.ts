@@ -348,9 +348,112 @@ export class ArchivoLicenciasComponent implements OnInit {
     });
   }
 
+  formatearFecha(fecha: string): string {
+    const meses = [
+      "enero", "febrero", "marzo", "abril", "mayo", "junio",
+      "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"
+    ];
+
+    // Divide la fecha en partes (año, mes, día)
+    const [anio, mes, dia] = fecha.split('-').map(Number);
+
+    // Crea manualmente la fecha sin desfasar el día
+    const mesNombre = meses[mes - 1]; // El mes en el array es 0-indexado
+    return `${dia} de ${mesNombre} del ${anio}`;
+  }
+
+  generatePdfFormatoAnte() {
+    const fecha = this.fechaform.get('dia_arch')?.value;
+    const dailyNumber = this.generateUniqueNumber(fecha);
+    const fechaFormateada = this.formatearFecha(fecha);
+    this.LicenciasService.getLicenciasArchivoDate(fecha).subscribe(async response => {
+      if (response && response.message) {
+        const messageNumber = response.message;
+        const imageBase64 = await this.ImageToBaseService.convertImageToBase64('assets/IHE_LOGO.png');
+        const documentDefinition: any = {
+          content: [
+            {
+              columns: [
+                {
+                  image: imageBase64, // Usar la imagen convertida
+                  alignment: 'right',
+                  width: 170, // Ajustar el ancho
+                  height: 50, // Ajustar la altura
+                }
+              ]
+            },
+
+            {
+              text: `NO. OFICIO: DNCP/SNI/${dailyNumber}/2024`,alignment: 'right', margin: [0, 10, 0, 10]},
+            { text: `Pachuca HGO. a, ${fechaFormateada}`, alignment: 'right', margin: [0, 10, 0, 10] },
+            { text: '', margin: [0, 30, 0, 0] }, // Espacio de 20 unidades de margen arriba
+            { text: 'Para: Lic. Brenda Martínez Alvaréz\nJefa de la unidad técnica de resguardo documental\n\n De: Ing. José Gabriel Castro Bautista\nDirector de Nómina y Control de Plazas' },
+            { text: 'P R E S E N T E', bold: true, margin: [0, 10, 0, 90] }, // [izquierda, arriba, derecha, abajo]
+
+            {
+              text: `Por medio del presente, remito a usted ${messageNumber} licencias médicas.`,
+              margin: [0, 10, 0, 10]
+            },
+
+            {
+              text: 'Agradeciendo de antemano la atención que sirva brindar y sin otro asunto en particular, envío un cordial saludo.',
+              margin: [0, 10, 0, 90]
+            },
+
+            {
+              text: 'ATENTAMENTE',
+              style: 'centeredText',
+              margin: [0, 20, 0, 40]
+            },
+
+            {
+              text: 'GUILLERMO PAREDES CAMARENA',
+              bold: true,
+              alignment: 'center'
+            },
+            {
+              text: 'SUBDIRECTOR DE INCIDENCIAS Y CONTROL DE PLAZAS',
+              alignment: 'center'
+            },
+            {
+              text: 'Blvd.Felipe Angeles s/n, Col.Venta Prieta  Pachuca de Soto, HGO. C.P. 42080     Tel 771-717-3524  www.hgo.sep.gob.x',
+              fontSize: 8,
+              alignment: 'right',
+              margin: [0, 0, 0, 0], // margen superior para separar del contenido anterior
+              absolutePosition: { x: 410, y: 760 }, // Ajusta 'y' según la altura de la página
+            }
+          ],
+          styles: {
+            header: {
+              fontSize: 14,
+              bold: true
+            },
+            subheader: {
+              fontSize: 12,
+              bold: false
+            },
+            centeredText: {
+              fontSize: 12,
+              bold: true,
+              alignment: 'center'
+            }
+          }
+        };
+
+        pdfMake.createPdf(documentDefinition).open();
+      } else {
+        console.error('No se pudo obtener el mensaje del servicio');
+      }
+    }, error => {
+      console.error('Error al obtener los datos:', error);
+    });
+
+  }
+
   generatePdfFormato() {
     this.LicenciasService.getLicenciasArchivo().subscribe(async response => {
       if (response && response.message) {
+        const dailyNumber = this.generateDailyNumber();
         const messageNumber = response.message;
         const today = new Date();
         const formattedDate = today.toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' });
@@ -368,10 +471,12 @@ export class ArchivoLicenciasComponent implements OnInit {
               ]
             },
 
-            { text: `Pachuca HGO., ${formattedDate}`, alignment: 'right', margin: [0, 10, 0, 10] },
-            { text: 'Brenda Martínez Alavez', bold: true, margin: [0, 10, 0, 0] },
-            { text: 'Jefa de la Unidad Técnica de Resguardo Documental' },
-            { text: 'P R E S E N T E', bold: true, margin: [0, 0, 0, 90], }, // [izquierda, arriba, derecha, abajo]
+            {
+              text: `NO. OFICIO: DNCP/SNI/${dailyNumber}/2024`,alignment: 'right', margin: [0, 10, 0, 10]},
+            { text: `Pachuca HGO. a, ${formattedDate}`, alignment: 'right', margin: [0, 10, 0, 10] },
+            { text: '', margin: [0, 30, 0, 0] }, // Espacio de 20 unidades de margen arriba
+            { text: 'Para: Lic. Brenda Martínez Alvaréz\nJefa de la unidad técnica de resguardo documental\n\n De: Ing. José Gabriel Castro Bautista\nDirector de Nómina y Control de Plazas' },
+            { text: 'P R E S E N T E', bold: true, margin: [0, 10, 0, 90] }, // [izquierda, arriba, derecha, abajo]
 
             {
               text: `Por medio del presente, remito a usted ${messageNumber} licencias médicas.`,
