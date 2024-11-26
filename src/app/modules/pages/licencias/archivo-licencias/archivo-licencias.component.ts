@@ -115,8 +115,8 @@ export class ArchivoLicenciasComponent implements OnInit {
       if (response && response.data && Array.isArray(response.data)) {
 
         const sortedData = response.data.sort((a, b) => {
-          const nameA = a.nombre.toLowerCase();
-          const nameB = b.nombre.toLowerCase();
+          const nameA = a.rfc.toLowerCase();
+          const nameB = b.rfc.toLowerCase();
           return nameA.localeCompare(nameB); // Orden alfabético
         });
 
@@ -235,8 +235,8 @@ export class ArchivoLicenciasComponent implements OnInit {
       if (response && response.data && Array.isArray(response.data)) {
 
         const sortedData = response.data.sort((a, b) => {
-          const nameA = a.nombre.toLowerCase();
-          const nameB = b.nombre.toLowerCase();
+          const nameA = a.rfc.toLowerCase();
+          const nameB = b.rfc.toLowerCase();
           return nameA.localeCompare(nameB); // Orden alfabético
         });
 
