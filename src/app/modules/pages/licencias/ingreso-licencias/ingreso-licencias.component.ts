@@ -233,32 +233,131 @@ export class IngresoLicenciasComponent implements OnInit{
       if (result.isConfirmed) {
         this.LicenciasService.SearchLic(result.value).subscribe(
           response => {
-            if (response.data.message) {
+            if (response.data?.message) {
               Swal.fire({
                 title: response.data.message,
                 icon: "success"
               });
             } else {
+              // Mostrar datos y botón para editar
               Swal.fire({
-                title: "Licencia encontrada",
+                title: "Detalles de Licencia",
                 html: `
                   <div style="text-align: left; margin-left:30px">
-                    <strong>Folio:</strong> ${response.data.folio} <br>
-                    <strong>RFC:</strong> ${response.data.rfc} <br>
-                    <strong>Nombre:</strong> ${response.data.nombre.trim()} <br>
-                    <strong>Fecha de captura:</strong> ${this.formatDate(response.data.fechaCaptura)}<br>
-                    <strong>Válida desde:</strong> ${this.formatDate(response.data.desde)} <br>
-                    <strong>Hasta:</strong> ${this.formatDate(response.data.hasta)} <br>
-                    <strong>Total de días:</strong> ${response.data.total_dias}
+                    <div><strong>Folio:</strong> ${response.data.folio}</div>
+                    <div><strong>RFC:</strong> ${response.data.rfc}</div>
+                    <div><strong>Nombre:</strong> ${response.data.nombre.trim()}</div>
+                    <div><strong>Fecha de captura:</strong> ${this.formatDate(response.data.fechaCaptura)}</div>
+                    <div><strong>Válida desde:</strong> ${this.formatDate(response.data.desde)}</div>
+                    <div><strong>Hasta:</strong> ${this.formatDate(response.data.hasta)}</div>
+                    <div><strong>Total de días:</strong> ${response.data.total_dias}</div>
+                    <div><strong>Formato:</strong> ${response.data.formato === 0 ? 'Físico' : 'Email'}</div>
                   </div>
                 `,
-                icon: "warning"
+                showCancelButton: true,
+                confirmButtonText: "Editar",
+                cancelButtonText: "Cerrar",
+              }).then(editResult => {
+                if (editResult.isConfirmed) {
+                  // Pasa los datos a la función onEdit
+                  this.onEdit(response.data);
+                }
               });
             }
-          });
+          },
+
+        );
       }
     });
   }
+
+  onEdit2(data: any) {
+    Swal.fire({
+      title: 'Editar Registro',
+      html: `
+        <div style="display: flex; flex-direction: column; text-align: left;">
+          <label style="margin-left:33px;" for="folio">Folio</label>
+          <input id="folioId" class="swal2-input" value="${data.folio}" style="padding: 0px; font-size: 16px;">
+        </div>
+
+        <div style="display: flex; flex-direction: column; text-align: left;">
+          <label style="margin-left:33px;" for="fecha_inicio">Fecha Inicio</label>
+          <input id="fecha_inicioId" type="date" class="swal2-input" value="${this.formatDate(data.desde)}" style="padding: 0px; font-size: 16px;">
+        </div>
+
+        <div style="display: flex; flex-direction: column; text-align: left;">
+          <label style="margin-left:33px;" for="fecha_termino">Fecha Término</label>
+          <input id="fecha_terminoId" type="date" class="swal2-input" value="${this.formatDate(data.hasta)}" style="padding: 0px; font-size: 16px;">
+        </div>
+
+        <div style="display: flex; flex-direction: column; text-align: left;">
+          <label style="margin-left:33px;" for="formato">Formato</label>
+          <div style="display: flex; align-items: center; margin-top: 10px; margin-left:33px;">
+            <input class="form-check-input" type="radio" name="formato" id="formatoFisico" value="0" ${data.formato === 0 ? 'checked' : ''} style="margin-right: 5px;">
+            <label class="form-check-label" for="formatoFisico">Físico</label>
+          </div>
+          <div style="display: flex; align-items: center; margin-top: 10px; margin-left:33px;">
+            <input class="form-check-input" type="radio" name="formato" id="formatoEmail" value="1" ${data.formato === 1 ? 'checked' : ''} style="margin-right: 5px;">
+            <label class="form-check-label" for="formatoEmail">Email</label>
+          </div>
+        </div>
+      `,
+      showCancelButton: true,
+      confirmButtonText: 'Guardar',
+      cancelButtonText: 'Cancelar',
+      preConfirm: () => {
+        const folio = (document.getElementById('folioId') as HTMLInputElement).value;
+        const fecha_inicio = ((document.getElementById('fecha_inicioId') as HTMLInputElement).value) + 'T00:00:00';
+        const fecha_termino = ((document.getElementById('fecha_terminoId') as HTMLInputElement).value) + 'T00:00:00';
+        const formato = parseInt((document.querySelector('input[name="formato"]:checked') as HTMLInputElement).value);
+
+
+        // Validación de campos
+        if (!folio || !fecha_inicio || !fecha_termino) {
+          Swal.showValidationMessage('Todos los campos son obligatorios');
+          return false;
+        }
+
+        return { folio, fecha_inicio, fecha_termino, formato };
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const dataEditada = result.value;
+        this.guardarCambios2(dataEditada, data.id);
+      }
+    });
+  }
+
+  guardarCambios2(data: any, licenciaId: any) {
+    const userId = localStorage.getItem('userId')!;
+
+    this.LicenciasService.updateLic(data, licenciaId, userId).subscribe(
+
+      response => {
+        this.buscar(this.srl_emp);
+        this.HOLA();  // Si este método actualiza la tabla
+        Swal.fire({
+          title: '¡Éxito!',
+          text: 'Se editó la licencia correctamente.',
+          icon: 'success',
+          showConfirmButton: false,
+          timer: 1500,
+          timerProgressBar: true
+        });
+      },
+      error => {
+        Swal.fire({
+          title: 'Error',
+          text: error.error.message,
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true
+        });
+      }
+    );
+  }
+
+
 
   trash() {
     Swal.fire({
@@ -317,12 +416,12 @@ export class IngresoLicenciasComponent implements OnInit{
 
       <div style="display: flex; flex-direction: column; text-align: left;">
         <label style="margin-left:33px;" for="fecha_inicio">Fecha Inicio</label>
-        <input id="fecha_inicioId" type="date" class="swal2-input" value="${data.desde}" style="padding: 0px; font-size: 16px;">
+        <input id="fecha_inicioId" type="date" class="swal2-input" value="${this.formatDate(data.desde)}" style="padding: 0px; font-size: 16px;">
       </div>
 
       <div style="display: flex; flex-direction: column; text-align: left;">
         <label style="margin-left:33px;" for="fecha_termino">Fecha Término</label>
-        <input id="fecha_terminoId" type="date" class="swal2-input" value="${data.hasta}" style="padding: 0px; font-size: 16px;">
+        <input id="fecha_terminoId" type="date" class="swal2-input" value="${this.formatDate(data.hasta)}" style="padding: 0px; font-size: 16px;">
       </div>
 
       <div style="display: flex; flex-direction: column; text-align: left;">

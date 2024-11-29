@@ -1,5 +1,5 @@
 <div class="card">
-  <app-tables *ngIf="table == true" 
+  <app-tables *ngIf="table == true"
   [headers]="headers"
   [data]="data"
   [displayedColums]="displayedColumns"
@@ -7,5 +7,5 @@
   [showActionsDeleted]=false
   [showActionsPdf]=false>
 </app-tables>
-<h1 *ngIf="table == false" class="ms-3">El usuario no cuenta con acuerdos presidenciales </h1>
+<h3 *ngIf="table == false" class="ms-3">El usuario no cuenta con acuerdos presidenciales </h3>
 </div>

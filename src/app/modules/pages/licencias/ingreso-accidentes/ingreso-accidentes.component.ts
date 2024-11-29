@@ -16,8 +16,8 @@ import { ImageToBaseService } from './../../../../services/image-to-base.service
 })
 export class IngresoAccidentesComponent{
   insertarLics!: FormGroup;
-  headers = ['No. de Licencia', 'Desde', 'Hasta', 'Días', 'No. de oficio', 'Acciones'];
-  displayedColumns = ['folio', 'desde', 'hasta', 'total_dias','oficio'];
+  headers = [ 'Desde', 'Hasta', 'Días', 'No. de oficio', 'Acciones'];
+  displayedColumns = ['desde', 'hasta', 'total_dias','oficio'];
   data = [];
   table:any = true;
   srl_emp: any;
@@ -332,7 +332,6 @@ buscar(srl_emp:any) {
 
   HOLA(){
           this.insertarLics = this.fb.group({
-            folio: ['', Validators.required],
             fecha_inicio: ['', Validators.required],
             fecha_termino: ['', Validators.required],
             formato: ['0', Validators.required]
