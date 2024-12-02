@@ -16,8 +16,8 @@ import { ImageToBaseService } from './../../../../services/image-to-base.service
 })
 export class IngresoAccidentesComponent{
   insertarLics!: FormGroup;
-  headers = [ 'Desde', 'Hasta', 'Días', 'No. de oficio', 'Acciones'];
-  displayedColumns = ['desde', 'hasta', 'total_dias','oficio'];
+  headers = [ 'Desde', 'Hasta', 'Días', 'Acciones'];
+  displayedColumns = ['desde', 'hasta', 'total_dias'];
   data = [];
   table:any = true;
   srl_emp: any;
@@ -79,11 +79,7 @@ buscar(srl_emp:any) {
           Swal.fire({
             title: 'Editar Registro',
             html: `
-            <div style="display: flex; flex-direction: column; text-align: left;">
-              <label style="margin-left:33px;" for="folio">Folio</label>
-              <input id="folioId" class="swal2-input" value="${data.folio}" style="padding: 0px; font-size: 16px;">
-            </div>
-
+            
             <div style="display: flex; flex-direction: column; text-align: left;">
               <label style="margin-left:33px;" for="fecha_inicio">Fecha Inicio</label>
               <input id="fecha_inicioId" type="date" class="swal2-input" value="${data.desde}" style="padding: 0px; font-size: 16px;">
@@ -92,40 +88,25 @@ buscar(srl_emp:any) {
             <div style="display: flex; flex-direction: column; text-align: left;">
               <label style="margin-left:33px;" for="fecha_termino">Fecha Término</label>
               <input id="fecha_terminoId" type="date" class="swal2-input" value="${data.hasta}" style="padding: 0px; font-size: 16px;">
-            </div>
-
-            <div style="display: flex; flex-direction: column; text-align: left;">
-              <label style="margin-left:33px;" for="formato">Formato</label>
-              <div style="display: flex; align-items: center; margin-top: 10px; margin-left:33px;">
-                <input class="form-check-input" type="radio" name="formato" id="formatoFisico" value="0" ${data.formato === 0 ? 'checked' : ''} style="margin-right: 5px;">
-                <label class="form-check-label" for="formatoFisico">Físico</label>
-              </div>
-              <div style="display: flex; align-items: center; margin-top: 10px; margin-left:33px;">
-                <input class="form-check-input" type="radio" name="formato" id="formatoEmail" value="1" ${data.formato === 1 ? 'checked' : ''} style="margin-right: 5px;">
-                <label class="form-check-label" for="formatoEmail">Email</label>
-              </div>
             </div>`,
 
           showCancelButton: true,
           confirmButtonText: 'Guardar',
           cancelButtonText: 'Cancelar',
           preConfirm: () => {
-            const folio = (document.getElementById('folioId') as HTMLInputElement).value;
             const fecha_inicio = ((document.getElementById('fecha_inicioId') as HTMLInputElement).value)+'T00:00:00';
             const fecha_termino = ((document.getElementById('fecha_terminoId') as HTMLInputElement).value)+'T00:00:00';
-            const formato = parseInt((document.querySelector('input[name="formato"]:checked') as HTMLInputElement).value);
             const accidente = 1;
               // Validación de campos
-              if (!folio || !fecha_inicio || !fecha_termino) {
+              if (!fecha_inicio || !fecha_termino) {
                 Swal.showValidationMessage('Todos los campos son obligatorios');
                 return false;
               }
 
               return {
-                folio,
+              
                 fecha_inicio,
                 fecha_termino,
-                formato,
                 accidente
               };
             }
@@ -344,10 +325,8 @@ buscar(srl_emp:any) {
         const fechaInicio = new Date(this.insertarLics.value.fecha_inicio);
         const fechaTermino = new Date(this.insertarLics.value.fecha_termino);
         const data = {
-          folio: this.insertarLics.value.folio,
           fecha_inicio: fechaInicio.toISOString(), // Mantener en formato ISO para el envío
           fecha_termino: fechaTermino.toISOString(),
-          formato: parseInt(this.insertarLics.value.formato, 10),
           "accidente":1
 
         };
@@ -355,11 +334,9 @@ buscar(srl_emp:any) {
       // Mostrar alerta de confirmación
       Swal.fire({
         title: 'Confirmar',
-        html: `¿Está seguro de que desea agregar la siguiente licencia?<br><br>` +
-        `Folio: ${data.folio}<br>` +
+        html: `¿Está seguro de que desea agregar el siguiente Accidente?<br><br>` +
         `Fecha de Inicio: ${fechaInicio.toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' })}<br>` +
-        `Fecha de Término: ${fechaTermino.toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' })}<br>` +
-        `Formato: ${data.formato === 0 ? 'Físico' : ''}`,
+        `Fecha de Término: ${fechaTermino.toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' })}<br>`,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Sí, agregar',
@@ -373,7 +350,7 @@ buscar(srl_emp:any) {
               this.HOLA();
               Swal.fire({
                 title: '¡Éxito!',
-                text: 'Licencia agregada correctamente.',
+                text: 'Accidente agregado correctamente.',
                 icon: 'success',
                 showConfirmButton: false,
                 timer: 1500,
