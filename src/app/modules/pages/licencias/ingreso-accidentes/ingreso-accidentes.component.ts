@@ -249,6 +249,8 @@ export class IngresoAccidentesComponent {
 
   onDelete(licenciaId: any) {
     const userId = localStorage.getItem('userId')!; // Asegúrate de obtener el userId correcto
+    this.buscar2(this.srl_emp);
+    this.buscar(this.srl_emp);
     Swal.fire({
       title: '¿Estás seguro?',
       text: "No podrás revertir esta acción.",
@@ -442,6 +444,7 @@ export class IngresoAccidentesComponent {
           this.LicenciasService.addLicencia(data, userId, this.srl_emp).subscribe(
             response => {
               this.buscar(this.srl_emp)
+              this.buscar2(this.srl_emp);
               this.HOLA();
               Swal.fire({
                 title: '¡Éxito!',
