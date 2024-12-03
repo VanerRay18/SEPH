@@ -24,6 +24,19 @@
       </div>
     </div>
   </form>
+
+  <app-tables class="tabla1" *ngIf="table == true"
+  [headers]="headers2"
+  [data]="data2"
+  [displayedColums]="displayedColumns2"
+  [showActionsEdit]="modificar"
+    (edit)="onEdit2($event)"
+    [showActionsDeleted]="eliminar"
+    [maxHeight]="'400px'"
+    (delete)="onDelete($event)"
+     ></app-tables>
+
+
   <app-tables *ngIf="table == true"
   [headers]="headers"
   [data]="data"
@@ -33,8 +46,6 @@
     [showActionsDeleted]="eliminar"
     [maxHeight]="'400px'"
     (delete)="onDelete($event)"
-     [showActionsPdf]=true
-     (Pdf)="onPdf($event.accidente)"
      ></app-tables>
 
      <h3 *ngIf="table == false" class="ms-3">El usuario no cuenta con accidentes de trabajo </h3>

@@ -100,6 +100,13 @@ export class LicenciasService {
     );
   }
 
+  getAccidentes2(srl_emp: any): Observable<ApiResponse> {//Historial actual de accidentes de trabajo
+    let headers = new HttpHeaders({'srl_emp': srl_emp})
+    return this.http.get<ApiResponse>(`${environment.baseService}${'/licMedicas/accidentesPeriod'}`,
+      {headers}
+    );
+  }
+
   getAcuerdos(srl_emp: string): Observable<ApiResponse> {//Historial actual de accidentes de trabajo
     let headers = new HttpHeaders({'srl_emp': srl_emp})
     return this.http.get<ApiResponse>(`${environment.baseService}${'/licMedicas/precidenciales'}`,
@@ -134,6 +141,14 @@ export class LicenciasService {
       {headers}
     );
   }
+
+  getHistoricoAccidentes(srl_emp: string): Observable<ApiResponse> {//Historial de accidentes de trabajo
+    let headers = new HttpHeaders({'srl_emp': srl_emp})
+    return this.http.get<ApiResponse>(`${environment.baseService}${'/licMedicas/accidentesPDF'}`,
+      {headers}
+    );
+  }
+
 
 
 }

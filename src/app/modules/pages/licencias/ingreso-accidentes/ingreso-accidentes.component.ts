@@ -14,16 +14,19 @@ import { ImageToBaseService } from './../../../../services/image-to-base.service
   templateUrl: './ingreso-accidentes.component.html',
   styleUrls: ['./ingreso-accidentes.component.css']
 })
-export class IngresoAccidentesComponent{
+export class IngresoAccidentesComponent {
   insertarLics!: FormGroup;
-  headers = [ 'Desde', 'Hasta', 'Días', 'Acciones'];
-  displayedColumns = ['desde', 'hasta', 'total_dias'];
+  headers = ['No. de Licencia', 'Desde', 'Hasta', 'Días', 'Acciones'];
+  displayedColumns = ['folio', 'desde', 'hasta', 'total_dias'];
   data = [];
-  table:any = true;
+  headers2 = ['Desde', 'Hasta', 'Días', 'Acciones'];
+  displayedColumns2 = ['desde', 'hasta', 'total_dias'];
+  data2 = [];
+  table: any = true;
   srl_emp: any;
-  eliminar:boolean = false;
-  agregar:boolean = false;
-  modificar:boolean = false;
+  eliminar: boolean = false;
+  agregar: boolean = false;
+  modificar: boolean = false;
   activeTab: string = 'licencias'; // Pestaña activa por defecto
 
   tabs = [
@@ -36,38 +39,50 @@ export class IngresoAccidentesComponent{
     private fb: FormBuilder,
     private LicenciasService: LicenciasService,
     private BusquedaserlService: BusquedaserlService,
-    private PermisosUserService:PermisosUserService,
+    private PermisosUserService: PermisosUserService,
     private ImageToBaseService: ImageToBaseService
   ) {
     //this.fetchData(); // Si tienes un endpoint real, descomenta esto
   }
   ngOnInit() {
-    this.PermisosUserService.getPermisosSpring(this.PermisosUserService.getPermisos().Licencias).subscribe((response: ApiResponse)=>{
-        this.eliminar = response.data.eliminar
-        this.modificar = response.data.editar
-        this.agregar = response.data.agregar
+    this.PermisosUserService.getPermisosSpring(this.PermisosUserService.getPermisos().Licencias).subscribe((response: ApiResponse) => {
+      this.eliminar = response.data.eliminar
+      this.modificar = response.data.editar
+      this.agregar = response.data.agregar
     });
     // this.modificar = this.PermisosUserService.getPermisos().Licencias.editar;
     // this.eliminar = this.PermisosUserService.getPermisos().Licencias.editar;
     // this.agregar = this.PermisosUserService.getPermisos().Licencias.editar;
 
     this.BusquedaserlService.srlEmp$.subscribe(value => {
-      if(value.mostrar == true){
+      if (value.mostrar == true) {
         this.srl_emp = value.srl_emp;
-        this.buscar(this.srl_emp);}
+        this.buscar(this.srl_emp);
+        this.buscar2(this.srl_emp);
+      }
     });
     this.HOLA();
   }
 
-buscar(srl_emp:any) {
-  this.LicenciasService.getAccidentes(srl_emp).subscribe((response: ApiResponse) => {
-    this.table=true
-    this.data = response.data;
-  },
-  (error) => {
-    this.table = false;
-  });
-}
+  buscar(srl_emp: any) {
+    this.LicenciasService.getAccidentes(srl_emp).subscribe((response: ApiResponse) => {
+      this.table = true
+      this.data = response.data;
+    },
+      (error) => {
+        this.table = false;
+      });
+  }
+
+  buscar2(srl_emp: any) {
+    this.LicenciasService.getAccidentes2(srl_emp).subscribe((response: ApiResponse) => {
+      this.table = true
+      this.data2 = response.data;
+    },
+      (error) => {
+        this.table = false;
+      });
+  }
 
 
   setActiveTab(tabId: string) {
@@ -75,11 +90,16 @@ buscar(srl_emp:any) {
   }
 
   onEdit(data: any) {
-      //AAGP790513HH4
-          Swal.fire({
-            title: 'Editar Registro',
-            html: `
-            
+    //AAGP790513HH4
+    Swal.fire({
+      title: 'Editar Registro',
+      html: `
+
+             <div style="display: flex; flex-direction: column; text-align: left;">
+              <label style="margin-left:33px;" for="folio">Folio</label>
+              <input id="folioId" class="swal2-input" value="${data.folio}" style="padding: 0px; font-size: 16px;">
+             </div>
+
             <div style="display: flex; flex-direction: column; text-align: left;">
               <label style="margin-left:33px;" for="fecha_inicio">Fecha Inicio</label>
               <input id="fecha_inicioId" type="date" class="swal2-input" value="${data.desde}" style="padding: 0px; font-size: 16px;">
@@ -88,96 +108,178 @@ buscar(srl_emp:any) {
             <div style="display: flex; flex-direction: column; text-align: left;">
               <label style="margin-left:33px;" for="fecha_termino">Fecha Término</label>
               <input id="fecha_terminoId" type="date" class="swal2-input" value="${data.hasta}" style="padding: 0px; font-size: 16px;">
-            </div>`,
+            </div>
 
-          showCancelButton: true,
-          confirmButtonText: 'Guardar',
-          cancelButtonText: 'Cancelar',
-          preConfirm: () => {
-            const fecha_inicio = ((document.getElementById('fecha_inicioId') as HTMLInputElement).value)+'T00:00:00';
-            const fecha_termino = ((document.getElementById('fecha_terminoId') as HTMLInputElement).value)+'T00:00:00';
-            const accidente = 1;
-              // Validación de campos
-              if (!fecha_inicio || !fecha_termino) {
-                Swal.showValidationMessage('Todos los campos son obligatorios');
-                return false;
-              }
+            `,
 
-              return {
-              
-                fecha_inicio,
-                fecha_termino,
-                accidente
-              };
-            }
-          }).then((result) => {
-            if (result.isConfirmed) {
-              const dataEditada = result.value;
-              this.guardarCambios(dataEditada,data.id);
-            }
-          });
+      showCancelButton: true,
+      confirmButtonText: 'Guardar',
+      cancelButtonText: 'Cancelar',
+      preConfirm: () => {
+        const folio = (document.getElementById('folioId') as HTMLInputElement).value;
+        const fecha_inicio = ((document.getElementById('fecha_inicioId') as HTMLInputElement).value) + 'T00:00:00';
+        const fecha_termino = ((document.getElementById('fecha_terminoId') as HTMLInputElement).value) + 'T00:00:00';
+        const accidente = 1;
+        const formato = 1;
+        // Validación de campos
+        if (!fecha_inicio || !fecha_termino) {
+          Swal.showValidationMessage('Todos los campos son obligatorios');
+          return false;
+        }
+
+        return {
+          folio,
+          fecha_inicio,
+          fecha_termino,
+          accidente,
+          formato
+        };
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const dataEditada = result.value;
+        this.guardarCambios(dataEditada, data.id);
+      }
+    });
   }
 
-  guardarCambios(data: any,licenciaId:any) {
-          const userId = localStorage.getItem('userId')!;
+  guardarCambios(data: any, licenciaId: any) {
+    const userId = localStorage.getItem('userId')!;
 
-          this.LicenciasService.updateLic(data,licenciaId, userId).subscribe(
-            response => {
-              this.buscar(this.srl_emp);
-              this.HOLA();  // Si este método actualiza la tabla
-              Swal.fire({
-                title: '¡Éxito!',
-                text: 'Se editó la licencia correctamente.',
-                icon: 'success',
-                showConfirmButton: false,
-                timer: 1500,
-                timerProgressBar: true
-              });
-            },
-            error => {
-              Swal.fire({
-                title: 'Error',
-                text: error.error.message,
-                icon: 'error',
-                confirmButtonText: 'Aceptar'
-              });
-            }
-          );
+    this.LicenciasService.updateLic(data, licenciaId, userId).subscribe(
+      response => {
+        this.buscar(this.srl_emp);
+        this.HOLA();  // Si este método actualiza la tabla
+        Swal.fire({
+          title: '¡Éxito!',
+          text: 'Se editó la licencia correctamente.',
+          icon: 'success',
+          showConfirmButton: false,
+          timer: 1500,
+          timerProgressBar: true
+        });
+      },
+      error => {
+        Swal.fire({
+          title: 'Error',
+          text: error.error.message,
+          icon: 'error',
+          confirmButtonText: 'Aceptar'
+        });
+      }
+    );
+  }
+
+  onEdit2(data2: any) {
+    //AAGP790513HH4
+    Swal.fire({
+      title: 'Editar Registro',
+      html: `
+
+            <div style="display: flex; flex-direction: column; text-align: left;">
+              <label style="margin-left:33px;" for="fecha_inicio">Fecha Inicio</label>
+              <input id="fecha_inicioId" type="date" class="swal2-input" value="${data2.desde}" style="padding: 0px; font-size: 16px;">
+            </div>
+
+            <div style="display: flex; flex-direction: column; text-align: left;">
+              <label style="margin-left:33px;" for="fecha_termino">Fecha Término</label>
+              <input id="fecha_terminoId" type="date" class="swal2-input" value="${data2.hasta}" style="padding: 0px; font-size: 16px;">
+            </div>
+
+            `,
+
+      showCancelButton: true,
+      confirmButtonText: 'Guardar',
+      cancelButtonText: 'Cancelar',
+      preConfirm: () => {
+        const folio = 0;
+        const fecha_inicio = ((document.getElementById('fecha_inicioId') as HTMLInputElement).value) + 'T00:00:00';
+        const fecha_termino = ((document.getElementById('fecha_terminoId') as HTMLInputElement).value) + 'T00:00:00';
+        const accidente = 1;
+        const formato = 1;
+        // Validación de campos
+        if (!fecha_inicio || !fecha_termino) {
+          Swal.showValidationMessage('Todos los campos son obligatorios');
+          return false;
+        }
+
+        return {
+          folio,
+          fecha_inicio,
+          fecha_termino,
+          accidente,
+          formato
+        };
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const dataEditada = result.value;
+        console.log(dataEditada)
+        this.guardarCambios2(dataEditada, data2.id);
+      }
+    });
+  }
+
+  guardarCambios2(data2: any, licenciaId: any) {
+    const userId = localStorage.getItem('userId')!;
+
+    this.LicenciasService.updateLic(data2, licenciaId, userId).subscribe(
+      response => {
+        this.buscar2(this.srl_emp);
+        this.HOLA();  // Si este método actualiza la tabla
+        Swal.fire({
+          title: '¡Éxito!',
+          text: 'Se editó la licencia correctamente.',
+          icon: 'success',
+          showConfirmButton: false,
+          timer: 1500,
+          timerProgressBar: true
+        });
+      },
+      error => {
+        Swal.fire({
+          title: 'Error',
+          text: error.error.message,
+          icon: 'error',
+          confirmButtonText: 'Aceptar'
+        });
+      }
+    );
   }
 
   onDelete(licenciaId: any) {
-          const userId = localStorage.getItem('userId')!; // Asegúrate de obtener el userId correcto
-          Swal.fire({
-            title: '¿Estás seguro?',
-            text: "No podrás revertir esta acción.",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Sí, eliminar',
-            cancelButtonText: 'Cancelar',
-            iconColor: '#dc3545',
-            confirmButtonColor: '#dc3545'
-          }).then((result) => {
-            if (result.isConfirmed) {
-              // Llama al servicio para eliminar el registro
-              this.LicenciasService.softDeleteLic(licenciaId.id, userId).subscribe(
-                response => {
-                  this.buscar(this.srl_emp); // Refresca los datos después de eliminar
-                  Swal.fire(
-                    '¡Eliminada!',
-                    'La licencia ha sido eliminada correctamente.',
-                    'success'
-                  );
-                },
-                error => {
-                  Swal.fire(
-                    'Error',
-                    'No se pudo eliminar la licencia.',
-                    'error'
-                  );
-                }
-              );
-            }
-          });
+    const userId = localStorage.getItem('userId')!; // Asegúrate de obtener el userId correcto
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: "No podrás revertir esta acción.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      iconColor: '#dc3545',
+      confirmButtonColor: '#dc3545'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Llama al servicio para eliminar el registro
+        this.LicenciasService.softDeleteLic(licenciaId.id, userId).subscribe(
+          response => {
+            this.buscar(this.srl_emp); // Refresca los datos después de eliminar
+            Swal.fire(
+              '¡Eliminada!',
+              'La licencia ha sido eliminada correctamente.',
+              'success'
+            );
+          },
+          error => {
+            Swal.fire(
+              'Error',
+              'No se pudo eliminar la licencia.',
+              'error'
+            );
+          }
+        );
+      }
+    });
   }
   getCurrentFormattedDate() {
     const today = new Date();
@@ -237,12 +339,6 @@ buscar(srl_emp:any) {
                     }
                   ],
                   [
-
-                    {
-                      text: 'Para: Lic. Brenda Martínez Alvaréz\nJefa de la unidad técnica de resguardo documental\n\n De: Ing. José Gabriel Castro Bautista\nDirector de Nómina y Control de Plazas',
-                      alignment: 'left',
-                      bold: true
-                    },
                     {
                       text: `NO. OFICIO: DNCP/SNI/${dailyNumber}/2024\nFECHA: ${formattedDate}`,
                       alignment: 'right'
@@ -311,32 +407,31 @@ buscar(srl_emp:any) {
     });
   }
 
-  HOLA(){
-          this.insertarLics = this.fb.group({
-            fecha_inicio: ['', Validators.required],
-            fecha_termino: ['', Validators.required],
-            formato: ['0', Validators.required]
-          });
+  HOLA() {
+    this.insertarLics = this.fb.group({
+      fecha_inicio: ['', Validators.required],
+      fecha_termino: ['', Validators.required]
+    });
   }
 
-  onSumit(){
-      if (this.insertarLics.valid) {
-        const userId=localStorage.getItem('userId')!
-        const fechaInicio = new Date(this.insertarLics.value.fecha_inicio);
-        const fechaTermino = new Date(this.insertarLics.value.fecha_termino);
-        const data = {
-          fecha_inicio: fechaInicio.toISOString(), // Mantener en formato ISO para el envío
-          fecha_termino: fechaTermino.toISOString(),
-          "accidente":1
-
-        };
+  onSumit() {
+    if (this.insertarLics.valid) {
+      const userId = localStorage.getItem('userId')!
+      const fechaInicio = new Date(this.insertarLics.value.fecha_inicio);
+      const fechaTermino = new Date(this.insertarLics.value.fecha_termino);
+      const data = {
+        folio: 0,
+        fecha_inicio: fechaInicio.toISOString(), // Mantener en formato ISO para el envío
+        fecha_termino: fechaTermino.toISOString(),
+        accidente: 1,
+        formato: 1
+      };
 
       // Mostrar alerta de confirmación
       Swal.fire({
-        title: 'Confirmar',
         html: `¿Está seguro de que desea agregar el siguiente Accidente?<br><br>` +
-        `Fecha de Inicio: ${fechaInicio.toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' })}<br>` +
-        `Fecha de Término: ${fechaTermino.toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' })}<br>`,
+          `Fecha de Inicio: ${fechaInicio.toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' })}<br>` +
+          `Fecha de Término: ${fechaTermino.toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' })}<br>`,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Sí, agregar',
