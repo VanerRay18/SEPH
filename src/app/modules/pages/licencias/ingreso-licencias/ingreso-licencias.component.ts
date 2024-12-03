@@ -1084,41 +1084,64 @@ generarHistoricoAnterior() {
 
 generarHistoricoAccidentes() {
     this.LicenciasService.getHistoricoAccidentes(this.srl_emp).subscribe(async response => {
-      const data = response.data[0];
+      const data = response.data;
       const licencias = data.licencias;
+      const licenciasPorPeriodo = licencias.reduce((acc: any, licencia: { aux: any }) => {
+        (acc[licencia.aux] = acc[licencia.aux] || []).push(licencia);
+        return acc;
+      }, {});
+      const totalDiasSumados = licencias.reduce((acc: number, licencia: { total_dias: number }) => {
+        return acc + (licencia.total_dias || 0); // Asegúrate de sumar solo números
+      }, 0);
       const today = new Date();
       const formattedDate = today.toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' });
       const imageBase64 = await this.ImageToBaseService.convertImageToBase64('assets/IHE_LOGO.png');
-      const documentDefinition: any = {
-        content: [
-          {
-            columns: [
-              {
-                image: imageBase64, // Usar la imagen convertida
-                alignment: 'right',
-                width: 170, // Ajustar el ancho
-                height: 50, // Ajustar la altura
-              },
-              {
-                text: `Pachuca HGO. ${formattedDate}.`,
-                alignment: 'right',
-                style: 'subheader'
-              }
-            ]
-          },
-          {
-            text: 'Reporte de Licencias Médicas/Accidentes de Trabajo del periodo anterior',
-            style: 'header',
-            alignment: 'center',
-            color: '#621132',
-            margin: [40, 20, 0, 10]
-          },
-          {
-            text: `\nNombre: ${licencias[0]?.nombre?.trim()}\nR.F.C. ${licencias[0]?.rfc}\nFecha de ingreso: ${licencias[0]?.sep}`,
-            style: 'subheader',
-            margin: [0, 20, 0, 0]
-          },
-          { text: `Periodo: ${data.periodo}`, style: 'subheader', margin: [0, 20, 0, 10] },
+      const content: any[] = [
+        {
+          columns: [
+            {
+              image: imageBase64,
+              alignment: 'right',
+              width: 170,
+              height: 50
+            },
+            {
+              text: `Pachuca HGO. ${formattedDate}.`,
+              alignment: 'right',
+              style: 'subheader'
+            }
+          ]
+        },
+        {
+          text: 'Historico de Accidentes de trabajo con sus Respectivas licencias',
+          style: 'header',
+          alignment: 'center',
+          color: '#621132',
+          margin: [40, 20, 0, 10]
+        },
+        {
+          text: `\nNombre: ${data.nombre.trim()}\nR.F.C. ${data.rfc}\nFecha de ingreso: ${data.fecha_ingreso}`,
+          style: 'subheader',
+          margin: [0, 20, 0, 20]
+        },
+        {
+          text: `Total de días de licencias: ${totalDiasSumados}`,
+          alignment: 'right',
+          style: 'subheader',
+          bold: true,
+          margin: [0, 20, 0, 20]
+        }
+      ];
+
+      // Para cada periodo, agregar un bloque de contenido con una tabla de licencias
+      Object.keys(licenciasPorPeriodo).forEach(aux => {
+        const licencias = licenciasPorPeriodo[aux] || []; // Asignar un arreglo vacío si no hay licencias
+        const periodoTexto = licencias.length > 0 ? licencias[0].periodo : aux;
+        const totalDias = licencias.reduce((acc: any, licencia: { total_dias: any; }) => {
+          return acc + (licencia.total_dias || 0); // Asegúrate de que total_dias tenga un valor
+        }, 0);
+        content.push(
+          { text: `Periodo del accidente: ${periodoTexto}`, style: 'subheader', margin: [0, 20, 0, 10] },
           {
             table: {
               headerRows: 1,
@@ -1129,21 +1152,33 @@ generarHistoricoAccidentes() {
                   { text: 'Folio', bold: true, fillColor: '#eeeeee', alignment: 'center' },
                   { text: 'Periodo de la Licencia', bold: true, fillColor: '#eeeeee', alignment: 'center' },
                   { text: 'Días', bold: true, fillColor: '#eeeeee', alignment: 'center' },
+                  { text: 'Oficio', bold: true, fillColor: '#eeeeee', alignment: 'center' },
                   { text: 'Fecha de captura', bold: true, fillColor: '#eeeeee', alignment: 'center' },
                 ],
                 // Agregar cada licencia correspondiente a este periodo
-                ...licencias.map((licencia: { folio: any, desde: any, hasta: any, total_days: any, fechaCaptura: any, apartir: any }) => [
+                ...licenciasPorPeriodo[aux].map((licencia: { folio: any, desde: any, hasta: any, total_dias: any, oficio: any, fechaCaptura: any, apartir: any }) => [
                   { text: licencia.folio, alignment: 'center' },
                   { text: `${licencia.desde} - ${licencia.hasta}`, alignment: 'center' },
-                  { text: licencia.total_days, alignment: 'center' },
+                  { text: licencia.total_dias, alignment: 'center' },
+                  { text: licencia.oficio, alignment: 'center' },
                   { text: licencia.fechaCaptura, alignment: 'center' },
                 ])
               ]
             },
-            margin: [0, 10, 0, 30]
+            alignment: 'center',
+            margin: [0, 10, 0, 20]
+          },
+          {
+            text: `Total de días de las licencias dentro del accidente: ${totalDias}`,
+            alignment: 'right',
+            bold: true,
+            margin: [0, 20, 0, 20]
           }
+        );
+      });
 
-        ],
+      const documentDefinition = {
+        content: content,
         styles: {
           header: {
             fontSize: 20,
@@ -1155,7 +1190,7 @@ generarHistoricoAccidentes() {
           }
         }
       };
-      // Generar y descargar el PDF
+
       pdfMake.createPdf(documentDefinition).open();
       Swal.close();
     },
