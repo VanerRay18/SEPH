@@ -1113,7 +1113,7 @@ generarHistoricoAccidentes() {
           ]
         },
         {
-          text: 'Historico de Accidentes de trabajo con sus Respectivas licencias',
+          text: 'Historico de Accidentes de trabajo ',
           style: 'header',
           alignment: 'center',
           color: '#621132',
