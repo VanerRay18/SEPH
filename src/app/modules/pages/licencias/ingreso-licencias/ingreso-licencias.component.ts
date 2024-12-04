@@ -960,7 +960,7 @@ export class IngresoLicenciasComponent implements OnInit {
     },
       error => {
         Swal.fire({
-          title: 'No exite historico Anterior',
+          title: 'No exite historico Actual',
           text: error.error.message,
           icon: 'error',
           confirmButtonText: 'OK'
@@ -1302,7 +1302,7 @@ export class IngresoLicenciasComponent implements OnInit {
     },
       error => {
         Swal.fire({
-          title: 'No exite historico Anterior',
+          title: 'No exite historico de accidentes',
           text: error.error.message,
           icon: 'error',
           confirmButtonText: 'OK'
