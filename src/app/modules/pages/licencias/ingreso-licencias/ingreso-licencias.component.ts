@@ -14,16 +14,16 @@ import { LicMedica } from 'src/app/shared/interfaces/utils';
   templateUrl: './ingreso-licencias.component.html',
   styleUrls: ['./ingreso-licencias.component.css']
 })
-export class IngresoLicenciasComponent implements OnInit{
+export class IngresoLicenciasComponent implements OnInit {
   eliminar: boolean = false;
   agregar: boolean = false;
   modificar: boolean = false;
   insertarLic!: FormGroup;
   headers = ['No. de Licencia', 'Desde', 'Hasta', 'Días', 'Fecha de captura', 'No. de oficio'];
-  displayedColumns = ['folio', 'desde', 'hasta', 'rango_fechas','fechaCaptura','oficio'];
+  displayedColumns = ['folio', 'desde', 'hasta', 'rango_fechas', 'fechaCaptura', 'oficio'];
   data = [];
   showCard: any = false;
-  table:any = true;
+  table: any = true;
   srl_emp: any;
   activeTab: string = 'licencias';
   currentDate!: string;
@@ -56,8 +56,8 @@ export class IngresoLicenciasComponent implements OnInit{
       this.eliminar = response.data.eliminar
       this.modificar = response.data.editar
       this.agregar = response.data.agregar
-      if(this.modificar == true || this.eliminar == true)
-      this.headers.push('Acciones');
+      if (this.modificar == true || this.eliminar == true)
+        this.headers.push('Acciones');
     });
 
     this.BusquedaserlService.srlEmp$.subscribe(value => {
@@ -123,19 +123,19 @@ export class IngresoLicenciasComponent implements OnInit{
       //   this.currentDate = this.getCurrentDate(this.fecha_ingreso).date; // Usa `getCurrentDate` para formatear la fecha
       // }
       // Asegúrate de que `licencias` existe en `response.data` antes de usar `map`
-    if (response.data && response.data.licencias) {
-      this.Total_lic = response.message || 0;
-      this.data = response.data.licencias.map((item: LicMedica) => ({
-        ...item,
-        fechaCaptura:this.formatDate(item.fechaCaptura),
-        desde:this.formatDate(item.desde),
-        hasta:this.formatDate(item.hasta),
-        rango_fechas: `${item.total_days}  ${item.accidente === 1 ? '-' : ''}`
-      }));
-    } else {
-      this.Total_lic = 0;
-      this.data = []; // Inicializa como un array vacío si `licencias` no está en `data`
-    }
+      if (response.data && response.data.licencias) {
+        this.Total_lic = response.message || 0;
+        this.data = response.data.licencias.map((item: LicMedica) => ({
+          ...item,
+          fechaCaptura: this.formatDate(item.fechaCaptura),
+          desde: this.formatDate(item.desde),
+          hasta: this.formatDate(item.hasta),
+          rango_fechas: `${item.total_days}  ${item.accidente === 1 ? '-' : ''}`
+        }));
+      } else {
+        this.Total_lic = 0;
+        this.data = []; // Inicializa como un array vacío si `licencias` no está en `data`
+      }
 
       this.table = true;
     },
@@ -163,8 +163,8 @@ export class IngresoLicenciasComponent implements OnInit{
 
       };
       // Convertir las fechas a formato 'YYYY-MM-DD' para usar en formatDate
-    const formattedFechaInicio = this.formatDate(fechaInicio.toISOString().split('T')[0]);
-    const formattedFechaTermino = this.formatDate(fechaTermino.toISOString().split('T')[0]);
+      const formattedFechaInicio = this.formatDate(fechaInicio.toISOString().split('T')[0]);
+      const formattedFechaTermino = this.formatDate(fechaTermino.toISOString().split('T')[0]);
 
       // Mostrar alerta de confirmación
       Swal.fire({
@@ -734,7 +734,7 @@ export class IngresoLicenciasComponent implements OnInit{
               widths: ['*', '*'],
               body: [
                 // Agregar una fila de cabecera si 'claves' no está vacío
-                [{ text: 'PLAZA', alignment: 'center', bold: true, fillColor: '#eeeeee'}, { text: 'CT', alignment: 'center', bold: true, fillColor: '#eeeeee' }],
+                [{ text: 'PLAZA', alignment: 'center', bold: true, fillColor: '#eeeeee' }, { text: 'CT', alignment: 'center', bold: true, fillColor: '#eeeeee' }],
                 ...claves.map((clave: { PLAZA: any; CT: any; }) => [
                   { text: clave.PLAZA, alignment: 'center', bold: true },
                   { text: clave.CT, alignment: 'center', bold: true }
@@ -799,8 +799,8 @@ export class IngresoLicenciasComponent implements OnInit{
 
   historicopdf() {
     Swal.fire({
-        title: '¿Qué histórico desea ver?',
-        html: `
+      title: '¿Qué histórico desea ver?',
+      html: `
             <div style="display: flex; align-items: center; margin-bottom: 10px;">
                 <input type="radio" id="completo" name="historico" value="completo" style="margin-right: 5px;">
                 <label for="completo">Completo</label>
@@ -809,60 +809,166 @@ export class IngresoLicenciasComponent implements OnInit{
                 <input type="radio" id="anterior" name="historico" value="anterior" style="margin-right: 5px;">
                 <label for="anterior">Año anterior</label>
             </div>
-            <div style="display: flex; align-items: center;">
+            <div style="display: flex; align-items: center; margin-bottom: 10px;">
                 <input type="radio" id="accidentes" name="historico" value="accidentes" style="margin-right: 5px;">
                 <label for="accidentes">Histórico de Accidentes</label>
             </div>
+            <div style="display: flex; align-items: center;">
+                <input type="radio" id="actual" name="historico" value="actual" style="margin-right: 5px;">
+                <label for="actual">Histórico Actual</label>
+            </div>
         `,
-        showCancelButton: true,
-        confirmButtonText: 'Confirmar',
-        cancelButtonText: 'Cancelar',
-        customClass: {
-            popup: 'small-swal',
-            title: 'small-swal-title'
-        },
-        width: '450px',
-        padding: '1em',
-        preConfirm: () => {
-            const selectedValue = (document.querySelector('input[name="historico"]:checked') as HTMLInputElement)?.value;
-            if (!selectedValue) {
-                Swal.showValidationMessage('Por favor, seleccione una opción');
-                return false;
-            }
-            return selectedValue;
+      showCancelButton: true,
+      confirmButtonText: 'Confirmar',
+      cancelButtonText: 'Cancelar',
+      customClass: {
+        popup: 'small-swal',
+        title: 'small-swal-title'
+      },
+      width: '450px',
+      padding: '1em',
+      preConfirm: () => {
+        const selectedValue = (document.querySelector('input[name="historico"]:checked') as HTMLInputElement)?.value;
+        if (!selectedValue) {
+          Swal.showValidationMessage('Por favor, seleccione una opción');
+          return false;
         }
+        return selectedValue;
+      }
     }).then((result) => {
-        if (result.isConfirmed) {
-            const opcionSeleccionada = result.value;
+      if (result.isConfirmed) {
+        const opcionSeleccionada = result.value;
 
-            // Mostrar spinner de carga
-            Swal.fire({
-                title: 'Generando PDF...',
-                html: 'Por favor, espere mientras se genera el reporte.',
-                didOpen: () => {
-                    Swal.showLoading();
-                },
-                allowOutsideClick: false,
-                showConfirmButton: false
-            });
+        // Mostrar spinner de carga
+        Swal.fire({
+          title: 'Generando PDF...',
+          html: 'Por favor, espere mientras se genera el reporte.',
+          didOpen: () => {
+            Swal.showLoading();
+          },
+          allowOutsideClick: false,
+          showConfirmButton: false
+        });
 
-            // Lógica para la generación del PDF según la opción seleccionada
-            switch (opcionSeleccionada) {
-                case 'completo':
-                    this.generarHistoricoCompleto();
-                    break;
-                case 'anterior':
-                    this.generarHistoricoAnterior();
-                    break;
-                case 'accidentes':
-                    this.generarHistoricoAccidentes();
-                    break;
-            }
+        // Lógica para la generación del PDF según la opción seleccionada
+        switch (opcionSeleccionada) {
+          case 'completo':
+            this.generarHistoricoCompleto();
+            break;
+          case 'anterior':
+            this.generarHistoricoAnterior();
+            break;
+          case 'accidentes':
+            this.generarHistoricoAccidentes();
+            break;
+          case 'actual':
+            this.generarHistoricoActual();
+            break;
         }
+      }
     });
-}
+  }
 
-generarHistoricoCompleto() {
+  generarHistoricoActual() {
+    this.LicenciasService.getLicencias(this.srl_emp).subscribe(async response => {
+      const data = response.data;
+      const licencias = data.licencias;
+      const totalDias = licencias.reduce((acc: any, licencia: { total_days: any; }) => {
+        return acc + (licencia.total_days || 0); // Asegúrate de que total_dias tenga un valor
+      }, 0);
+      const periodos = [...new Set(licencias.map((licencia: any) => licencia.periodo))].join(", ");
+      const today = new Date();
+      const formattedDate = today.toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' });
+      const imageBase64 = await this.ImageToBaseService.convertImageToBase64('assets/IHE_LOGO.png');
+      const documentDefinition: any = {
+        content: [
+          {
+            columns: [
+              {
+                image: imageBase64, // Usar la imagen convertida
+                alignment: 'right',
+                width: 170, // Ajustar el ancho
+                height: 50, // Ajustar la altura
+              },
+              {
+                text: `Pachuca HGO. ${formattedDate}.`,
+                alignment: 'right',
+                style: 'subheader'
+              }
+            ]
+          },
+          {
+            text: 'Reporte de Licencias Médicas del periodo actual',
+            style: 'header',
+            alignment: 'center',
+            color: '#621132',
+            margin: [40, 20, 0, 10]
+          },
+          {
+            text: `\nNombre: ${data.nombre.trim()}\nR.F.C. ${data.rfc}\nFecha de ingreso: ${data.fecha_ingreso}`,
+            style: 'subheader',
+            margin: [0, 20, 0, 0]
+          },
+          { text: `Periodo: ${periodos}`, style: 'subheader', margin: [0, 20, 0, 10] },
+          {
+            table: {
+              headerRows: 1,
+              widths: ['auto', '*', 'auto', 'auto', '*'],
+              body: [
+                // Cabeceras de la tabla
+                [
+                  { text: 'Folio', bold: true, fillColor: '#eeeeee', alignment: 'center' },
+                  { text: 'Periodo de la Licencia', bold: true, fillColor: '#eeeeee', alignment: 'center' },
+                  { text: 'Días', bold: true, fillColor: '#eeeeee', alignment: 'center' },
+                  { text: 'Oficio', bold: true, fillColor: '#eeeeee', alignment: 'center' },
+                  { text: 'Fecha de captura', bold: true, fillColor: '#eeeeee', alignment: 'center' },
+                ],
+                // Agregar cada licencia correspondiente a este periodo
+                ...licencias.map((licencia: { folio: any, desde: any, hasta: any, total_days: any, oficio: any, fechaCaptura: any, apartir: any }) => [
+                  { text: licencia.folio, alignment: 'center' },
+                  { text: `${licencia.desde} - ${licencia.hasta}`, alignment: 'center' },
+                  { text: licencia.total_days, alignment: 'center' },
+                  { text: licencia.oficio, alignment: 'center' },
+                  { text: licencia.fechaCaptura, alignment: 'center' },
+                ])
+              ]
+            },
+            margin: [0, 10, 0, 30]
+          },
+          {
+            text: `Total de días del periodo: ${response.message}`,
+            alignment: 'right',
+            bold: true,
+            margin: [0, 20, 0, 20]
+          }
+
+        ],
+        styles: {
+          header: {
+            fontSize: 20,
+            bold: true,
+          },
+          subheader: {
+            fontSize: 14,
+            bold: true
+          }
+        }
+      };
+      // Generar y descargar el PDF
+      pdfMake.createPdf(documentDefinition).open();
+      Swal.close();
+    },
+      error => {
+        Swal.fire({
+          title: 'No exite historico Anterior',
+          text: error.error.message,
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
+      });
+  }
+
+  generarHistoricoCompleto() {
     this.LicenciasService.getHistorico(this.srl_emp).subscribe(async response => {
       const data = response.data;
       const licencias = data.licencias;
@@ -982,9 +1088,9 @@ generarHistoricoCompleto() {
         });  // Manejo de error
 
       });
-}
+  }
 
-generarHistoricoAnterior() {
+  generarHistoricoAnterior() {
     this.LicenciasService.getHistoricoAnte(this.srl_emp).subscribe(async response => {
       const data = response.data;
       const licencias = data.licencias;
@@ -1012,7 +1118,7 @@ generarHistoricoAnterior() {
             ]
           },
           {
-            text: 'Reporte de Licencias Médicas/Accidentes de Trabajo del periodo anterior',
+            text: 'Reporte de Licencias Médicas del periodo anterior',
             style: 'header',
             alignment: 'center',
             color: '#621132',
@@ -1080,9 +1186,9 @@ generarHistoricoAnterior() {
           confirmButtonText: 'OK'
         });
       });
-}
+  }
 
-generarHistoricoAccidentes() {
+  generarHistoricoAccidentes() {
     this.LicenciasService.getHistoricoAccidentes(this.srl_emp).subscribe(async response => {
       const data = response.data;
       const licencias = data.licencias;
@@ -1202,7 +1308,7 @@ generarHistoricoAccidentes() {
           confirmButtonText: 'OK'
         });
       });
-}
+  }
 
 
 
