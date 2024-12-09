@@ -13,8 +13,8 @@ import { OficioPdf } from 'src/app/shared/interfaces/utils';
 })
 export class OficioLicenciasComponent {
   searchTerm: string = '';
-  headers = ['No. de Oficio', 'Nombre', 'Rango de fechas', 'Total de Licencias', 'Generar PDF'];
-  displayedColumns = ['oficio', 'nombre', 'rango_fechas', 'total_folios'];
+  headers = ['No. de Oficio','Año', 'Nombre', 'Rango de fechas', 'Total de Licencias', 'Generar PDF'];
+  displayedColumns = ['oficio', 'date', 'nombre', 'rango_fechas','total_folios' ];
   data = [];
 
   constructor(
