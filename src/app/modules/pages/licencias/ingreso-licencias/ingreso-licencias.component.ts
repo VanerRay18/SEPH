@@ -260,7 +260,7 @@ export class IngresoLicenciasComponent implements OnInit {
               }).then(editResult => {
                 if (editResult.isConfirmed) {
                   // Pasa los datos a la función onEdit
-                  this.onEdit(response.data);
+                  this.onEdit2(response.data);
                 }
               });
             }
@@ -282,12 +282,12 @@ export class IngresoLicenciasComponent implements OnInit {
 
         <div style="display: flex; flex-direction: column; text-align: left;">
           <label style="margin-left:33px;" for="fecha_inicio">Fecha Inicio</label>
-          <input id="fecha_inicioId" type="date" class="swal2-input" value="${this.formatDate(data.desde)}" style="padding: 0px; font-size: 16px;">
+          <input id="fecha_inicioId" type="date" class="swal2-input" value="${data.desde}" style="padding: 0px; font-size: 16px;">
         </div>
 
         <div style="display: flex; flex-direction: column; text-align: left;">
           <label style="margin-left:33px;" for="fecha_termino">Fecha Término</label>
-          <input id="fecha_terminoId" type="date" class="swal2-input" value="${this.formatDate(data.hasta)}" style="padding: 0px; font-size: 16px;">
+          <input id="fecha_terminoId" type="date" class="swal2-input" value="${data.hasta}" style="padding: 0px; font-size: 16px;">
         </div>
 
         <div style="display: flex; flex-direction: column; text-align: left;">
@@ -310,7 +310,7 @@ export class IngresoLicenciasComponent implements OnInit {
         const fecha_inicio = ((document.getElementById('fecha_inicioId') as HTMLInputElement).value) + 'T00:00:00';
         const fecha_termino = ((document.getElementById('fecha_terminoId') as HTMLInputElement).value) + 'T00:00:00';
         const formato = parseInt((document.querySelector('input[name="formato"]:checked') as HTMLInputElement).value);
-
+        const accidente = 0;
 
         // Validación de campos
         if (!folio || !fecha_inicio || !fecha_termino) {
@@ -318,7 +318,12 @@ export class IngresoLicenciasComponent implements OnInit {
           return false;
         }
 
-        return { folio, fecha_inicio, fecha_termino, formato };
+        return {
+          folio,
+          fecha_inicio,
+          fecha_termino,
+          formato,
+          accidente };
       }
     }).then((result) => {
       if (result.isConfirmed) {

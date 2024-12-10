@@ -149,6 +149,12 @@ export class LicenciasService {
     );
   }
 
+  addOficios(data:any): Observable<ApiResponse> { //agregar una nueva licencia
+    let headers = new HttpHeaders()
+    return this.http.post<ApiResponse>(`${environment.baseService}${'/licMedicas/exel'}`,data,
+      {headers}
+    );
+  }
 
 
 }

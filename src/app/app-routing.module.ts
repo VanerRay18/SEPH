@@ -11,12 +11,12 @@ import { UserCRUDComponent } from './modules/pages/administration/user-crud/user
 import { RolesCRUDComponent } from './modules/pages/administration/roles-crud/roles-crud.component';
 import { ModulesCRUDComponent } from './modules/pages/administration/modules-crud/modules-crud.component';
 import { EndopointCRUDComponent } from './modules/pages/administration/endopoint-crud/endopoint-crud.component';
-
+import { TestComponent } from './modules/pages/extras/test/test.component';
 
 
 const routes: Routes = [
   {path:'',redirectTo:'/login',pathMatch:'full'},
-  { path: 'Test', component: EndopointCRUDComponent },
+  { path: 'Test', component: TestComponent },
   {path: 'login',
     component: LoginComponent,
   },
