@@ -587,11 +587,11 @@ export class IngresoLicenciasComponent implements OnInit {
             // Llama al servicio para crear un oficio
             this.LicenciasService.patchLicenciasOficio(licenciasid, userId, this.srl_emp).subscribe(
               (response: { data: { oficio: string } }) => { // Asegúrate de definir el tipo de respuesta
-                const oficio = response.data.oficio; // Accede al 'oficio' dentro de 'data'
+                const oficioId = response.data.oficio; // Accede al 'oficio' dentro de 'data'
 
-                if (oficio) {
+                if (oficioId) {
                   this.buscar(this.srl_emp);
-                  this.onPdf(oficio); // Llama a onPdf con el oficio
+                  this.onPdf(oficioId); // Llama a onPdf con el oficio
                 }
               },
               error => {
@@ -665,11 +665,11 @@ export class IngresoLicenciasComponent implements OnInit {
             // Llama al servicio para crear un oficio
             this.LicenciasService.patchLicenciasOficio(licenciasid, userId, this.srl_emp).subscribe(
               (response: { data: { oficio: string } }) => { // Asegúrate de definir el tipo de respuesta
-                const oficio = response.data.oficio; // Accede al 'oficio' dentro de 'data'
+                const oficioId = response.data.oficio; // Accede al 'oficio' dentro de 'data'
 
-                if (oficio) {
+                if (oficioId) {
                   this.buscar(this.srl_emp);
-                  this.onPdf(oficio); // Llama a onPdf con el oficio
+                  this.onPdf(oficioId); // Llama a onPdf con el oficio
                 }
               },
               error => {
@@ -697,9 +697,9 @@ export class IngresoLicenciasComponent implements OnInit {
 
 
 
-  onPdf(oficio: any) {
-    console.log(oficio);
-    this.LicenciasService.getLicenciasOficioPdf(oficio).subscribe(async response => {
+  onPdf(oficioId: any) {
+    console.log(oficioId);
+    this.LicenciasService.getLicenciasOficioPdf(oficioId).subscribe(async response => {
       const data = response.data;
       const claves = data.claves || []; // Asegura que 'claves' esté definido
       const licencias = data.licencias || []; // Asegura que 'licencias' esté definido
@@ -779,7 +779,7 @@ export class IngresoLicenciasComponent implements OnInit {
           },
           {
             text: 'Atentamente',
-            margin: [0, 20, 0, 90],
+            margin: [0, 20, 0, 60],
             alignment: 'center'
           },
           {
