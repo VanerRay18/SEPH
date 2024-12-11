@@ -59,9 +59,9 @@ export class OficioLicenciasComponent {
     });
   }
 
-  onPdf(oficio: any) {
-    console.log(oficio);
-    this.LicenciasService.getLicenciasOficioPdf(oficio).subscribe(async response => {
+  onPdf(oficioId: any) {
+    console.log(oficioId);
+    this.LicenciasService.getLicenciasOficioPdf(oficioId).subscribe(async response => {
       const data = response.data;
       const claves = data.claves || []; // Asegura que 'claves' esté definido
       const licencias = data.licencias || []; // Asegura que 'licencias' esté definido

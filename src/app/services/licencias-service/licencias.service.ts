@@ -81,8 +81,8 @@ export class LicenciasService {
     );
   }
 
-  getLicenciasOficioPdf(oficio: string): Observable<ApiResponse> { //Pdf de oficio
-    let headers = new HttpHeaders({'oficio': oficio})
+  getLicenciasOficioPdf(oficioId: string): Observable<ApiResponse> { //Pdf de oficio
+    let headers = new HttpHeaders({'oficio': oficioId})
     return this.http.get<ApiResponse>(`${environment.baseService}${'/licMedicas/oficioPDF'}`,
       {headers}
     );
