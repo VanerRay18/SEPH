@@ -141,7 +141,7 @@ export class OficioLicenciasComponent {
           },
           {
             text: 'Atentamente',
-            margin: [0, 20, 0, 90],
+            margin: [0, 20, 0, 60],
             alignment: 'center'
           },
           {
