@@ -9,6 +9,7 @@ export interface Module {
 }
 
 export interface Oficio {
+  oficioId: number;
   oficio: string;
   nombre: string;
   fecha_primera_licencia: string;
