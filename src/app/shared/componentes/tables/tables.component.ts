@@ -28,6 +28,10 @@ export class TablesComponent implements OnChanges{
 @Output() Pdf: EventEmitter<any> = new EventEmitter();
 @Input() searchTerm: string = '';  // Término de búsqueda, opcional
 
+ // Propiedades para ordenamiento
+ sortedColumn: string = '';
+ sortDirection: 'asc' | 'desc' = 'asc';
+
 // Propiedades locales
 paginatedData: any[] = [];
 currentPage: number = 1;
@@ -46,6 +50,7 @@ private updatePagination(): void {
   this.totalPages = Math.ceil(this.data.length / this.itemsPerPage);
 }
 
+
 onPageChange(page: number): void {
   this.currentPage = page;
   this.updatePagination();
@@ -63,5 +68,32 @@ onDelete(row: any) {
 onPDF(row: any) {
   this.Pdf.emit(row); // Emitir el evento al componente padre
 }
+
+sortData(column: string): void {
+  if (this.sortedColumn === column) {
+    this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+  } else {
+    this.sortedColumn = column;
+    this.sortDirection = 'asc';
+  }
+
+  // Ordenar los datos
+  this.data.sort((a, b) => {
+    const valueA = a[column];
+    const valueB = b[column];
+
+    if (valueA < valueB) {
+      return this.sortDirection === 'asc' ? -1 : 1;
+    }
+    if (valueA > valueB) {
+      return this.sortDirection === 'asc' ? 1 : -1;
+    }
+    return 0;
+  });
+
+  // Después de ordenar los datos, actualizamos la paginación
+  this.updatePagination();
+}
+
 
 }

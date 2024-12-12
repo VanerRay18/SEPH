@@ -3,24 +3,37 @@
     <table class="table">
       <thead>
         <tr class="table-light">
-          <th *ngFor="let header of headers">{{ header }}</th>
+          <th *ngFor="let header of headers; let i = index"
+            (click)="sortData(displayedColums[i])" class="sortable-header">
+            {{ header }}
+            <span *ngIf="sortedColumn === displayedColums[i]">
+              <i *ngIf="sortDirection === 'asc'"
+                class="fa-solid fa-arrow-up"></i>
+              <i *ngIf="sortDirection === 'desc'"
+                class="fa-solid fa-arrow-down"></i>
+            </span>
+          </th>
         </tr>
       </thead>
       <tbody class="table-body" [ngStyle]="{'overflow-y': 'auto'}">
-        <tr *ngFor="let row of paginatedData | filter: searchTerm : displayedColums">
+        <tr
+          *ngFor="let row of paginatedData | filter: searchTerm : displayedColums">
           <!-- Ciclo para mostrar cada columna -->
           <td *ngFor="let key of displayedColums">
             <!-- Si la columna es 'rango_fechas', se muestra el valor y el ícono solo si accidente == 1 -->
             <ng-container *ngIf="key === 'rango_fechas'">
               {{ row[key] }}
               <!-- Mostrar ícono si accidente == 1 -->
-              <i *ngIf="row.accidente == 1" class="fa-solid fa-triangle-exclamation" style="color: rgb(255, 145, 0);"></i>
+              <i *ngIf="row.accidente == 1"
+                class="fa-solid fa-triangle-exclamation"
+                style="color: rgb(255, 145, 0);"></i>
             </ng-container>
 
             <ng-container *ngIf="key === 'folio'">
-              <i *ngIf="row.nueva == 1 && (row.observaciones === 'SIN SUELDO' || row.observaciones === 'MEDIO SUELDO')"
-                 class="fa-solid fa-circle"
-                 style="color: rgb(255, 145, 0); font-size: 10px;"></i>
+              <i
+                *ngIf="row.nueva == 1 && (row.observaciones === 'SIN SUELDO' || row.observaciones === 'MEDIO SUELDO')"
+                class="fa-solid fa-circle"
+                style="color: rgb(255, 145, 0); font-size: 10px;"></i>
             </ng-container>
 
             <!-- Para las demás columnas, mostrar normalmente -->
@@ -34,7 +47,8 @@
             <button class="edit" *ngIf="showActionsEdit" (click)="onEdit(row)">
               <i class="fa-solid fa-pen-to-square"></i>
             </button>
-            <button class="delete" *ngIf="showActionsDeleted" (click)="onDelete(row)">
+            <button class="delete" *ngIf="showActionsDeleted"
+              (click)="onDelete(row)">
               <i class="fa-solid fa-trash"></i>
             </button>
             <button class="pdf" *ngIf="showActionsPdf" (click)="onPDF(row)">
@@ -43,11 +57,22 @@
           </td>
         </tr>
       </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="headers.length">
+            <div class="pagination-controls">
+              <button (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1">Anterior</button>
+              <span>Página {{ currentPage }}</span>
+              <button (click)="onPageChange(currentPage + 1)" [disabled]="currentPage * itemsPerPage >= data.length">Siguiente</button>
+            </div>
+          </td>
+        </tr>
+      </tfoot>
     </table>
   </div>
 
   <!-- Paginación -->
-  <div class="pagination">
+  <!-- <div class="pagination">
     <button
       [disabled]="currentPage === 1"
       (click)="onPageChange(currentPage - 1)">
@@ -60,8 +85,7 @@
       Siguiente
     </button>
   </div>
-</div>
-
+</div> -->
 
 <!-- Ejemplo de cuando no no quiera usar la columna de acciones -->
 <!-- <app-reusable-table  -->

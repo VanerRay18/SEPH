@@ -92,3 +92,20 @@ tbody.table-body {
   display: flex;
   justify-content: space-between;
 }
+
+.sortable-header {
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+}
+
+.sortable-header i {
+  margin-left: 5px;
+}
+
+tfoot {
+  position: sticky;
+  bottom: 0;
+  background-color: white; /* Color de fondo para el pie de página */
+  z-index: 2; /* Asegura que el pie de página esté encima del cuerpo */
+}
