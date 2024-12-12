@@ -9,6 +9,7 @@ import { UserCRUDComponent } from './user-crud/user-crud.component';
 import { RolesCRUDComponent } from './roles-crud/roles-crud.component';
 import { ModulesCRUDComponent } from './modules-crud/modules-crud.component';
 import { EndopointCRUDComponent } from './endopoint-crud/endopoint-crud.component';
+import { LogsAdminComponent } from './logs-admin/logs-admin.component';
 
 const routes: Routes = [
   {path: 'Users',component:UsersComponent},
@@ -19,7 +20,8 @@ const routes: Routes = [
   {path: 'User-Table',component:UserCRUDComponent},
   {path: 'Roles-Table',component:RolesCRUDComponent},
   {path: 'Modules-Table',component:ModulesCRUDComponent},
-  {path: 'EndPoint-Table',component:EndopointCRUDComponent}
+  {path: 'EndPoint-Table',component:EndopointCRUDComponent},
+  {path: 'LogsAdmin',component:LogsAdminComponent}
   ];
 
 

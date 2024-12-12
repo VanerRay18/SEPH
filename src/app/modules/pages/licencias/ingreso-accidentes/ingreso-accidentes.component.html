@@ -20,11 +20,13 @@
       </div>
 
       <div class="col-auto mt-4">
-      
+
         <button type="submit" class="guardar btn   btn-success">Guardar</button>
       </div>
     </div>
   </form>
+
+
 
   <app-tables class="tabla1" *ngIf="table == true"
   [headers]="headers2"
@@ -34,6 +36,7 @@
     (edit)="onEdit2($event)"
     [showActionsDeleted]="eliminar"
     [maxHeight]="'400px'"
+    [itemsPerPage]="5"
     (delete)="onDelete($event)"
      ></app-tables>
 
@@ -46,8 +49,10 @@
     (edit)="onEdit($event)"
     [showActionsDeleted]="eliminar"
     [maxHeight]="'400px'"
+    [itemsPerPage]="10"
     (delete)="onDelete($event)"
      ></app-tables>
 
      <h3 *ngIf="table == false" class="ms-3">El usuario no cuenta con accidentes de trabajo </h3>
+
 </div>

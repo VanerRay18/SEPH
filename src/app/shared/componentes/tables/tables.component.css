@@ -17,16 +17,12 @@ button {
   color: #621132;
 }
 
-.table-responsive{
-  overflow-y: auto;
 
-}
 
 table {
   font-size: 14px;
   border-collapse: separate; /* Mantener 'separate' para bordes redondeados */
   border-spacing: 0; /* Sin espacio entre celdas */
-
   background-color: #fff; /* Fondo blanco de la tabla */
 }
 
@@ -73,3 +69,26 @@ table tr:last-child td:last-child {
 }
 
 
+
+.table-responsive {
+  max-height: inherit;
+  overflow-y: auto;
+}
+
+thead {
+  position: sticky;
+  top: 0;
+  background-color: white;
+  z-index: 2;
+}
+
+tbody.table-body {
+
+  overflow-y: auto;
+}
+
+.pagination {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+}

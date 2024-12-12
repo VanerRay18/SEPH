@@ -1,11 +1,11 @@
-import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 
 @Component({
   selector: 'app-tables',
   templateUrl: './tables.component.html',
   styleUrls: ['./tables.component.css']
 })
-export class TablesComponent {
+export class TablesComponent implements OnChanges{
 
 // Input para las cabeceras de la tabla
 @Input() headers: string []= [];
@@ -16,7 +16,7 @@ export class TablesComponent {
 // Input para mostrar u ocultar la columna de acciones
 @Input() showActions: boolean = false;
 
-
+@Input() itemsPerPage: number = 20; // Cantidad de elementos por página
 @Input() showActionsEdit: boolean = false;
 @Input() showActionsDeleted: boolean = false;
 @Input() showActionsPdf: boolean = false;
@@ -28,13 +28,28 @@ export class TablesComponent {
 @Output() Pdf: EventEmitter<any> = new EventEmitter();
 @Input() searchTerm: string = '';  // Término de búsqueda, opcional
 
- // Propiedad para activar el scroll
- enableScroll: boolean = false;
+// Propiedades locales
+paginatedData: any[] = [];
+currentPage: number = 1;
+totalPages: number = 1;
 
- ngOnChanges() {
-   this.enableScroll = this.data.length > 3;
- }
+ngOnChanges(changes: SimpleChanges): void {
+  if (changes['data'] || changes['itemsPerPage']) {
+    this.updatePagination();
+  }
+}
 
+private updatePagination(): void {
+  const start = (this.currentPage - 1) * this.itemsPerPage;
+  const end = start + this.itemsPerPage;
+  this.paginatedData = this.data.slice(start, end);
+  this.totalPages = Math.ceil(this.data.length / this.itemsPerPage);
+}
+
+onPageChange(page: number): void {
+  this.currentPage = page;
+  this.updatePagination();
+}
 
 onEdit(row: any) {
 

@@ -1,54 +1,73 @@
-<div class="table-responsive table-sm"  [ngStyle]="{'max-height': maxHeight}">
-  <table class="table">
-    <thead>
-      <tr class="table-light">
-        <th *ngFor="let header of headers">{{header}}</th>
-      </tr>
-    </thead>
-    <tbody class="table-responsive"  style=" overflow-y: auto;">
-      <tr *ngFor="let row of data | filter: searchTerm : displayedColums">
+<div class="table-container">
+  <div class="table-responsive table-sm" [ngStyle]="{'max-height': maxHeight}">
+    <table class="table">
+      <thead>
+        <tr class="table-light">
+          <th *ngFor="let header of headers">{{ header }}</th>
+        </tr>
+      </thead>
+      <tbody class="table-body" [ngStyle]="{'overflow-y': 'auto'}">
+        <tr *ngFor="let row of paginatedData | filter: searchTerm : displayedColums">
+          <!-- Ciclo para mostrar cada columna -->
+          <td *ngFor="let key of displayedColums">
+            <!-- Si la columna es 'rango_fechas', se muestra el valor y el ícono solo si accidente == 1 -->
+            <ng-container *ngIf="key === 'rango_fechas'">
+              {{ row[key] }}
+              <!-- Mostrar ícono si accidente == 1 -->
+              <i *ngIf="row.accidente == 1" class="fa-solid fa-triangle-exclamation" style="color: rgb(255, 145, 0);"></i>
+            </ng-container>
 
-        <!-- Ciclo para mostrar cada columna -->
-        <td *ngFor="let key of displayedColums">
-          <!-- Si la columna es 'rango_fechas', se muestra el valor y el ícono solo si accidente == 1 -->
-          <ng-container *ngIf="key === 'rango_fechas'">
-            {{ row[key] }}
-            <!-- Mostrar ícono si accidente == 1 -->
-            <i *ngIf="row.accidente == 1" class="fa-solid fa-triangle-exclamation" style="color: rgb(255, 145, 0);"></i>
+            <ng-container *ngIf="key === 'folio'">
+              <i *ngIf="row.nueva == 1 && (row.observaciones === 'SIN SUELDO' || row.observaciones === 'MEDIO SUELDO')"
+                 class="fa-solid fa-circle"
+                 style="color: rgb(255, 145, 0); font-size: 10px;"></i>
+            </ng-container>
 
-          </ng-container>
+            <!-- Para las demás columnas, mostrar normalmente -->
+            <ng-container *ngIf="key !== 'rango_fechas'">
+              {{ row[key] }}
+            </ng-container>
+          </td>
 
-          <ng-container *ngIf="key === 'folio'">
-            <i *ngIf="row.nueva == 1 && (row.observaciones === 'SIN SUELDO' || row.observaciones === 'MEDIO SUELDO')" class="fa-solid fa-circle" style="color: rgb(255, 145, 0); font-size: 10px;"></i>
-          </ng-container>
+          <!-- Acciones de editar, eliminar, PDF -->
+          <td>
+            <button class="edit" *ngIf="showActionsEdit" (click)="onEdit(row)">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+            <button class="delete" *ngIf="showActionsDeleted" (click)="onDelete(row)">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+            <button class="pdf" *ngIf="showActionsPdf" (click)="onPDF(row)">
+              <i class="fa-solid fa-file-pdf"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-          <!-- Para las demás columnas, mostrar normalmente -->
-          <ng-container *ngIf="key !== 'rango_fechas'">
-            {{ row[key] }}
-          </ng-container>
-        </td>
-
-        <!-- Acciones de editar, eliminar, PDF -->
-        <td>
-          <button class="edit" *ngIf="showActionsEdit" (click)="onEdit(row)">
-            <i class="fa-solid fa-pen-to-square"></i>
-          </button>
-          <button class="delete" *ngIf="showActionsDeleted" (click)="onDelete(row)">
-            <i class="fa-solid fa-trash"></i>
-          </button>
-          <button class="pdf" *ngIf="showActionsPdf" (click)="onPDF(row)">
-            <i class="fa-solid fa-file-pdf"></i>
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <!-- Paginación -->
+  <div class="pagination">
+    <button
+      [disabled]="currentPage === 1"
+      (click)="onPageChange(currentPage - 1)">
+      Anterior
+    </button>
+    <span>Página {{ currentPage }} de {{ totalPages }}</span>
+    <button
+      [disabled]="currentPage === totalPages"
+      (click)="onPageChange(currentPage + 1)">
+      Siguiente
+    </button>
+  </div>
 </div>
+
 
 <!-- Ejemplo de cuando no no quiera usar la columna de acciones -->
 <!-- <app-reusable-table  -->
 <!-- [headers]="headers" -->
 <!-- [data]="data" -->
+<!-- [itemsPerPage]="10" -->
 <!-- [displayedColumns]="displayedColumns" -->
 <!-- [showActions]="false">  --> <!-- Aquí omites las acciones -->
 <!-- </app-reusable-table> -->

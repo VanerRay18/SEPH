@@ -128,6 +128,7 @@
             [showActionsDeleted]="eliminar"
             (delete)="onDelete($event)"
             [maxHeight]="'400px'"
+            [itemsPerPage]="10"
             [showActionsPdf]=false>
           </app-tables>
           <h5 *ngIf="table == true">Total de dias usados en licencias: {{ Total_lic }}</h5>
