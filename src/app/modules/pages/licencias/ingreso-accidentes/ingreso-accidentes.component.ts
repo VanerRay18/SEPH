@@ -22,12 +22,12 @@ export class IngresoAccidentesComponent {
   headers2 = ['Desde', 'Hasta', 'Días', 'Acciones'];
   displayedColumns2 = ['desde', 'hasta', 'total_dias'];
   data2 = [];
-  table: any = true;
+  table: any = false;
   srl_emp: any;
   eliminar: boolean = false;
   agregar: boolean = false;
   modificar: boolean = false;
-  activeTab: string = 'licencias'; // Pestaña activa por defecto
+
 
   tabs = [
     { id: 'licencias', title: 'Licencias Médicas', icon: 'fas fa-file-medical' },
@@ -84,10 +84,6 @@ export class IngresoAccidentesComponent {
       });
   }
 
-
-  setActiveTab(tabId: string) {
-    this.activeTab = tabId; // Cambia la pestaña activa
-  }
 
   onEdit(data: any) {
     //AAGP790513HH4

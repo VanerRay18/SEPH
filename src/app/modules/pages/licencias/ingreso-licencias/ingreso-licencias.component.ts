@@ -115,7 +115,7 @@ export class IngresoLicenciasComponent implements OnInit {
     this.currentDate = this.getCurrentDate(this.fecha_ingreso).date; // Usa `getCurrentDate` para formatear la fecha
     console.log(this.srl_emp)
     this.LicenciasService.getLicencias(srl_emp).subscribe((response: ApiResponse) => {
-      console.log("Respuesta de la API:", response);
+      // console.log("Respuesta de la API:", response);
       this.table = true;
 
       // if (response.data && response.data.fecha_ingreso) {

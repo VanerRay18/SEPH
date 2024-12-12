@@ -1,11 +1,12 @@
 <div class="card">
   <app-tables *ngIf="table == true"
-  [headers]="headers"
-  [data]="data"
-  [displayedColums]="displayedColumns"
-  [showActionsEdit]=false
-  [showActionsDeleted]=false
-  [showActionsPdf]=false>
-</app-tables>
-<h3 *ngIf="table == false" class="ms-3">El usuario no cuenta con acuerdos presidenciales </h3>
+    [headers]="headers"
+    [data]="data"
+    [displayedColums]="displayedColumns"
+    [showActionsEdit]=false
+    [showActionsDeleted]=false
+    [showActionsPdf]=false>
+  </app-tables>
+  <h3 *ngIf="table == false" class="ms-3">El usuario no cuenta con acuerdos
+    presidenciales </h3>
 </div>
