@@ -541,8 +541,7 @@ export class IngresoLicenciasComponent implements OnInit {
 
   submitOficiosAnte() {
     let idsArray: number[] = []; // Array donde se guardarán los ids
-    let apartirLic: string[]=[];
-    let observaciones: number[] = [];
+
 
     // Llamar al servicio para obtener las licencias nuevamente usando srl_emp
     this.LicenciasService.getHistoricoAnte(this.srl_emp).subscribe((response: ApiResponse) => {
@@ -568,8 +567,6 @@ export class IngresoLicenciasComponent implements OnInit {
         response.data.licencias.forEach((item: LicMedica) => {
           if (item.nueva === "1") {
             idsArray.push(item.id); // Agrega item.id al array si nueva es "1"
-            apartirLic.push(item.apartir);
-            observaciones.push(item.observaciones);
           }
         });
 
@@ -577,12 +574,6 @@ export class IngresoLicenciasComponent implements OnInit {
           licenciasId: idsArray
         };
 
-        const apartir = apartirLic.map(fecha => new Date(fecha).toISOString()).join(',');
-
-
-        const status = {
-          observaciones: observaciones
-        };
 
         const userId = localStorage.getItem('userId')!; // Asegúrate de obtener el userId correcto
         Swal.fire({
@@ -596,7 +587,7 @@ export class IngresoLicenciasComponent implements OnInit {
         }).then((result) => {
           if (result.isConfirmed) {
             // Llama al servicio para crear un oficio
-            this.LicenciasService.patchLicenciasOficio(licenciasid, userId, this.srl_emp, apartir).subscribe(
+            this.LicenciasService.patchLicenciasOficio(licenciasid, userId, this.srl_emp).subscribe(
               (response: { data: { oficio: string } }) => { // Asegúrate de definir el tipo de respuesta
                 const oficioId = response.data.oficio; // Accede al 'oficio' dentro de 'data'
 
@@ -630,8 +621,7 @@ export class IngresoLicenciasComponent implements OnInit {
 
   submitOficios() {
     let idsArray: number[] = []; // Array donde se guardarán los ids
-    let apartirLic: string[]=[];
-    let observaciones: number[] = [];
+
 
     // Llamar al servicio para obtener las licencias nuevamente usando srl_emp
     this.LicenciasService.getLicencias(this.srl_emp).subscribe((response: ApiResponse) => {
@@ -657,21 +647,12 @@ export class IngresoLicenciasComponent implements OnInit {
         response.data.licencias.forEach((item: LicMedica) => {
           if (item.nueva === "1") {
             idsArray.push(item.id); // Agrega item.id al array si nueva es "1"
-            apartirLic.push(item.apartir);
-            observaciones.push(item.observaciones);
 
           }
         });
 
         const licenciasid = {
           licenciasId: idsArray
-        };
-
-        const apartir = apartirLic.map(fecha => new Date(fecha).toISOString()).join(',');
-
-
-        const status = {
-          observaciones: observaciones
         };
 
 
@@ -687,7 +668,7 @@ export class IngresoLicenciasComponent implements OnInit {
         }).then((result) => {
           if (result.isConfirmed) {
             // Llama al servicio para crear un oficio
-            this.LicenciasService.patchLicenciasOficio(licenciasid, userId, this.srl_emp, apartir).subscribe(
+            this.LicenciasService.patchLicenciasOficio(licenciasid, userId, this.srl_emp).subscribe(
               (response: { data: { oficio: string } }) => { // Asegúrate de definir el tipo de respuesta
                 const oficioId = response.data.oficio; // Accede al 'oficio' dentro de 'data'
 
