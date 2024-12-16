@@ -15,6 +15,8 @@ export interface Oficio {
   fecha_primera_licencia: string;
   fecha_ultima_licencia: string;
   total_folios: number;
+  apartir: string;
+  status : string;
 }
 
 
@@ -35,6 +37,7 @@ desde:any,
 hasta:any,
 total_days:any,
 nueva:any,
+apartir:any,
 accidente:any,
 observaciones: any,
 fechaCaptura: any,
