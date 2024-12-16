@@ -46,19 +46,19 @@ export class TestComponent {
 
   // Método para enviar los datos al backend
   enviarAlBackend(data: any): void {
-// this.LicenciasService.addOficios(data).subscribe(
-//   response => {
-// console.log(response.data);
-//     Swal.fire({
-//       title: '¡Éxito!',
-//       text: 'Se editó la licencia correctamente.',
-//       icon: 'success',
-//       showConfirmButton: false,
-//       timer: 1500,
-//       timerProgressBar: true
-//     });
-//   }
-// );
+this.LicenciasService.addOficios(data).subscribe(
+  response => {
+console.log(response.data);
+    Swal.fire({
+      title: '¡Éxito!',
+      text: 'Se editó la licencia correctamente.',
+      icon: 'success',
+      showConfirmButton: false,
+      timer: 1500,
+      timerProgressBar: true
+    });
+  }
+);
 
 
     console.log('Enviando datos al backend:', data);

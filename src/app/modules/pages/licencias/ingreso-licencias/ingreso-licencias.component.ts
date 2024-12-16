@@ -549,7 +549,7 @@ export class IngresoLicenciasComponent implements OnInit {
       if (response.data && response.data.licencias && response.data.licencias.length > 0) {
         // Verifica si alguna licencia tiene las observaciones "SIN SUELDO" o "MEDIO SUELDO"
         const canSendToOficio = response.data.licencias.some((item: LicMedica) =>
-          item.observaciones === "2" || item.observaciones === "1"
+          item.observaciones === 2 || item.observaciones === 1
         );
 
         if (!canSendToOficio) {
@@ -621,7 +621,9 @@ export class IngresoLicenciasComponent implements OnInit {
 
   submitOficios() {
     let idsArray: number[] = []; // Array donde se guardarán los ids
-
+    let observacionesLic: number[] = [];
+    let apartirLic: any[] = []; 
+    let licenciasid: any[] = [];
 
     // Llamar al servicio para obtener las licencias nuevamente usando srl_emp
     this.LicenciasService.getLicencias(this.srl_emp).subscribe((response: ApiResponse) => {
@@ -629,7 +631,7 @@ export class IngresoLicenciasComponent implements OnInit {
       if (response.data && response.data.licencias && response.data.licencias.length > 0) {
         // Verifica si alguna licencia tiene las observaciones "SIN SUELDO" o "MEDIO SUELDO"
         const canSendToOficio = response.data.licencias.some((item: LicMedica) =>
-          item.observaciones === "2" || item.observaciones === "1"
+          item.observaciones === 2 || item.observaciones === 1
         );
 
         if (!canSendToOficio) {
@@ -646,14 +648,16 @@ export class IngresoLicenciasComponent implements OnInit {
         // Si cumple la condición, continuar con el procesamiento de los IDs
         response.data.licencias.forEach((item: LicMedica) => {
           if (item.nueva === "1") {
-            idsArray.push(item.id); // Agrega item.id al array si nueva es "1"
-
+            const licenciasid2 = {
+              licenciaId: item.id,
+              apartir: item.apartir == ""?"--":item.apartir,
+              observaciones: item.observaciones
+            };
+            licenciasid.push(licenciasid2);
           }
         });
 
-        const licenciasid = {
-          licenciasId: idsArray
-        };
+    
 
 
         const userId = localStorage.getItem('userId')!; // Asegúrate de obtener el userId correcto
@@ -668,9 +672,11 @@ export class IngresoLicenciasComponent implements OnInit {
         }).then((result) => {
           if (result.isConfirmed) {
             // Llama al servicio para crear un oficio
-            this.LicenciasService.patchLicenciasOficio(licenciasid, userId, this.srl_emp).subscribe(
+            this.LicenciasService.patchLicenciasOficio(licenciasid, userId, this.srl_emp).subscribe(             
               (response: { data: { oficio: string } }) => { // Asegúrate de definir el tipo de respuesta
+                console.log(response.data)
                 const oficioId = response.data.oficio; // Accede al 'oficio' dentro de 'data'
+           
 
                 if (oficioId) {
                   this.buscar(this.srl_emp);
