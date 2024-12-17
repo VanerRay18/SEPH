@@ -195,3 +195,9 @@ ng-container {
 .botones:hover {
   background-color: #d4d4d4;
 }
+
+.btn-naranja {
+  background-color: orange !important; /* Cambia el color de fondo */
+  border-color: orange !important;    /* Cambia el borde */
+  color: white !important;            /* Cambia el color del texto */
+}

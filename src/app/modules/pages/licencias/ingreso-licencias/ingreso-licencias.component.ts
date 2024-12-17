@@ -32,6 +32,8 @@ export class IngresoLicenciasComponent implements OnInit {
   fecha_ingreso: any;
   diasRegistrados: number = 0;
   Total_lic: any | null;
+  isReadyToSend: boolean = false; // Variable para cambiar el color del botón
+
 
 
   tabs = [
@@ -54,6 +56,8 @@ export class IngresoLicenciasComponent implements OnInit {
 
   ngOnInit() {
 
+    
+
     this.PermisosUserService.getPermisosSpring(this.PermisosUserService.getPermisos().Licencias).subscribe((response: ApiResponse) => {
       this.eliminar = response.data.eliminar
       this.modificar = response.data.editar
@@ -68,10 +72,12 @@ export class IngresoLicenciasComponent implements OnInit {
       if (value.mostrar == true) {
         this.srl_emp = value.srl_emp;
         this.buscar(this.srl_emp);
+        this.verificarLicencias();
       }
 
     });
     this.HOLA()
+    this.verificarLicencias();
   }
 
   HOLA() {
@@ -134,6 +140,7 @@ export class IngresoLicenciasComponent implements OnInit {
           hasta: this.formatDate(item.hasta),
           rango_fechas: `${item.total_days}  ${item.accidente === 1 ? '-' : ''}`
         }));
+        this.bola = false;
         this.data.forEach(response=>{
           if(!this.bola){
             this.bola = (Number(response['observaciones']) >= 1 && Number(response['nueva']) === 1);
@@ -194,6 +201,7 @@ export class IngresoLicenciasComponent implements OnInit {
             response => {
               this.buscar(this.srl_emp);
               this.HOLA();
+              this.verificarLicencias();
               Swal.fire({
                 title: '¡Éxito!',
                 text: 'Licencia agregada correctamente.',
@@ -350,6 +358,7 @@ export class IngresoLicenciasComponent implements OnInit {
       response => {
         this.buscar(this.srl_emp);
         this.HOLA();  // Si este método actualiza la tabla
+        
         Swal.fire({
           title: '¡Éxito!',
           text: 'Se editó la licencia correctamente.',
@@ -548,8 +557,28 @@ export class IngresoLicenciasComponent implements OnInit {
     this.buscar(this.srl_emp)
   }
 
+  verificarLicencias() {
+    this.LicenciasService.getHistoricoAnte(this.srl_emp).subscribe((response: ApiResponse) => {
+     
+      if (response.data && response.data.licencias && response.data.licencias.length > 0) {
+        const canSendToOficio = response.data.licencias.some((item: LicMedica) => {
+
+          console.log('observaciones:', item.observaciones, 'nueva:', item.nueva);
+          
+          return (item.observaciones === 2 || item.observaciones === 1) && item.nueva === "1"; 
+        });
+  
+        this.isReadyToSend = canSendToOficio;
+       
+      } else {
+        this.isReadyToSend = false;
+      }
+    });
+  }
+  
+
   submitOficiosAnte() {
-    let idsArray: number[] = []; // Array donde se guardarán los ids
+    let licenciasid: any[] = []; // Array donde se guardarán los ids
 
 
     // Llamar al servicio para obtener las licencias nuevamente usando srl_emp
@@ -571,18 +600,20 @@ export class IngresoLicenciasComponent implements OnInit {
           });
           return; // Detener la ejecución si no cumple la condición
         }
-
+        this.isReadyToSend = true;
         // Si cumple la condición, continuar con el procesamiento de los IDs
-        response.data.licencias.forEach((item: LicMedica) => {
+         response.data.licencias.forEach((item: LicMedica) => {
           if (item.nueva === "1") {
-            idsArray.push(item.id); // Agrega item.id al array si nueva es "1"
+            const licenciasid2 = {
+              licenciaId: item.id,
+              apartir: item.apartir == ""?"--":item.apartir,
+              observaciones: item.observaciones
+            };
+            licenciasid.push(licenciasid2);
           }
         });
 
-        const licenciasid = {
-          licenciasId: idsArray
-        };
-
+       
 
         const userId = localStorage.getItem('userId')!; // Asegúrate de obtener el userId correcto
         Swal.fire({
@@ -603,6 +634,7 @@ export class IngresoLicenciasComponent implements OnInit {
                 if (oficioId) {
                   this.buscar(this.srl_emp);
                   this.onPdf(oficioId); // Llama a onPdf con el oficio
+                  this.verificarLicencias();
                 }
               },
               error => {
@@ -629,9 +661,7 @@ export class IngresoLicenciasComponent implements OnInit {
   }
 
   submitOficios() {
-    let idsArray: number[] = []; // Array donde se guardarán los ids
-    let observacionesLic: number[] = [];
-    let apartirLic: any[] = []; 
+
     let licenciasid: any[] = [];
 
     // Llamar al servicio para obtener las licencias nuevamente usando srl_emp

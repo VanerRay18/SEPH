@@ -40,7 +40,7 @@
             </div>
             <div class="col-auto" *ngIf="this.agregar">
               <button type="button" (click)="submitOficiosAnte()"
-                class="botones btn"><i class="fa-solid fa-file-arrow-down"></i></button>
+                class="botones btn" [ngClass]="{'btn-naranja': isReadyToSend}"><i class="fa-solid fa-file-arrow-down"></i></button>
             </div>
             <div class="col-auto" *ngIf="this.eliminar">
               <button type="button" (click)="trash()" class="botones btn"><i
