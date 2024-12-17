@@ -28,7 +28,9 @@ export class TablesComponent implements OnChanges{
 @Output() Pdf: EventEmitter<any> = new EventEmitter();
 @Input() searchTerm: string = '';  // Término de búsqueda, opcional
 
-isAnyLicenseReady: boolean = false;
+rowsWithHighlight: Set<number> = new Set();
+
+
  // Propiedades para ordenamiento
  sortedColumn: string = '';
  sortDirection: 'asc' | 'desc' = 'asc';
@@ -41,7 +43,7 @@ totalPages: number = 1;
 ngOnChanges(changes: SimpleChanges): void {
   if (changes['data'] || changes['itemsPerPage']) {
     this.updatePagination();
-    this.checkIfAnyLicenseIsReady();
+    this.identifyRowsToHighlight();
   }
 }
 
@@ -97,12 +99,21 @@ sortData(column: string): void {
   this.updatePagination();
 }
 
-private checkIfAnyLicenseIsReady(): void {
-  this.isAnyLicenseReady = this.data.some(
-    (item: any) =>
-      item.nueva === 1 &&
-      (item.observaciones === 1 || item.observaciones === 2)
+private identifyRowsToHighlight(): void {
+  // Identificar si hay filas que cumplen con `observaciones` y marcar todas las filas con `nueva === 1`
+  const hasCondition = this.data.some(
+    (item) => item.nueva === 1 && (item.observaciones === 1 || item.observaciones === 2)
   );
+
+  this.rowsWithHighlight.clear(); // Reinicia las filas a resaltar
+
+  if (hasCondition) {
+    this.data.forEach((item, index) => {
+      if (item.nueva === 1) {
+        this.rowsWithHighlight.add(index); // Marca filas que cumplen la condición
+      }
+    });
+  }
 }
 
 }
