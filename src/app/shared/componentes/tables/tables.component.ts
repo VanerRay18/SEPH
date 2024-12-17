@@ -20,12 +20,14 @@ export class TablesComponent implements OnChanges{
 @Input() showActionsEdit: boolean = false;
 @Input() showActionsDeleted: boolean = false;
 @Input() showActionsPdf: boolean = false;
-
+@Input() bola: boolean = false;
 @Input() maxHeight: string = '300px';
 // Outputs para emitir eventos de editar o eliminar
 @Output() edit: EventEmitter<any> = new EventEmitter();
 @Output() delete: EventEmitter<any> = new EventEmitter();
 @Output() Pdf: EventEmitter<any> = new EventEmitter();
+@Output() Bola: EventEmitter<any> = new EventEmitter();
+
 @Input() searchTerm: string = '';  // Término de búsqueda, opcional
 
 rowsWithHighlight: Set<number> = new Set();
@@ -43,7 +45,7 @@ totalPages: number = 1;
 ngOnChanges(changes: SimpleChanges): void {
   if (changes['data'] || changes['itemsPerPage']) {
     this.updatePagination();
-    this.identifyRowsToHighlight();
+   
   }
 }
 
@@ -99,21 +101,5 @@ sortData(column: string): void {
   this.updatePagination();
 }
 
-private identifyRowsToHighlight(): void {
-  // Identificar si hay filas que cumplen con `observaciones` y marcar todas las filas con `nueva === 1`
-  const hasCondition = this.data.some(
-    (item) => item.nueva === 1 && (item.observaciones === 1 || item.observaciones === 2)
-  );
-
-  this.rowsWithHighlight.clear(); // Reinicia las filas a resaltar
-
-  if (hasCondition) {
-    this.data.forEach((item, index) => {
-      if (item.nueva === 1) {
-        this.rowsWithHighlight.add(index); // Marca filas que cumplen la condición
-      }
-    });
-  }
-}
 
 }

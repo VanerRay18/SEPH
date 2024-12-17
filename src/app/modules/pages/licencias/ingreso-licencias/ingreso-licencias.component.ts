@@ -18,6 +18,8 @@ export class IngresoLicenciasComponent implements OnInit {
   eliminar: boolean = false;
   agregar: boolean = false;
   modificar: boolean = false;
+
+  bola: boolean = false;
   insertarLic!: FormGroup;
   headers = ['No. de Licencia', 'Desde', 'Hasta', 'Días', 'Fecha de captura', 'No. de oficio'];
   displayedColumns = ['folio', 'desde', 'hasta', 'rango_fechas', 'fechaCaptura', 'oficio'];
@@ -132,7 +134,14 @@ export class IngresoLicenciasComponent implements OnInit {
           hasta: this.formatDate(item.hasta),
           rango_fechas: `${item.total_days}  ${item.accidente === 1 ? '-' : ''}`
         }));
-      } else {
+        this.data.forEach(response=>{
+          if(!this.bola){
+            this.bola = (Number(response['observaciones']) >= 1 && Number(response['nueva']) === 1);
+          }
+          
+        });
+      } 
+      else {
         this.Total_lic = 0;
         this.data = []; // Inicializa como un array vacío si `licencias` no está en `data`
       }
