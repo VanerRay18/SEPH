@@ -28,6 +28,7 @@ export class TablesComponent implements OnChanges{
 @Output() Pdf: EventEmitter<any> = new EventEmitter();
 @Input() searchTerm: string = '';  // Término de búsqueda, opcional
 
+isAnyLicenseReady: boolean = false;
  // Propiedades para ordenamiento
  sortedColumn: string = '';
  sortDirection: 'asc' | 'desc' = 'asc';
@@ -40,6 +41,7 @@ totalPages: number = 1;
 ngOnChanges(changes: SimpleChanges): void {
   if (changes['data'] || changes['itemsPerPage']) {
     this.updatePagination();
+    this.checkIfAnyLicenseIsReady();
   }
 }
 
@@ -95,5 +97,12 @@ sortData(column: string): void {
   this.updatePagination();
 }
 
+private checkIfAnyLicenseIsReady(): void {
+  this.isAnyLicenseReady = this.data.some(
+    (item: any) =>
+      item.nueva === 1 &&
+      (item.observaciones === 1 || item.observaciones === 2)
+  );
+}
 
 }
