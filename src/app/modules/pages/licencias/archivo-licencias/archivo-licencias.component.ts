@@ -155,7 +155,7 @@ export class ArchivoLicenciasComponent implements OnInit {
                   [
 
                     {
-                      text: 'Lic. Brenda Martínez Alavéz\nJefa de la Unidad Técnica de Resguardo Documental\n\n De: Ing. José Gabriel Castro Bautista\nDirector de Nómina y Control de Plazas',
+                      text: 'Para: Lic. Brenda Martínez Alavéz\nJefa de la Unidad Técnica de Resguardo Documental\n\n De: Lic. Guillermo Paredes Camarena\nSubdirector de incidencias y Control de Plazas',
                       alignment: 'left',
                       bold: true
                     },
@@ -276,7 +276,7 @@ export class ArchivoLicenciasComponent implements OnInit {
                   [
 
                     {
-                      text: 'Lic. Brenda Martínez Alavéz\nJefa de la Unidad Técnica de Resguardo Documental\n\n De: Ing. José Gabriel Castro Bautista\nDirector de Nómina y Control de Plazas',
+                      text: 'Para: Lic. Brenda Martínez Alavéz\nJefa de la Unidad Técnica de Resguardo Documental\n\n De: Lic. Guillermo Paredes Camarena\nSubdirector de incidencias y Control de Plazas',
                       alignment: 'left',
                       bold: true
                     },
