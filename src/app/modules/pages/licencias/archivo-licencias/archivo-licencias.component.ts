@@ -85,26 +85,27 @@ export class ArchivoLicenciasComponent implements OnInit {
   }
 
   generateUniqueNumber(fecha: string): string {
-    // Convertir fecha en suma única (día + mes + año)
-    const [year, month, day] = fecha.split('-').map(Number);
-    const fechaSuma = day + month + year;
+    // Convertir fecha en un número único concatenando día, mes y año
+    const [year, month, day] = fecha.split('-');
+    const fechaUnica = `${day}${month}${year}`; // Concatenar día, mes y año
 
-    // Verificar si ya existe un número asociado a esta suma
+    // Verificar si ya existe un número asociado a esta fecha única
     const storedNumbers = JSON.parse(localStorage.getItem('pdfNumbers') || '{}');
-    if (storedNumbers[fechaSuma]) {
+    if (storedNumbers[fechaUnica]) {
       // Retorna el número existente
-      return storedNumbers[fechaSuma];
+      return storedNumbers[fechaUnica];
     }
 
     // Si no existe, genera uno nuevo
     const newNumber = Object.keys(storedNumbers).length + 1000; // Ejemplo: empieza en 1000
-    storedNumbers[fechaSuma] = newNumber;
+    storedNumbers[fechaUnica] = newNumber;
 
     // Guarda el nuevo número en el localStorage
     localStorage.setItem('pdfNumbers', JSON.stringify(storedNumbers));
 
     return newNumber.toString();
-  }
+}
+
 
 
 
