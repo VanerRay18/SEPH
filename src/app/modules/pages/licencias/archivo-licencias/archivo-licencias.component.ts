@@ -155,7 +155,7 @@ export class ArchivoLicenciasComponent implements OnInit {
                   [
 
                     {
-                      text: 'Para: Lic. Brenda Martínez Alvaréz\nJefa de la unidad técnica de resguardo documental\n\n De: Ing. José Gabriel Castro Bautista\nDirector de Nómina y Control de Plazas',
+                      text: 'Lic. Brenda Martínez Alavéz\nJefa de la Unidad Técnica de Resguardo Documental\n\n De: Ing. José Gabriel Castro Bautista\nDirector de Nómina y Control de Plazas',
                       alignment: 'left',
                       bold: true
                     },
@@ -276,7 +276,7 @@ export class ArchivoLicenciasComponent implements OnInit {
                   [
 
                     {
-                      text: 'Para: Lic. Brenda Martínez Alvaréz\nJefa de la unidad técnica de resguardo documental\n\n De: Ing. José Gabriel Castro Bautista\nDirector de Nómina y Control de Plazas',
+                      text: 'Lic. Brenda Martínez Alavéz\nJefa de la Unidad Técnica de Resguardo Documental\n\n De: Ing. José Gabriel Castro Bautista\nDirector de Nómina y Control de Plazas',
                       alignment: 'left',
                       bold: true
                     },
@@ -387,7 +387,7 @@ export class ArchivoLicenciasComponent implements OnInit {
               text: `NO. OFICIO: DNCP/SNI/${dailyNumber}/2024`,alignment: 'right', margin: [0, 10, 0, 10]},
             { text: `Pachuca HGO. a, ${fechaFormateada}`, alignment: 'right', margin: [0, 10, 0, 10] },
             { text: '', margin: [0, 30, 0, 0] }, // Espacio de 20 unidades de margen arriba
-            { text: 'Para: Lic. Brenda Martínez Alvaréz\nJefa de la unidad técnica de resguardo documental\n\n De: Ing. José Gabriel Castro Bautista\nDirector de Nómina y Control de Plazas' },
+            { text: 'Lic. Brenda Martínez Alavéz\nJefa de la Unidad Técnica de Resguardo Documental' },
             { text: 'P R E S E N T E', bold: true, margin: [0, 10, 0, 90] }, // [izquierda, arriba, derecha, abajo]
 
             {
@@ -407,7 +407,7 @@ export class ArchivoLicenciasComponent implements OnInit {
             },
 
             {
-              text: 'GUILLERMO PAREDES CAMARENA',
+              text: 'L.I. GUILLERMO PAREDES CAMARENA',
               bold: true,
               alignment: 'center'
             },
