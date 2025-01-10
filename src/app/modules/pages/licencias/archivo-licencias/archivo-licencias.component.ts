@@ -224,6 +224,7 @@ private saveAsExcelFile(buffer: any, fileName: string): void {
 
   }
 
+
   formatearFecha(fecha: string): string {
     const meses = [
       "enero", "febrero", "marzo", "abril", "mayo", "junio",
