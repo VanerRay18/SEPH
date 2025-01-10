@@ -1,3 +1,4 @@
+
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
@@ -19,6 +20,8 @@ import { TokenInterceptor } from './core/interceptor/token.interceptor';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AdminRoutingModule } from './modules/pages/administration/admin-routing.module';
 import { AdministrationModule } from './modules/pages/administration/administration.module';
+import { NominabecaRoutingModule } from './modules/pages/nomina-becarios/nominabeca-routing.module';
+import { NominaBecariosModule } from './modules/pages/nomina-becarios/nomina-becarios.module';
 
 @NgModule({
   declarations: [
@@ -38,7 +41,8 @@ import { AdministrationModule } from './modules/pages/administration/administrat
     HomeRoutingModule,
     ExtrasRoutingModule,
     LayoutModule,
-
+    NominabecaRoutingModule,
+    NominaBecariosModule,
     ReactiveFormsModule,
       AdminRoutingModule
   ],

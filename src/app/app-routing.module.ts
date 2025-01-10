@@ -12,6 +12,7 @@ import { RolesCRUDComponent } from './modules/pages/administration/roles-crud/ro
 import { ModulesCRUDComponent } from './modules/pages/administration/modules-crud/modules-crud.component';
 import { EndopointCRUDComponent } from './modules/pages/administration/endopoint-crud/endopoint-crud.component';
 import { TestComponent } from './modules/pages/extras/test/test.component';
+import { NominaBecariosModule } from './modules/pages/nomina-becarios/nomina-becarios.module';
 
 
 const routes: Routes = [
@@ -52,6 +53,13 @@ const routes: Routes = [
         loadChildren:() =>
           import('./modules/pages/administration/administration.module').then(
             (m) => m.AdministrationModule
+          ),
+      },
+      {
+        path:'NominaBecarios',
+        loadChildren:() =>
+          import('./modules/pages/nomina-becarios/nomina-becarios.module').then(
+            (m) => m.NominaBecariosModule
           ),
       }
     ],
