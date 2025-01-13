@@ -81,34 +81,23 @@ export class ArchivoLicenciasComponent implements OnInit {
   generateDailyNumber(): string {
     const today = new Date();
     const year = today.getFullYear();
-    const month = today.getMonth() + 1; // Los meses comienzan desde 0, por lo que sumamos 1
-    const day = today.getDate();
+    const month = (today.getMonth() + 1).toString().padStart(2, '0'); // Asegura dos dígitos
+    const day = today.getDate().toString().padStart(2, '0');          // Asegura dos dígitos
 
-    // Generar un número basado en la fecha y sumar 1000 para empezar desde 1000
-    const number = ((year * 10000 + month * 100 + day) % 1000) + 1000; // Genera un número entre 1000 y 1999
-    return number.toString();
-  }
+    // Concatenar día, mes y año para generar el número único
+    const dailyNumber = `${day}${month}${year}`;
+
+    return dailyNumber;
+}
+
 
   generateUniqueNumber(fecha: string): string {
     // Convertir fecha en un número único concatenando día, mes y año
     const [year, month, day] = fecha.split('-');
     const fechaUnica = `${day}${month}${year}`; // Concatenar día, mes y año
 
-    // Verificar si ya existe un número asociado a esta fecha única
-    const storedNumbers = JSON.parse(localStorage.getItem('pdfNumbers') || '{}');
-    if (storedNumbers[fechaUnica]) {
-      // Retorna el número existente
-      return storedNumbers[fechaUnica];
-    }
-
-    // Si no existe, genera uno nuevo
-    const newNumber = Object.keys(storedNumbers).length + 1000; // Ejemplo: empieza en 1000
-    storedNumbers[fechaUnica] = newNumber;
-
-    // Guarda el nuevo número en el localStorage
-    localStorage.setItem('pdfNumbers', JSON.stringify(storedNumbers));
-
-    return newNumber.toString();
+    // Retornar el número único generado
+    return fechaUnica;
 }
 
 
@@ -243,6 +232,7 @@ private saveAsExcelFile(buffer: any, fileName: string): void {
     const fecha = this.fechaform.get('dia_arch')?.value;
     const dailyNumber = this.generateUniqueNumber(fecha);
     const fechaFormateada = this.formatearFecha(fecha);
+    const anioOficio = new Date(fecha).getFullYear();
     this.LicenciasService.getLicenciasArchivoDate(fecha).subscribe(async response => {
       if (response && response.message) {
         const messageNumber = response.message;
@@ -261,7 +251,7 @@ private saveAsExcelFile(buffer: any, fileName: string): void {
             },
 
             {
-              text: `NO. OFICIO: DNCP/SNI/${dailyNumber}/2024`,alignment: 'right', margin: [0, 10, 0, 10]},
+              text: `NO. OFICIO: DNCP/SNI/${dailyNumber}/${anioOficio}`,alignment: 'right', margin: [0, 10, 0, 10]},
             { text: `Pachuca HGO. a, ${fechaFormateada}`, alignment: 'right', margin: [0, 10, 0, 10] },
             { text: '', margin: [0, 30, 0, 0] }, // Espacio de 20 unidades de margen arriba
             { text: 'Lic. Brenda Martínez Alavéz\nJefa de la Unidad Técnica de Resguardo Documental' },
@@ -349,7 +339,7 @@ private saveAsExcelFile(buffer: any, fileName: string): void {
             },
 
             {
-              text: `NO. OFICIO: DNCP/SNI/${dailyNumber}/2024`,alignment: 'right', margin: [0, 10, 0, 10]},
+              text: `NO. OFICIO: DNCP/SNI/${dailyNumber}/${new Date().getFullYear()}`,alignment: 'right', margin: [0, 10, 0, 10]},
             { text: `Pachuca HGO. a, ${formattedDate}`, alignment: 'right', margin: [0, 10, 0, 10] },
             { text: '', margin: [0, 30, 0, 0] }, // Espacio de 20 unidades de margen arriba
             { text: 'Lic. Brenda Martínez Alavéz\nJefa de la Unidad Técnica de Resguardo Documental' },
