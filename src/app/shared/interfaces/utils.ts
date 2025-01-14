@@ -41,7 +41,8 @@ apartir:any,
 accidente:any,
 observaciones: any,
 fechaCaptura: any,
-id: any
+id: any,
+color: any
 }
 
 // export interface clave{

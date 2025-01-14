@@ -56,7 +56,7 @@ export class IngresoLicenciasComponent implements OnInit {
 
   ngOnInit() {
 
-    
+
 
     this.PermisosUserService.getPermisosSpring(this.PermisosUserService.getPermisos().Licencias).subscribe((response: ApiResponse) => {
       this.eliminar = response.data.eliminar
@@ -125,6 +125,7 @@ export class IngresoLicenciasComponent implements OnInit {
     this.LicenciasService.getLicencias(srl_emp).subscribe((response: ApiResponse) => {
       // console.log("Respuesta de la API:", response);
       this.table = true;
+      this.isReadyToSend = false;
 
       // if (response.data && response.data.fecha_ingreso) {
       //   this.fecha_ingreso = response.data.fecha_ingreso; // Guarda `fecha_ingreso` en el componente
@@ -145,9 +146,9 @@ export class IngresoLicenciasComponent implements OnInit {
           if(!this.bola){
             this.bola = (Number(response['observaciones']) >= 1 && Number(response['nueva']) === 1);
           }
-          
+
         });
-      } 
+      }
       else {
         this.Total_lic = 0;
         this.data = []; // Inicializa como un array vacío si `licencias` no está en `data`
@@ -344,6 +345,8 @@ export class IngresoLicenciasComponent implements OnInit {
       }
     }).then((result) => {
       if (result.isConfirmed) {
+        console.log("//////////////////////////////////////////////////")
+        console.log(data)
         const dataEditada = result.value;
         this.guardarCambios2(dataEditada, data.id);
       }
@@ -352,13 +355,14 @@ export class IngresoLicenciasComponent implements OnInit {
 
   guardarCambios2(data: any, licenciaId: any) {
     const userId = localStorage.getItem('userId')!;
-
+    console.log(data)
+    console.log(userId)
+    console.log(licenciaId)
     this.LicenciasService.updateLic(data, licenciaId, userId).subscribe(
-
       response => {
         this.buscar(this.srl_emp);
         this.HOLA();  // Si este método actualiza la tabla
-        
+
         Swal.fire({
           title: '¡Éxito!',
           text: 'Se editó la licencia correctamente.',
@@ -559,23 +563,23 @@ export class IngresoLicenciasComponent implements OnInit {
 
   verificarLicencias() {
     this.LicenciasService.getHistoricoAnte(this.srl_emp).subscribe((response: ApiResponse) => {
-     
+
       if (response.data && response.data.licencias && response.data.licencias.length > 0) {
         const canSendToOficio = response.data.licencias.some((item: LicMedica) => {
 
           console.log('observaciones:', item.observaciones, 'nueva:', item.nueva);
-          
-          return (item.observaciones === 2 || item.observaciones === 1) && item.nueva === "1"; 
+
+          return (item.observaciones === 2 || item.observaciones === 1) && item.nueva === "1"  && item.color ===  "black";
         });
-  
+
         this.isReadyToSend = canSendToOficio;
-       
+
       } else {
         this.isReadyToSend = false;
       }
     });
   }
-  
+
 
   submitOficiosAnte() {
     let licenciasid: any[] = []; // Array donde se guardarán los ids
@@ -584,11 +588,13 @@ export class IngresoLicenciasComponent implements OnInit {
     // Llamar al servicio para obtener las licencias nuevamente usando srl_emp
     this.LicenciasService.getHistoricoAnte(this.srl_emp).subscribe((response: ApiResponse) => {
       // Verifica si la propiedad licencias existe en la respuesta y si tiene elementos
+
       if (response.data && response.data.licencias && response.data.licencias.length > 0) {
         // Verifica si alguna licencia tiene las observaciones "SIN SUELDO" o "MEDIO SUELDO"
         const canSendToOficio = response.data.licencias.some((item: LicMedica) =>
-          item.observaciones === 2 || item.observaciones === 1
-        );
+
+          (item.observaciones === 2 || item.observaciones === 1)  && item.color ===  "black");
+
 
         if (!canSendToOficio) {
           Swal.fire({
@@ -613,7 +619,7 @@ export class IngresoLicenciasComponent implements OnInit {
           }
         });
 
-       
+
 
         const userId = localStorage.getItem('userId')!; // Asegúrate de obtener el userId correcto
         Swal.fire({
@@ -696,7 +702,7 @@ export class IngresoLicenciasComponent implements OnInit {
           }
         });
 
-    
+
 
 
         const userId = localStorage.getItem('userId')!; // Asegúrate de obtener el userId correcto
@@ -711,11 +717,11 @@ export class IngresoLicenciasComponent implements OnInit {
         }).then((result) => {
           if (result.isConfirmed) {
             // Llama al servicio para crear un oficio
-            this.LicenciasService.patchLicenciasOficio(licenciasid, userId, this.srl_emp).subscribe(             
+            this.LicenciasService.patchLicenciasOficio(licenciasid, userId, this.srl_emp).subscribe(
               (response: { data: { oficio: string } }) => { // Asegúrate de definir el tipo de respuesta
                 console.log(response.data)
                 const oficioId = response.data.oficio; // Accede al 'oficio' dentro de 'data'
-           
+
 
                 if (oficioId) {
                   this.buscar(this.srl_emp);
@@ -978,15 +984,17 @@ export class IngresoLicenciasComponent implements OnInit {
                   { text: 'Oficio', bold: true, fillColor: '#eeeeee', alignment: 'center' },
                   { text: 'Fecha de captura', bold: true, fillColor: '#eeeeee', alignment: 'center' },
                 ],
-                // Agregar cada licencia correspondiente a este periodo
-                ...licencias.map((licencia: { folio: any, desde: any, hasta: any, total_days: any, oficio: any, fechaCaptura: any, apartir: any }) => [
-                  { text: licencia.folio, alignment: 'center' },
-                  { text: `${licencia.desde} - ${licencia.hasta}`, alignment: 'center' },
-                  { text: licencia.total_days, alignment: 'center' },
-                  { text: licencia.oficio, alignment: 'center' },
-                  { text: licencia.fechaCaptura, alignment: 'center' },
-                ])
-              ]
+               // Agregar cada licencia correspondiente a este periodo
+               ...licencias.map((licencia: { folio: any, desde: any, hasta: any, total_days: any, oficio: any, fechaCaptura: any, color: string, accidente: number }) => {
+                return [
+                  { text: licencia.folio, alignment: 'center', color: licencia.color },
+                  { text: `${licencia.desde} - ${licencia.hasta}`, alignment: 'center', color: licencia.color },
+                  { text: licencia.total_days, alignment: 'center', color: licencia.color },
+                  { text: licencia.oficio, alignment: 'center', color: licencia.color },
+                  { text: licencia.fechaCaptura, alignment: 'center', color: licencia.color },
+                ];
+              })
+            ]
             },
             margin: [0, 10, 0, 30]
           },
@@ -1031,8 +1039,8 @@ export class IngresoLicenciasComponent implements OnInit {
         (acc[licencia.periodo] = acc[licencia.periodo] || []).push(licencia);
         return acc;
       }, {});
-      const totalDiasSumados = licencias.reduce((acc: number, licencia: { total_dias: number }) => {
-        return acc + (licencia.total_dias || 0); // Asegúrate de sumar solo números
+      const totalDiasSumados = licencias.reduce((acc: number, licencia: { total_days: number }) => {
+        return acc + (licencia.total_days || 0); // Asegúrate de sumar solo números
       }, 0);
       const today = new Date();
       const formattedDate = today.toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' });
@@ -1096,13 +1104,15 @@ export class IngresoLicenciasComponent implements OnInit {
                   { text: 'Fecha de captura', bold: true, fillColor: '#eeeeee', alignment: 'center' },
                 ],
                 // Agregar cada licencia correspondiente a este periodo
-                ...licenciasPorPeriodo[periodo].map((licencia: { folio: any, desde: any, hasta: any, total_days: any, oficio: any, fechaCaptura: any, apartir: any }) => [
-                  { text: licencia.folio, alignment: 'center' },
-                  { text: `${licencia.desde} - ${licencia.hasta}`, alignment: 'center' },
-                  { text: licencia.total_days, alignment: 'center' },
-                  { text: licencia.oficio, alignment: 'center' },
-                  { text: licencia.fechaCaptura, alignment: 'center' },
-                ])
+                ...licencias.map((licencia: { folio: any, desde: any, hasta: any, total_days: any, oficio: any, fechaCaptura: any, color: string, accidente: number }) => {
+                  return [
+                    { text: licencia.folio, alignment: 'center', color: licencia.color },
+                    { text: `${licencia.desde} - ${licencia.hasta}`, alignment: 'center', color: licencia.color },
+                    { text: licencia.total_days, alignment: 'center', color: licencia.color },
+                    { text: licencia.oficio, alignment: 'center', color: licencia.color },
+                    { text: licencia.fechaCaptura, alignment: 'center', color: licencia.color },
+                  ];
+                })
               ]
             },
             alignment: 'center',
@@ -1199,13 +1209,15 @@ export class IngresoLicenciasComponent implements OnInit {
                   { text: 'Fecha de captura', bold: true, fillColor: '#eeeeee', alignment: 'center' },
                 ],
                 // Agregar cada licencia correspondiente a este periodo
-                ...licencias.map((licencia: { folio: any, desde: any, hasta: any, total_days: any, oficio: any, fechaCaptura: any, apartir: any }) => [
-                  { text: licencia.folio, alignment: 'center' },
-                  { text: `${licencia.desde} - ${licencia.hasta}`, alignment: 'center' },
-                  { text: licencia.total_days, alignment: 'center' },
-                  { text: licencia.oficio, alignment: 'center' },
-                  { text: licencia.fechaCaptura, alignment: 'center' },
-                ])
+                ...licencias.map((licencia: { folio: any, desde: any, hasta: any, total_days: any, oficio: any, fechaCaptura: any, color: string, accidente: number }) => {
+                  return [
+                    { text: licencia.folio, alignment: 'center', color: licencia.color },
+                    { text: `${licencia.desde} - ${licencia.hasta}`, alignment: 'center', color: licencia.color },
+                    { text: licencia.total_days, alignment: 'center', color: licencia.color },
+                    { text: licencia.oficio, alignment: 'center', color: licencia.color },
+                    { text: licencia.fechaCaptura, alignment: 'center', color: licencia.color },
+                  ];
+                })
               ]
             },
             margin: [0, 10, 0, 30]
