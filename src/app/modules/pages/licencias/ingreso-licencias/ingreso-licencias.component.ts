@@ -21,8 +21,8 @@ export class IngresoLicenciasComponent implements OnInit {
 
   bola: boolean = false;
   insertarLic!: FormGroup;
-  headers = ['No. de Licencia', 'Desde', 'Hasta', 'Días', 'Fecha de captura', 'No. de oficio'];
-  displayedColumns = ['folio', 'desde', 'hasta', 'rango_fechas', 'fechaCaptura', 'oficio'];
+  headers = ['No. de Licencia', 'Desde', 'Hasta', 'Días', 'Fecha de captura', 'Fecha de formato fisico', 'No. de oficio'];
+  displayedColumns = ['folio', 'desde', 'hasta', 'rango_fechas', 'fechaCaptura','fechaFisico', 'oficio'];
   data = [];
   showCard: any = false;
   table: any = true;
