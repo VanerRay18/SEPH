@@ -35,6 +35,7 @@ sep?: any;
 sumaDias:any,
 desde:any,
 hasta:any,
+fechaFisica: any,
 total_days:any,
 nueva:any,
 formato: any,
