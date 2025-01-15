@@ -311,12 +311,12 @@ export class IngresoLicenciasComponent implements OnInit {
         <div style="display: flex; flex-direction: column; text-align: left;">
           <label style="margin-left:33px;" for="formato">Formato</label>
           <div style="display: flex; align-items: center; margin-top: 10px; margin-left:33px;">
-            <input class="form-check-input" type="radio" name="formato" id="formatoFisico" value="0" ${data.formato === 0 ? 'checked' : ''} style="margin-right: 5px;">
-            <label class="form-check-label" for="formatoFisico">Físico</label>
+            <input class="form-check-input" type="radio" name="formato2" id="formatoFisico2" value="0" ${data.formato === 0 ? 'checked' : ''} style="margin-right: 5px;">
+            <label class="form-check-label" for="formatoFisico2">Físico</label>
           </div>
           <div style="display: flex; align-items: center; margin-top: 10px; margin-left:33px;">
-            <input class="form-check-input" type="radio" name="formato" id="formatoEmail" value="1" ${data.formato === 1 ? 'checked' : ''} style="margin-right: 5px;">
-            <label class="form-check-label" for="formatoEmail">Email</label>
+            <input class="form-check-input" type="radio" name="formato2" id="formatoEmail2" value="1" ${data.formato === 1 ? 'checked' : ''} style="margin-right: 5px;">
+            <label class="form-check-label" for="formatoEmail2">Email</label>
           </div>
         </div>
       `,
@@ -327,7 +327,7 @@ export class IngresoLicenciasComponent implements OnInit {
         const folio = (document.getElementById('folioId') as HTMLInputElement).value;
         const fecha_inicio = ((document.getElementById('fecha_inicioId') as HTMLInputElement).value) + 'T00:00:00';
         const fecha_termino = ((document.getElementById('fecha_terminoId') as HTMLInputElement).value) + 'T00:00:00';
-        const formato = parseInt((document.querySelector('input[name="formato"]:checked') as HTMLInputElement).value);
+        const formato = parseInt((document.querySelector('input[name="formato2"]:checked') as HTMLInputElement).value);
         const accidente = 0;
 
         // Validación de campos
@@ -454,12 +454,12 @@ export class IngresoLicenciasComponent implements OnInit {
       <div style="display: flex; flex-direction: column; text-align: left;">
         <label style="margin-left:33px;" for="formato">Formato</label>
         <div style="display: flex; align-items: center; margin-top: 10px; margin-left:33px;">
-          <input class="form-check-input" type="radio" name="formato" id="formatoFisico" value="0" ${data.formato === 0 ? 'checked' : ''} style="margin-right: 5px;">
-          <label class="form-check-label" for="formatoFisico">Físico</label>
+          <input class="form-check-input" type="radio" name="formato1" id="formatoFisico1" value="0" ${data.formato === 0 ? 'checked' : ''} style="margin-right: 5px;">
+          <label class="form-check-label" for="formatoFisico1">Físico</label>
         </div>
         <div style="display: flex; align-items: center; margin-top: 10px; margin-left:33px;">
-          <input class="form-check-input" type="radio" name="formato" id="formatoEmail" value="1" ${data.formato === 1 ? 'checked' : ''} style="margin-right: 5px;">
-          <label class="form-check-label" for="formatoEmail">Email</label>
+          <input class="form-check-input" type="radio" name="formato1" id="formatoEmail1" value="1" ${data.formato === 1 ? 'checked' : ''} style="margin-right: 5px;">
+          <label class="form-check-label" for="formatoEmail1">Email</label>
         </div>
       </div>`,
 
@@ -470,8 +470,10 @@ export class IngresoLicenciasComponent implements OnInit {
         const folio = (document.getElementById('folioId') as HTMLInputElement).value;
         const fecha_inicio = ((document.getElementById('fecha_inicioId') as HTMLInputElement).value) + 'T00:00:00';
         const fecha_termino = ((document.getElementById('fecha_terminoId') as HTMLInputElement).value) + 'T00:00:00';
-        const formato = parseInt((document.querySelector('input[name="formato"]:checked') as HTMLInputElement).value);
+        const formato = parseInt((document.querySelector('input[name="formato1"]:checked') as HTMLInputElement).value);
         const accidente = 0;
+        
+        console.log(formato)
         // Validación de campos
         if (!folio || !fecha_inicio || !fecha_termino) {
           Swal.showValidationMessage('Todos los campos son obligatorios');
@@ -489,6 +491,8 @@ export class IngresoLicenciasComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         const dataEditada = result.value;
+        console.log("//////////////////////////////////////////////////")
+        console.log(dataEditada)
         // Envío de los datos editados al backend
         this.guardarCambios(dataEditada, data.id);
       }
