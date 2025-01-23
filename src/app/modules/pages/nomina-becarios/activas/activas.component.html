@@ -20,15 +20,15 @@
             </div>
             <div class="col-auto">
               <p><strong>Percepciones</strong></p>
-              <p>{{ data?.importeTotal || 0 }}</p>
+              <p>{{ data?.importeTotal | number:'1.2-2'  }}</p>
             </div>
             <div class="col-auto">
               <p><strong>Deducciones</strong></p>
-              <p>{{ data?.retentionTotal || 0 }}</p>
+              <p>{{ data?.retentionTotal | number:'1.2-2'  }}</p>
             </div>
             <div class="col-auto">
               <p><strong>Total</strong></p>
-              <p>{{ data?.total || 0 }}</p>
+              <p>{{ data?.total | number:'1.2-2' }}</p>
             </div>
           </div>
         </div>
