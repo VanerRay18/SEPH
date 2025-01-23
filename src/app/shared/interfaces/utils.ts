@@ -47,6 +47,28 @@ id: any,
 color: any
 }
 
+export interface NominaA{
+  id: any,
+  retentionTotal: any;
+  total:any,
+  importeTotal:any,
+  becarios:any,
+  quincena: any,
+  status:any
+  }
+
+
+export interface NominaP{
+  retentionTotal: any,
+  clabeBanco: any,
+  srl_emp: any,
+  liquidTotal: any,
+  nombre: any,
+  importTotal: any,
+  clabe: any,
+  curp: any
+  }
+
 // export interface clave{
 //   CT: string;
 //   PLAZA: string;

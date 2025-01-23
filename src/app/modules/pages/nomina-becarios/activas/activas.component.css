@@ -1,0 +1,74 @@
+h1{
+  font-weight: bold;
+}
+
+h5{
+  color: rgb(122, 122, 122);
+}
+
+.row{
+  margin: 0;
+}
+
+.card{
+  background-color: #ffffff;
+  border-radius: 10px;
+  width: 98%;
+
+}
+
+.nomina{
+  border: 2px solid #000000;  /* Borde verde */
+  border-radius: 10px;         /* Bordes redondeados */
+}
+
+.summary {
+  display: flex;
+  justify-content: space-between;
+  background-color: #f2f2f2;
+  padding: 10px;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+.summary div {
+  text-align: center;
+}
+
+.summary div p {
+  margin: 5px 0;
+}
+
+.progress {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 0;
+  height: 25px;
+  background-color: #ffffff;
+}
+
+.step {
+  width: 20%;
+  text-align: center;
+  padding: 5px;
+  border-radius: 10px;
+  background-color: #e0e0e0;
+}
+
+.step.active {
+  background-color: #660033;
+  color: white;
+}
+
+.button {
+  background-color: #660033;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: #550029;
+}

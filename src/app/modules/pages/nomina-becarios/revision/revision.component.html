@@ -1,1 +1,73 @@
-<p>revision works!</p>
+<div class="cont col-auto row  mt-4 ms-4">
+  <div class="titulos ">
+    <h1>Revision</h1>
+  </div>
+  <div class="card d-flex mt-3">
+    <div class="row">
+      <div class="col-auto col-lg-9  ">
+        <div class="progress">
+          <div class="step active"><a
+              href="pages/NominaBecarios/Nominas-Calcular"
+              class="step-link">
+              <strong>1 - Calcular</strong>
+            </a></div>
+          <div class="step active"><a href="pages/NominaBecarios/Nominas-Pagar"
+              class="step-link"><strong>2 - Pagos</strong></a></div>
+          <div class="step active"><strong>3 - Revision</strong></div>
+          <div class="step"><strong>4 - Enviar</strong></div>
+        </div>
+      </div>
+      <div class="col-auto col-lg-2 ms-5 mt-1 ">
+        <button type="submit" class="btn  btn-sm">Descargar Anexos</button>
+      </div>
+
+      <div class="col-auto col-lg-12">
+        <ul class="nav nav-tabs d-flex flex-row flex-wrap" role="tablist">
+          <li class="nav-item" *ngFor="let tab of tabs">
+            <a class="nav-link"
+              [class.active]="tab.id === activeTab"
+              (click)="setActiveTab(tab.id)">
+              <i [class]="tab.icon"></i>
+              {{ tab.title }}
+            </a>
+          </li>
+        </ul>
+
+        <div class="tab-content" role="tabpanel">
+          <ng-container *ngIf="activeTab === 'anexo5'">
+            <div class="card2">
+              <app-tables
+                [headers]="headers"
+                [data]="data"
+                [displayedColums]="displayedColumns"
+                [searchTerm]="searchTerm"
+                [maxHeight]="'630px'"
+                [itemsPerPage]="20"
+                [showActionsEdit]=false
+                [showActionsDeleted]=false
+                [showActionsPdf]=false
+                [showActiveCheckbox]="false"
+                [showVerifiedCheckbox]="false"
+                [showDetailsColumn]=false>
+              </app-tables>
+            </div>
+          </ng-container>
+
+          <ng-container *ngIf="activeTab === 'anexo6'">
+            <app-anexo6></app-anexo6>
+          </ng-container>
+
+          <ng-container *ngIf="activeTab === 'anexo7'">
+            <app-anexo7></app-anexo7>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="boton-container col-auto col-lg-12 m-3 ">
+        <button type="submit" class="btn  btn-sm">Guardar</button>
+        <button type="submit" class="btn  btn-sm"
+          onclick="window.location.href='pages/NominaBecarios/Nominas-Enviar'">Continuar</button>
+      </div>
+    </div>
+  </div>
+</div>

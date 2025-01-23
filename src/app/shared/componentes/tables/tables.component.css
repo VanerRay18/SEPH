@@ -1,3 +1,7 @@
+.empty {
+  background-color: red !important;
+}
+
 button {
   background-color: transparent;
   border: none;
@@ -30,6 +34,7 @@ th, td {
   text-align: left;
   vertical-align: middle;
   border-bottom: 1px solid #e0e0e0; /* Líneas sutiles entre las filas */
+  white-space: nowrap;
 }
 
 th {
@@ -73,6 +78,7 @@ table tr:last-child td:last-child {
 .table-responsive {
   max-height: inherit;
   overflow-y: auto;
+  overflow-x: auto;
 }
 
 thead {
@@ -108,4 +114,17 @@ tfoot {
   bottom: 0;
   background-color: white; /* Color de fondo para el pie de página */
   z-index: 2; /* Asegura que el pie de página esté encima del cuerpo */
+}
+
+.btn{
+  background-color: #ffffff;
+  color: #621132;
+  border-color: #621132;
+  font-weight: bold;
+  height: 38px;
+  border-radius: 15px;
+}
+
+.btn:hover {
+  background-color: #d4d4d4;
 }

@@ -1,1 +1,74 @@
-<p>pagar works!</p>
+<div class="cont col-auto row  mt-4 ms-4">
+  <div class="titulos ">
+    <h1>Pagos</h1>
+  </div>
+  <div class="card d-flex mt-3">
+    <div class="row">
+      <div class="col-auto col-lg-10  ">
+        <div class="progress">
+          <div class="step active"><a
+              href="pages/NominaBecarios/Nominas-Calcular"
+              class="step-link">
+              <strong>1 - Calcular</strong>
+            </a></div>
+          <div class="step active"><strong>2 - Pagos</strong></div>
+          <div class="step"><strong>3 - Revision</strong></div>
+          <div class="step"><strong>4 - Enviar</strong></div>
+        </div>
+      </div>
+      <div class="col-auto col-lg-12 mt-3">
+        <h4>Nomina quincenal Runa HR</h4>
+        <p>Quincena:{{ data2?.quincena || 0 }}</p>
+      </div>
+      <div class="col-auto col-lg-12">
+        <div class="summary row">
+          <div class="col-auto">
+            <p><strong>Becarios</strong></p>
+            <p>{{ data2?.becarios || 0 }}</p>
+          </div>
+          <div class="col-auto">
+            <p><strong>Percepciones</strong></p>
+            <p>{{ data2?.importeTotal || 0 }}</p>
+          </div>
+          <div class="col-auto">
+            <p><strong>Deducciones</strong></p>
+            <p>{{ data2?.retentionTotal || 0 }}</p>
+          </div>
+          <div class="col-auto">
+            <p><strong>Total</strong></p>
+            <p>{{ data2?.total || 0 }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="form-floating col-auto col-lg-4 m-3">
+        <input type="text" class=" buscar form-control" id="busqueda"
+          placeholder="Buscar"
+          [(ngModel)]="searchTerm" name="busqueda">
+        <label for="User">&nbsp;&nbsp;<i
+            class="fa-solid fa-magnifying-glass"></i> Buscar</label>
+      </div>
+      <div
+        class="col-auto col-lg-12 mt-4 justify-content-center align-items-center ">
+        <app-tables
+          [headers]="headers"
+          [data]="data"
+          [displayedColums]="displayedColumns"
+          [searchTerm]="searchTerm"
+          [maxHeight]="'630px'"
+          [itemsPerPage]="20"
+          [showActionsEdit]=false
+          [showActionsDeleted]=false
+          [showActionsPdf]=false
+          [showActiveCheckbox]="true"
+          (clavesBanco)="this.clabes =$event"
+          (check)="toggleCheckbox($event)"
+          [showDetailsColumn]=false>
+        </app-tables>
+      </div>
+      <div class="boton-container col-auto col-lg-12 m-3 " >
+        <button type="submit" class="btn  btn-sm" (click)="saveNomina('hdhj')" [disabled]="data2?.status >= 2">Guardar</button>
+        <button type="submit" class="btn  btn-sm" (click)="continueNomina()">Continuar</button>
+      </div>
+    </div>
+  </div>
+</div>

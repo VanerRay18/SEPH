@@ -12,7 +12,7 @@ import { HistoricoComponent } from './historico/historico.component';
 const routes: Routes = [
   {path: 'Home-Becarios',component:HomeBecariosComponent},
   {path: 'Becarios',component:BecariosRComponent},
-  {path: 'Nominas-Activaas',component:ActivasComponent},
+  {path: 'Nominas-Activas',component:ActivasComponent},
   {path: 'Nominas-Calcular',component:CalcularComponent},
   {path: 'Nominas-Pagar',component:PagarComponent},
   {path: 'Nominas-Revision',component:RevisionComponent},

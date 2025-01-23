@@ -3,13 +3,24 @@ import { ApiResponse } from 'src/app/models/ApiResponse';
 import { NominaBecService } from 'src/app/services/nomina-bec.service';
 
 @Component({
-  selector: 'app-enviar',
-  templateUrl: './enviar.component.html',
-  styleUrls: ['./enviar.component.css']
+  selector: 'app-anexo6',
+  templateUrl: './anexo6.component.html',
+  styleUrls: ['./anexo6.component.css']
 })
-export class EnviarComponent {
-
+export class Anexo6Component {
+  searchTerm: string = '';
+  headers = ['Nombre', 'CURP', 'Clave', 'Banco', 'Total', ''];
+  displayedColumns = ['nombre', 'curp', 'importTotal', 'retentionTotal', 'liquidTotal'];
   data = [];
+
+  tabs = [
+    { id: 'anexo5', title: 'Anexo 5', icon: 'fas fa-file-medical' },
+    { id: 'anexo6', title: 'Anexo 6', icon: 'fas fa-exclamation-triangle' },
+    { id: 'anexo7', title: 'Anexo 7', icon: 'fas fa-handshake' }
+  ];
+
+
+  activeTab: string = 'anexo5';
   idNomina: any;
 
   constructor(
@@ -18,11 +29,13 @@ export class EnviarComponent {
     // Registrar las fuentes necesarias
   }
 
-
   ngOnInit(): void {
     this.fetchData();
   }
 
+  setActiveTab(tabId: string) {
+    this.activeTab = tabId; // Cambia la pestaña activa
+  }
 
   fetchData() {
     this.NominaBecService.getInformationCalculation(this.idNomina).subscribe((response: ApiResponse) => {

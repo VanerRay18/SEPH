@@ -1,1 +1,50 @@
-<p>activas works!</p>
+<div class="cont col-auto row  mt-4 ms-4">
+  <div class="titulos ">
+    <h1>Nominas Activas</h1>
+  </div>
+  <div class="card d-flex mt-3">
+    <br>
+    <h3>Activo</h3>
+    <hr>
+    <div class="card nomina m-3">
+      <div class="row m-3">
+        <div class="col-auto col-lg-6">
+          <h4>Nomina quincenal Runa HR</h4>
+          <p>Quincena: {{ data?.quincena || 0 }}</p>
+        </div>
+        <div class="col-auto col-lg-6">
+          <div class="summary row">
+            <div class="col-auto">
+              <p><strong>Becarios</strong></p>
+              <p>{{ data?.becarios || 0 }}</p>
+            </div>
+            <div class="col-auto">
+              <p><strong>Percepciones</strong></p>
+              <p>{{ data?.importeTotal || 0 }}</p>
+            </div>
+            <div class="col-auto">
+              <p><strong>Deducciones</strong></p>
+              <p>{{ data?.retentionTotal || 0 }}</p>
+            </div>
+            <div class="col-auto">
+              <p><strong>Total</strong></p>
+              <p>{{ data?.total || 0 }}</p>
+            </div>
+          </div>
+        </div>
+        <hr>
+        <div class="col-auto col-lg-9">
+          <div class="progress">
+            <div [ngClass]="{'step': true, 'active': data?.status >= 1}"><strong>1 - Calcular</strong></div>
+            <div [ngClass]="{'step': true, 'active': data?.status >= 2}"><strong>2 - Pagos</strong></div>
+            <div [ngClass]="{'step': true, 'active': data?.status >= 3}"><strong>3 - Anexos</strong></div>
+            <div [ngClass]="{'step': true, 'active': data?.status >= 4}"><strong>4 - Enviar</strong></div>
+          </div>
+        </div>
+        <div class="col-auto col-lg-3">
+          <button class="button ms-4 mt-2" (click)="startNomina()">CONTINUAR</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,15 +1,14 @@
 import { Component } from '@angular/core';
 import { ApiResponse } from 'src/app/models/ApiResponse';
 import { NominaBecService } from 'src/app/services/nomina-bec.service';
-import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-revision',
-  templateUrl: './revision.component.html',
-  styleUrls: ['./revision.component.css']
+  selector: 'app-anexo7',
+  templateUrl: './anexo7.component.html',
+  styleUrls: ['./anexo7.component.css']
 })
-export class RevisionComponent {
-searchTerm: string = '';
+export class Anexo7Component {
+  searchTerm: string = '';
   headers = ['Nombre', 'CURP', 'Clave', 'Banco', 'Total', ''];
   displayedColumns = ['nombre', 'curp', 'importTotal', 'retentionTotal', 'liquidTotal'];
   data = [];
@@ -20,11 +19,6 @@ searchTerm: string = '';
     { id: 'anexo7', title: 'Anexo 7', icon: 'fas fa-handshake' }
   ];
 
-  previewData = [
-    { id: 1, nombre: 'Juan Pérez', rfc: 'JUPE123456', puesto: 'Analista' },
-    { id: 2, nombre: 'Ana Gómez', rfc: 'ANGO789012', puesto: 'Desarrollador' },
-    { id: 3, nombre: 'Luis Martínez', rfc: 'LUMA345678', puesto: 'Gerente' },
-  ];
 
   activeTab: string = 'anexo5';
   idNomina: any;
@@ -51,13 +45,4 @@ searchTerm: string = '';
         console.error('Error al obtener los datos:', error);
       });
   }
-
-  generateExcel(): void {
-    const XLSX = require('xlsx');
-    const worksheet = XLSX.utils.json_to_sheet(this.previewData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Datos');
-    XLSX.writeFile(workbook, 'vista_previa.xlsx');
-  }
-
 }

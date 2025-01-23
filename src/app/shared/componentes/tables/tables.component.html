@@ -7,17 +7,16 @@
             (click)="sortData(displayedColums[i])" class="sortable-header">
             {{ header }}
             <span *ngIf="sortedColumn === displayedColums[i]">
-              <i *ngIf="sortDirection === 'asc'"
-                class="fa-solid fa-arrow-up"></i>
-              <i *ngIf="sortDirection === 'desc'"
-                class="fa-solid fa-arrow-down"></i>
+              <i *ngIf="sortDirection === 'asc'" class="fa-solid fa-arrow-up"></i>
+              <i *ngIf="sortDirection === 'desc'" class="fa-solid fa-arrow-down"></i>
             </span>
           </th>
+
         </tr>
       </thead>
-      <tbody class="table-body" [ngStyle]="{'overflow-y': 'auto'}">
-        <tr
-          *ngFor="let row of paginatedData | filter: searchTerm : displayedColums ; let i = index">
+
+      <tbody class="table-body">
+        <tr *ngFor="let row of paginatedData | filter: searchTerm : displayedColums ; let i = index">
           <!-- Ciclo para mostrar cada columna -->
           <td *ngFor="let key of displayedColums">
             <!-- Si la columna es 'rango_fechas', se muestra el valor y el ícono solo si accidente == 1 -->
@@ -43,12 +42,30 @@
           </td>
 
           <!-- Acciones de editar, eliminar, PDF -->
+
+          <!-- Nueva columna Detalles -->
+          <td *ngIf="showDetailsColumn">
+            <button class="btn btn-info btn-sm" (click)="showDetails(row)">
+              Ver Detalles
+            </button>
+          </td>
+
+          <!-- Nueva columna Checkbox Activo -->
+          <td *ngIf="showActiveCheckbox">
+            <input type="checkbox" [checked]="row.activo === 1" (change)="toggleCheckbox(row) " (click)="info($event,row)">
+          </td>
+
+          <!-- Nueva columna Checkbox Verificado -->
+          <td *ngIf="showVerifiedCheckbox">
+            <input type="checkbox" [checked]="row.verificado === 1" (change)="toggleCheckbox(row)">
+          </td>
+
+          <!-- Acciones de editar, eliminar, PDF -->
           <td>
             <button class="edit" *ngIf="showActionsEdit" (click)="onEdit(row)">
               <i class="fa-solid fa-pen-to-square"></i>
             </button>
-            <button class="delete" *ngIf="showActionsDeleted"
-              (click)="onDelete(row)">
+            <button class="delete" *ngIf="showActionsDeleted" (click)="onDelete(row)">
               <i class="fa-solid fa-trash"></i>
             </button>
             <button class="pdf" *ngIf="showActionsPdf" (click)="onPDF(row)">
@@ -57,9 +74,10 @@
           </td>
         </tr>
       </tbody>
+
       <tfoot>
         <tr>
-          <td colspan="headers.length">
+          <td [attr.colspan]="headers.length">
             <div class="pagination-controls">
               <button (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1">Anterior</button>
               <span>Página {{ currentPage }}</span>
@@ -70,6 +88,8 @@
       </tfoot>
     </table>
   </div>
+</div>
+
 
   <!-- Paginación -->
   <!-- <div class="pagination">
