@@ -22,11 +22,7 @@ searchTerm: string = '';
   status = 2;
   clabes: any[] = [];
   nominaId :any;
-
-
-
-
-  changePay: Array<{ clabe: number; srl_emp: string; nominaId: string | undefined }> = []; // Array para almacenar los cambios
+  changePay: Array<{ clabe: number; srl_emp: string; nominaId: any }> = []; // Array para almacenar los cambios
 
   constructor(
     private NominaBecService: NominaBecService,
@@ -37,13 +33,11 @@ searchTerm: string = '';
 
   async ngOnInit(): Promise<void> {
     this.nominaId = await this.loadNominaId();
-    console.log('ID de la nómina (desde ngOnInit):', this.nominaId);
     this.fetchData();
   }
 
   async loadNominaId() {
     const nominaId = await this.NominaBecService.getNominaId();
-    console.log('ID de la nómina:', nominaId);
     return nominaId
   }
 
@@ -73,6 +67,7 @@ searchTerm: string = '';
             this.NominaBecService.changeStatus(this.nominaId,this.status).subscribe(
               response => {
                console.log('Se cambio el status');
+               this.fetchData();
               },
               error => {
                 Swal.fire({
@@ -90,6 +85,7 @@ searchTerm: string = '';
 
     continueNomina(): void{
       this.router.navigate(['/pages/NominaBecarios/Nominas-Revision']);
+      this.fetchData();
     }
 
     toggleCheckbox(row: any): void {
@@ -100,10 +96,9 @@ searchTerm: string = '';
     }
 
     saveChanges(): void {
-console.log(this.clabes)
-
       this.NominaBecService.changeClave(this.clabes).subscribe(
         (response) => {
+          this.fetchData();
           console.log('Respuesta del backend:', response);
           Swal.fire({
             title: 'Éxito',

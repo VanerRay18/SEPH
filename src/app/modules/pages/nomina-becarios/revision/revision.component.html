@@ -18,7 +18,7 @@
         </div>
       </div>
       <div class="col-auto col-lg-2 ms-5 mt-1 ">
-        <button type="submit" class="btn  btn-sm">Descargar Anexos</button>
+        <button type="submit" class="btn  btn-sm" (click)="generateAnexos()">Descargar Anexos</button>
       </div>
 
       <div class="col-auto col-lg-12">
@@ -64,9 +64,8 @@
       </div>
 
       <div class="boton-container col-auto col-lg-12 m-3 ">
-        <button type="submit" class="btn  btn-sm">Guardar</button>
-        <button type="submit" class="btn  btn-sm"
-          onclick="window.location.href='pages/NominaBecarios/Nominas-Enviar'">Continuar</button>
+        <button type="submit" class="btn  btn-sm" (click)="saveNomina('hdhj')" [disabled]="data2?.status >= 3">Guardar</button>
+        <button type="submit" class="btn  btn-sm" (click)="continueNomina()"[disabled]="data2?.status == 2">Continuar</button>
       </div>
     </div>
   </div>

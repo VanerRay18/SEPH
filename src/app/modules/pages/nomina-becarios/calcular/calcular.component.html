@@ -49,7 +49,7 @@
           [displayedColums]="displayedColumns"
           [searchTerm]="searchTerm"
           [maxHeight]="'630px'"
-          [itemsPerPage]="20"
+          [itemsPerPage]="10"
           [showActionsEdit]=false
           [showActionsDeleted]=false
           [showActionsPdf]=false
@@ -60,8 +60,8 @@
         </app-tables>
       </div>
       <div class="boton-container col-auto col-lg-12 m-3 " >
-        <button type="submit" class="btn  btn-sm" (click)="saveNomina()" [disabled]="isButtonDisabled">Guardar</button>
-        <button type="submit" class="btn  btn-sm" (click)="continueNomina()">Continuar</button>
+        <button type="submit" class="btn  btn-sm" (click)="saveNomina()" [disabled]="data2?.status >= 1">Guardar</button>
+        <button type="submit" class="btn  btn-sm" (click)=" continueNomina()" [disabled]="data2?.status == 0">Continuar</button>
       </div>
     </div>
   </div>

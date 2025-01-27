@@ -81,6 +81,8 @@ ngOnChanges(changes: SimpleChanges): void {
   }
 }
 
+
+
 private updatePagination(): void {
   const start = (this.currentPage - 1) * this.itemsPerPage;
   const end = start + this.itemsPerPage;

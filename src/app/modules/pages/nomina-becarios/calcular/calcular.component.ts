@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { ApiResponse } from 'src/app/models/ApiResponse';
 import { NominaBecService } from 'src/app/services/nomina-bec.service';
 import { NominaA } from 'src/app/shared/interfaces/utils';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
+import { OnChanges, SimpleChanges } from '@angular/core';
 
 
 @Component({
@@ -17,27 +18,34 @@ export class CalcularComponent {
   displayedColumns = ['nombre', 'curp', 'importTotal', 'retentionTotal', 'liquidTotal'];
   data = [];
   nominaId:any;
-
   status = localStorage.getItem('status')!;
   data2: NominaA | null = null;
   isButtonDisabled: boolean = false;
+  isButtonDisabled2: boolean = false;
 
   constructor(
     private router: Router,
-    private NominaBecService: NominaBecService
+    private NominaBecService: NominaBecService,
+    private cdr: ChangeDetectorRef
   ) {
     // Registrar las fuentes necesarias
   }
   async ngOnInit(): Promise<void> {
     this.nominaId = await this.loadNominaId();
-    console.log('ID de la nómina (desde ngOnInit):', this.nominaId);
     this.fetchData();
+
   }
 
 
   async loadNominaId() {
     const nominaId = await this.NominaBecService.getNominaId();
-    console.log('ID de la nómina:', nominaId);
+  }
+
+  onContinueNomina() {
+    this.continueNomina();  // Primero ejecuta la lógica de continuar la nómina
+
+    // Si continueNomina() es síncrona
+    this.fetchData();
   }
 
   fetchData() {
@@ -106,8 +114,10 @@ export class CalcularComponent {
 
     if (this.data2?.status == 1) {
       this.isButtonDisabled = true;
+
     } else {
       this.isButtonDisabled = false;
+
       Swal.fire({
         title: 'Confirmar',
         html: `¿Está seguro de que los calculos de la nomina estan correctos?<br><br>`,
@@ -117,9 +127,20 @@ export class CalcularComponent {
         cancelButtonText: 'No, cancelar'
       }).then((result) => {
         if (result.isConfirmed) {
+           // Mostrar spinner de carga
+                  Swal.fire({
+                    title: 'Guardando la nomina...',
+                    html: 'Por favor, espere mientras se guarda la nomina.',
+                    didOpen: () => {
+                      Swal.showLoading();
+                    },
+                    allowOutsideClick: false,
+                    showConfirmButton: false
+                  });
           // El usuario confirmó, proceder a enviar los datos
           this.NominaBecService.saveNomina(this.data).subscribe(
             response => {
+              this.fetchData();
               Swal.fire({
                 title: 'Nomina Guardada',
                 text: 'Se guardo la Nomina correctamente',
@@ -136,13 +157,16 @@ export class CalcularComponent {
               });
             }
           );
+
         }
       });
+
     }
   }
 
   continueNomina(): void{
     this.router.navigate(['/pages/NominaBecarios/Nominas-Pagar']);
+    this.fetchData();
   }
 
 

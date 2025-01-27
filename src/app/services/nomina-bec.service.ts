@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { ApiResponse } from 'src/app/models/ApiResponse';
 import { environment } from 'src/environments/enviroment';
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -48,7 +49,13 @@ export class NominaBecService {
     return this.http.post<ApiResponse>(`${environment.baseService}${'/nomina/changeStatus'}`,null,
       {headers}
     );
+  }
 
+  getAnexo05(nominaId: any): Observable<ApiResponse> {//Trae las claves bancarias del empleado
+    let headers = new HttpHeaders({'nominaId': nominaId})
+    return this.http.get<ApiResponse>(`${environment.baseService}${'/nomina/anexo05'}`,
+      {headers}
+    );
   }
 
   async getNominaId(): Promise<number> {
