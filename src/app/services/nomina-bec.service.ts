@@ -51,9 +51,16 @@ export class NominaBecService {
     );
   }
 
-  getAnexo05(nominaId: any): Observable<ApiResponse> {//Trae las claves bancarias del empleado
+  getAnexo05(nominaId: any): Observable<ApiResponse> {//Trae el anexo 5
     let headers = new HttpHeaders({'nominaId': nominaId})
     return this.http.get<ApiResponse>(`${environment.baseService}${'/nomina/anexo05'}`,
+      {headers}
+    );
+  }
+
+  getAnexo06(nominaId: any): Observable<ApiResponse> {//Trae el anexo 6
+    let headers = new HttpHeaders({'nominaId': nominaId})
+    return this.http.get<ApiResponse>(`${environment.baseService}${'/nomina/anexo06'}`,
       {headers}
     );
   }

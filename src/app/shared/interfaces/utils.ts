@@ -100,6 +100,21 @@ export interface NominaP{
     SEMANAS_HORAS_EXTRA: any
     }
 
+    export interface Anexo06{
+      TIPO_NOMINA: any,
+      UR: any,
+      NO_COMPROBANTE: any,
+      CURP: any,
+      PERIODO: any,
+      CLAVE_PLAZA: any,
+      TIPO_CONCEPTO: any,
+      DESC_CONCEPTO: any,
+      IMPORTE: any,
+      COD_CONCEPTO: any,
+      BASE_CALCULO_ISR: any
+      }
+
+
 
 
 // export interface clave{

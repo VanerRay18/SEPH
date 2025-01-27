@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiResponse } from 'src/app/models/ApiResponse';
 import { NominaBecService } from 'src/app/services/nomina-bec.service';
-import { NominaA } from 'src/app/shared/interfaces/utils';
+import { Anexo06, NominaA } from 'src/app/shared/interfaces/utils';
 import Swal from 'sweetalert2';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
@@ -22,14 +22,9 @@ export class RevisionComponent {
   tabs = [
     { id: 'anexo5', title: 'Anexo 5', icon: 'fas fa-file-medical' },
     { id: 'anexo6', title: 'Anexo 6', icon: 'fas fa-exclamation-triangle' },
-    { id: 'anexo7', title: 'Anexo 7', icon: 'fas fa-handshake' }
+
   ];
 
-  previewData = [
-    { id: 1, nombre: 'Juan Pérez', rfc: 'JUPE123456', puesto: 'Analista' },
-    { id: 2, nombre: 'Ana Gómez', rfc: 'ANGO789012', puesto: 'Desarrollador' },
-    { id: 3, nombre: 'Luis Martínez', rfc: 'LUMA345678', puesto: 'Gerente' },
-  ];
 
   activeTab: string = 'anexo5';
   nominaId: any;
@@ -93,7 +88,7 @@ export class RevisionComponent {
   }
 
   continueNomina(): void {
-    this.router.navigate(['/pages/NominaBecarios/Nominas-Revision']);
+    this.router.navigate(['/pages/NominaBecarios/Nominas-Enviar']);
     this.fetchData();
   }
 
@@ -110,6 +105,7 @@ export class RevisionComponent {
 
     try {
       await this.generateExcelAnexo5(); // Espera a que se complete
+      await this.generateExcelAnexo6(); // Espera a que se complete
       Swal.fire({
         icon: 'success',
         title: 'Anexos generados',
@@ -186,6 +182,56 @@ export class RevisionComponent {
     });
   }
 
+  generateExcelAnexo6(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const quincena = this.data2?.quincena;
+
+      this.NominaBecService.getAnexo06(this.nominaId).subscribe({
+        next: async response => {
+          if (response && response.data && Array.isArray(response.data)) {
+            const headers = [
+              'NO_COMPROBANTE', 'UR', 'PERIODO', 'TIPO_NOMINA','CLAVE_PLAZA', 'CURP', 'TIPO_CONCEPTO', 'COD_CONCEPTO', 'DESC_CONCEPTO', 'IMPORTE',
+              'BASE_CALCULO_ISR'
+            ];
+
+            const sortedData = response.data.sort((b, a) =>
+              Number(b.NO_COMPROBANTE) - Number(a.NO_COMPROBANTE)
+            );
+
+            const excelData = sortedData.map((item: Anexo06) => ([
+              item.NO_COMPROBANTE, item.UR, item.PERIODO, item.TIPO_NOMINA, item.CLAVE_PLAZA, item.CURP, item.TIPO_CONCEPTO, item.COD_CONCEPTO,
+              item.DESC_CONCEPTO, item.IMPORTE, item.BASE_CALCULO_ISR
+            ]));
+
+            // Unir encabezados con los datos
+            const hojaCompleta = [headers, ...excelData];
+
+            // Crear hoja de Excel
+            const worksheet: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(hojaCompleta);
+
+            // Ajustar ancho de columnas
+            worksheet['!cols'] = headers.map(() => ({ wpx: 120 }));
+
+            // Crear libro de Excel
+            const workbook: XLSX.WorkBook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Anexo06');
+
+            // Generar archivo Excel
+            const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+
+            // Guardar el archivo
+            this.saveAsExcelFile(excelBuffer, `Anexo06 ${quincena}`);
+            resolve();
+          } else {
+            reject('Datos no válidos en la respuesta');
+          }
+        },
+        error: err => {
+          reject(err);
+        }
+      });
+    });
+  }
   // Método para guardar el archivo Excel
   private saveAsExcelFile(buffer: any, fileName: string): void {
     const data: Blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' });
