@@ -202,3 +202,12 @@ button:active {
 h3{
   font-size: 65px;
 }
+
+.btn-ver {
+  background: none;
+  border: 1px solid #6A1B4D;
+  color: #6A1B4D;
+  padding: 8px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+}

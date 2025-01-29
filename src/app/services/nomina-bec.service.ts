@@ -42,6 +42,14 @@ export class NominaBecService {
   NewCatalogos(data:any): Observable<ApiResponse> {//Trae la nomina actual
     return this.http.post<ApiResponse>(`${environment.baseService}${'/nomina/catalogo'}`,data);
   }
+
+  editCatalogos(data:any, catalogoId:any): Observable<ApiResponse> {//Trae la nomina actual
+    let headers = new HttpHeaders({'catalogoId': catalogoId})
+    return this.http.patch<ApiResponse>(`${environment.baseService}${'/nomina/catalogo'}`,data,
+      {headers}
+    );
+  }
+
   saveNomina(data:any): Observable<ApiResponse> {//Guarda la nomina
     return this.http.post<ApiResponse>(`${environment.baseService}${'/nomina/saveNomina'}`,data);
   }
