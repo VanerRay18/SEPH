@@ -94,19 +94,19 @@ export class CatalogosComponent {
       cancelButtonText: 'Cancelar',
       preConfirm: () => {
         const category = (document.getElementById('category') as HTMLInputElement).value;
-        const importt = (document.getElementById('importt') as HTMLInputElement).value;
+        const importe = (document.getElementById('importt') as HTMLInputElement).value;
         const retention = (document.getElementById('retention') as HTMLInputElement).value;
         const liquid = (document.getElementById('liquid') as HTMLInputElement).value;
         const type = (document.getElementById('type') as HTMLInputElement).value;
 
-        if (!category || !importt || !retention || !liquid || !type) {
+        if (!category || !importe || !retention || !liquid || !type) {
           Swal.showValidationMessage('Todos los campos son obligatorios');
           return false;
         }
 
         return {
           category,
-          importt,
+          importe,
           retention,
           liquid,
           type
@@ -183,18 +183,18 @@ export class CatalogosComponent {
         cancelButtonText: 'Cancelar',
         preConfirm: () => {
           const category = (document.getElementById('category') as HTMLInputElement).value;
-          const importt = (document.getElementById('importt') as HTMLInputElement).value;
+          const importe = (document.getElementById('importt') as HTMLInputElement).value;
           const retention = (document.getElementById('retention') as HTMLInputElement).value;
           const liquid = (document.getElementById('liquid') as HTMLInputElement).value;
           const type = (document.getElementById('type') as HTMLInputElement).value;
-          if (!category || !importt || !retention || !liquid || !type) {
+          if (!category || !importe || !retention || !liquid || !type) {
             Swal.showValidationMessage('Todos los campos son obligatorios');
             return false;
           }
 
           return {
             category,
-            importt,
+            importe,
             retention,
             liquid,
             type
