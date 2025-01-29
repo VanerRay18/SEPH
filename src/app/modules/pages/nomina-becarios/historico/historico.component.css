@@ -1,0 +1,114 @@
+h1{
+  font-weight: bold;
+}
+
+h5{
+  color: rgb(122, 122, 122);
+}
+
+.row{
+  margin: 0;
+}
+
+.card{
+  background-color: #ffffff;
+  border-radius: 10px;
+  width: 98%;
+}
+
+.nominas{
+border-color: black;
+}
+
+/* Fondo del acordeón */
+.accordion {
+  background-color: #ffffff; /* Color de fondo */
+  border-radius: 8px;
+  padding: 10px;
+}
+
+/* Estilo del item del acordeón */
+.accordion-item {
+
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Estilo del botón del acordeón */
+.accordion-button {
+  background-color: #ffffff; /* Color morado */
+  color: #660033;
+  font-weight: bold;
+  padding: 15px;
+  border: none;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.accordion-button:hover {
+  background-color: #660033; /* Color más oscuro al pasar el mouse */
+  color: #ffffff;
+}
+
+.accordion-button:not(.collapsed) {
+  background-color: #660033 !important; /* Color oscuro */
+  color: #ffffff !important; /* Texto blanco */
+  font-weight: bold;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Estilo del icono (antes/después de abrir) */
+.accordion-button::after {
+  content: '\f107'; /* Ícono de FontAwesome (flecha abajo) */
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  color: white;
+  font-size: 1.2rem;
+}
+
+/* Cambia el icono cuando está expandido */
+.accordion-button:not(.collapsed)::after {
+  content: '\f106'; /* Ícono de FontAwesome (flecha arriba) */
+  color: white;
+
+}
+
+/* Estilo del cuerpo del acordeón */
+.accordion-body {
+  background-color: #ffffff; /* Fondo gris */
+  padding: 15px;
+  font-size: 1rem;
+}
+
+.yearNomina {
+  width: 50%; /* Ocupa el ancho completo del contenedor */
+  padding: 10px;
+  font-size: 16px;
+  border: 2px solid #bdbdbd; /* Borde del color institucional */
+  border-radius: 8px; /* Bordes redondeados */
+  background-color: #ffffff;
+  color: #000000; /* Color del texto */
+  outline: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Cambiar color al pasar el mouse */
+.yearNomina:hover {
+  background-color: #dadada;
+  border-color: #c9c9c9;
+}
+
+/* Cambiar color cuando está seleccionado */
+.yearNomina:focus {
+  background-color: #eeeeee;
+  border-color: #bdbdbd;
+  box-shadow: 0 0 5px rgba(153, 153, 153, 0.5); /* Sombra ligera */
+}
+
+/* Estilo para las opciones del dropdown */
+.yearNomina option {
+  background-color: #ffffff;
+  color: #660033;
+  font-size: 16px;
+}

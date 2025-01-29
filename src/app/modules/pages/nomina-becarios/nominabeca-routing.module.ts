@@ -8,6 +8,7 @@ import { PagarComponent } from './pagar/pagar.component';
 import { RevisionComponent } from './revision/revision.component';
 import { EnviarComponent } from './enviar/enviar.component';
 import { HistoricoComponent } from './historico/historico.component';
+import { CatalogosComponent } from './catalogos/catalogos.component';
 
 const routes: Routes = [
   {path: 'Home-Becarios',component:HomeBecariosComponent},
@@ -18,6 +19,7 @@ const routes: Routes = [
   {path: 'Nominas-Revision',component:RevisionComponent},
   {path: 'Nominas-Enviar',component:EnviarComponent},
   {path: 'Nominas-Historico',component:HistoricoComponent},
+  {path: 'Catalogos',component:CatalogosComponent},
 ];
 
 @NgModule({

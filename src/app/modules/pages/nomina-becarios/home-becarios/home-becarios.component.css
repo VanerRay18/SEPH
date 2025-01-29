@@ -1,0 +1,204 @@
+h1{
+  font-weight: bold;
+}
+
+h5{
+  color: rgb(122, 122, 122);
+}
+
+.row{
+  margin: 0;
+}
+
+.card{
+  background-color: #ffffff;
+  border-radius: 10px;
+
+}
+
+
+.boton-container {
+  display: flex; /* Activa flexbox */
+  justify-content: center; /* Centra el contenido horizontalmente */
+  align-items: center; /* Centra el contenido verticalmente */
+
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #ffffff;
+  color: #621132;
+  border-color: #621132;
+  font-weight: bold;
+  height: 38px;
+  border-radius: 15px;
+  margin: 7px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+button:hover {
+  background-color: #621132; /* Fondo marrón en hover */
+  color: #ffffff; /* Texto blanco en hover */
+  border-color: #621132; /* Borde marrón en hover */
+}
+
+button:active {
+  background-color: #3d0b1e; /* Fondo más oscuro para active */
+  color: #ffffff; /* Texto blanco en active */
+  border-color: #3d0b1e; /* Borde oscuro en active */
+  outline: none; /* Sin borde adicional */
+}
+
+.titulos{
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.alert:last-child {
+  border-bottom: none;
+}
+
+.alert-icon {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: red;
+  margin-top: 5px;
+}
+
+.alert-content {
+  flex-grow: 1;
+}
+
+.alert-time {
+  font-weight: bold;
+  font-size: 14px;
+  color: #5a5a5a;
+}
+
+.alert-text {
+  font-size: 14px;
+  color: #333;
+}
+
+.historico{
+  height: 230px;
+}
+
+/* .container{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: min-content;
+} */
+
+.container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px;
+}
+
+.grid-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Dos columnas */
+  grid-template-rows: auto auto auto; /* Filas automáticas */
+  gap: 20px; /* Espacio entre elementos */
+}
+
+/* Tamaño de cada sección */
+.titulos {
+  grid-column: span 2; /* Ocupa toda la fila */
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.nomina {
+  grid-column: span 1;
+}
+
+.historico {
+  grid-column: span 1;
+}
+
+.alertas {
+  grid-column: span 1;
+}
+
+.becarios {
+  grid-column: span 1; /* Ocupa toda la fila */
+
+}
+
+/* Estilos generales */
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.card-title h5 {
+  font-size: 1.2rem;
+  color: #6A1B4D; /* Color morado */
+}
+
+.btn-iniciar {
+  background-color: #6A1B4D;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.btn-ver {
+  background: none;
+  border: 1px solid #6A1B4D;
+  color: #6A1B4D;
+  padding: 8px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+/* Estilo de alertas */
+.alert {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.alert-icon {
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.alert-content {
+  flex: 1;
+}
+
+.alert-time {
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.alert-text {
+  font-size: 0.85rem;
+  color: #555;
+}
+
+h3{
+  font-size: 65px;
+}

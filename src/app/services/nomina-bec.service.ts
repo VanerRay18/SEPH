@@ -35,6 +35,13 @@ export class NominaBecService {
     );
   }
 
+  getCatalogos(): Observable<ApiResponse> {//Trae la nomina actual
+    return this.http.get<ApiResponse>(`${environment.baseService}${'/nomina/catalogo'}`);
+  }
+
+  NewCatalogos(data:any): Observable<ApiResponse> {//Trae la nomina actual
+    return this.http.post<ApiResponse>(`${environment.baseService}${'/nomina/catalogo'}`,data);
+  }
   saveNomina(data:any): Observable<ApiResponse> {//Guarda la nomina
     return this.http.post<ApiResponse>(`${environment.baseService}${'/nomina/saveNomina'}`,data);
   }

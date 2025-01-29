@@ -1,1 +1,75 @@
-<p>home-becarios works!</p>
+<div class="container">
+  <div class="grid-layout">
+
+    <!-- Título -->
+    <div class="titulos">
+      <h1>¡Hola, Administrador!</h1>
+    </div>
+
+    <!-- Siguiente Nómina -->
+    <div class="card nomina">
+      <div class="card-title">
+        <h5>La siguiente nómina</h5>
+      </div>
+      <div class="card-body" style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+        <p>Quincena a pagar:&nbsp;&nbsp;<strong>{{ data?.quincena}}</strong></p>
+        <button class="btn-iniciar" (click)="startNomina()">INICIAR</button>
+      </div>
+    </div>
+
+    <!-- Histórico -->
+    <div class="card historico">
+      <div class="card-title">
+        <h5>Histórico</h5>
+      </div>
+      <div class="card-body">
+        <p>Tu última nómina &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa-solid fa-chevron-right" onclick="window.location.href='/pages/NominaBecarios/Nominas-Historico';" style="cursor: pointer;"></i></p>
+        <p>Nóminas del año pasado &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa-solid fa-chevron-right" onclick="window.location.href='/pages/NominaBecarios/Nominas-Historico';" style="cursor: pointer;"></i></p>
+      </div>
+    </div>
+
+    <!-- Becarios Registrados -->
+    <div class="card becarios ">
+      <div class="card-title">
+        <h5>BECARIOS REGISTRADOS</h5>
+      </div>
+      <div class="card-body bectext text-center justify-content-center mt-5">
+        <h3>{{ data?.becarios}} Becarios</h3>
+        <p><strong>Quincena 01: {{ data?.becarios}} Becarios pagados</strong></p>
+        <button class="btn-ver" onclick="window.location.href='/pages/NominaBecarios/Becarios';" style="cursor: pointer;">VER REGISTROS</button>
+      </div>
+    </div>
+
+    <!-- Alertas -->
+    <div class="card alertas">
+      <div class="card-title">
+        <h5>ALERTAS</h5>
+      </div>
+      <div class="card-body">
+        <div class="alert">
+          <div class="alert-icon"></div>
+          <div class="alert-content">
+            <p class="alert-time"><strong>Hace 15 días</strong></p>
+            <p class="alert-text">Sonia Juana González Niño ha solicitado vacaciones del 10/01/24 al 14/01/24 para Erik Randon Perez</p>
+          </div>
+        </div>
+        <div class="alert">
+          <div class="alert-icon" style="background-color: gray;"></div>
+          <div class="alert-content">
+            <p class="alert-time"><strong>Hace 15 días</strong></p>
+            <p class="alert-text">El contrato de Álvaro Clemente López Valderas finaliza el 19/01/2024</p>
+          </div>
+        </div>
+        <div class="alert">
+          <div class="alert-icon" style="background-color: gray;"></div>
+          <div class="alert-content">
+            <p class="alert-time"><strong>Hace 15 días</strong></p>
+            <p class="alert-text">Ernest León Hernández ha sido dado de alta</p>
+          </div>
+        </div>
+        <button class="btn-ver">VER TODAS</button>
+      </div>
+    </div>
+
+  </div>
+</div>

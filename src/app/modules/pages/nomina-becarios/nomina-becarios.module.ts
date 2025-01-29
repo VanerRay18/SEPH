@@ -13,6 +13,7 @@ import { NominabecaRoutingModule } from './nominabeca-routing.module';
 import { SharedModule } from "../../../shared/shared.module";
 import { Anexo6Component } from './anexo6/anexo6.component';
 import { Anexo7Component } from './anexo7/anexo7.component';
+import { CatalogosComponent } from './catalogos/catalogos.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { Anexo7Component } from './anexo7/anexo7.component';
     EnviarComponent,
     HistoricoComponent,
     Anexo6Component,
-    Anexo7Component
+    Anexo7Component,
+    CatalogosComponent
   ],
   imports: [
     CommonModule,

@@ -22,6 +22,7 @@ export class LoggedGuard implements CanActivate, CanLoad {
       const rolId = localStorage.getItem('rolId');
       const extras = localStorage.getItem('extras');
 
+
       if (!token || !rolId) {
         console.error('El token o rolId no están definidos.');
         this.router.navigate(['/login']);

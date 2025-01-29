@@ -1,6 +1,6 @@
 <div class="cont col-auto row  mt-4 ms-4">
   <div class="titulos ">
-    <h1>Becarios registardos</h1>
+    <h1>Catalogo de becarios</h1>
   </div>
   <div class="card d-flex mt-3">
     <div class="row">
@@ -25,7 +25,8 @@
           [searchTerm]="searchTerm"
           [maxHeight]="'630px'"
           [itemsPerPage]="20"
-          [showActionsEdit]=false
+          [showActionsEdit]="true"
+            (edit)="onEdit($event)"
           [showActionsDeleted]=false
           [showActionsPdf]=false
           [showActiveCheckbox]=false

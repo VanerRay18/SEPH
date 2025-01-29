@@ -1,1 +1,45 @@
-<p>historico works!</p>
+<div class="cont col-auto row  mt-4 ms-4">
+  <div class="titulos ">
+    <h1>Historico de nominas</h1>
+  </div>
+  <div class="card d-flex mt-3">
+    <div class="row">
+
+      <div class="col-auto col-lg-12 mt-4">
+        <h2>Nominas del 2025</h2>
+        <br>
+        <select class="yearNomina" aria-label="Default select example">
+          <option selected>Seleciona el año que desaeas ver</option>
+          <option value="1">2025</option>
+          <option value="2">2024</option>
+          <option value="3">2023</option>
+        </select>
+      </div>
+
+      <div class="col-auto col-lg-12 m-4">
+       <div class="card nominas" > <!-- //*ngFor="let variable of data" -->
+          <div class="card-title mt-3 ms-3">
+            <h4>Enero 2025</h4>
+          </div>
+          <div class="card-body">
+            <div class="accordion" id="accordionExample">
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    Nomina  Quincenal del 16/01/2024 al 31/01/2024&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Periodo 002/2024: 15 ene - 31 ene&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Empleados: 13&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Total: $231,952.53
+                  </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                  <div class="accordion-body">
+                    <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

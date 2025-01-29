@@ -70,7 +70,7 @@ export class NavComponent implements OnInit, OnDestroy {
             vista: item.vista,
             children: []
           }));
-console.log(modules)
+// console.log(modules)
           // Construye el árbol de módulos
           this.menuItems = this.buildTree(modules);
         },

@@ -58,6 +58,7 @@ export class UsersComponent implements OnInit {
         nombre: this.UserForm.value.name,
         password: this.UserForm.value.pass,
         user: this.UserForm.value.user,
+        srl_emp: this.UserForm.value.srl_emp,
         area: this.UserForm.value.area,
         cargo: this.UserForm.value.position,
         funciones: this.UserForm.value.fuction,
@@ -167,6 +168,7 @@ export class UsersComponent implements OnInit {
   onDragStartM(event: DragEvent, modulo: { id: number, name: string, config: string }) {
     this.draggedModulo = modulo;
     event.dataTransfer?.setData('text/plain', modulo.name);
+    console.log(modulo)
   }
 
   onDropM(event: DragEvent, target: 'assigned' | 'all') {
