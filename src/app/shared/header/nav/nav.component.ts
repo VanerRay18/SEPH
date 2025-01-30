@@ -4,6 +4,8 @@ import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/services/auth.service';
 import Swal from 'sweetalert2';
 import { BusquedaserlService } from 'src/app/services/busquedaserl.service';
+import { ApiResponse } from 'src/app/models/ApiResponse';
+import { NotificacionERP } from '../../interfaces/utils';
 export class TreeNode {
   moduleId!: number; // ID del módulo
   moduleName!: string; // Nombre del módulo
@@ -24,16 +26,30 @@ export class NavComponent implements OnInit, OnDestroy {
   menuItems: TreeNode[] = []; // Almacena los módulos construidos como árbol
   subs: Subscription[] = []; // Lista de suscripciones para limpiar después
   currentRoute: string = ''; // Ruta actual del navegador
+  showNotifications = false; // Controla la visibilidad de las notificaciones
+  notificationCount = 1; // Número de notificaciones no leídas
+  notifications: NotificacionERP[] = []; // Inicializamos como un array vacío
 
+  // Alternar la visibilidad de las notificaciones
+  toggleNotifications() {
+    this.showNotifications = !this.showNotifications;
+  }
   constructor(
     private authService: AuthService,
     private router: Router,
     private BusquedaserlService: BusquedaserlService,
   ) {     this.currentRoute = this.router.url;}
 
+  fetchData(){
+    const userId = localStorage.getItem('userId');
+    this.authService.getNotifications(userId).subscribe((response: ApiResponse)=>{
+      this.notifications = response.data;
+    })
+  }
+
   ngOnInit(): void {
      // Obtiene la ruta actual al iniciar
-
+    this.fetchData();
     this.getCurrentRoute(); // Escucha los eventos de navegación
     this.getUserModules(); // Llama al servicio para obtener los módulos del usuario
   }

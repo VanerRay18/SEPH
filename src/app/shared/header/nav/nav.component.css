@@ -131,3 +131,115 @@ color: #FFD700;
   background-color: #8a1538;
   color: white; /* blanco */
 }
+
+
+
+
+
+
+
+
+
+.notification {
+  position: relative;
+  display: inline-block;
+  padding: 8px;
+  
+}
+
+.notification .fa-bell {
+  font-size: 22px;
+  cursor: pointer;
+
+  color: white;
+}
+
+.notification .badge {
+  cursor: pointer;
+  position: absolute;
+  align-items: center;
+  background-color: #f0dd38;
+  top: -3px;
+  right: -12px;
+max-width: 32px;
+  border-radius: 100%;
+  color: rgb(0, 0, 0);
+  font-size: 13px;
+}
+.bell{
+  font-size: 24px;
+  cursor: pointer;
+
+  color: white;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.459); /* Negro semitransparente */
+  z-index: 999; /* Debe estar por debajo del dropdown */
+}
+/* Dropdown de notificaciones */
+.notification-dropdown {
+  position: absolute;
+  margin-left: 28px;
+
+  top: 62px;
+  left: 0;
+  transform: translateX(-20px);
+  width: 300px;
+  background-color: rgba(255, 255, 255, 0);
+  border-radius: 15px;
+  border: 1px solid #ffffff00;
+  z-index: 1000;
+  padding: 10px;
+}
+
+
+.notification-item {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  background: white;
+  border-radius: 20px; 
+  border: 1px solid #ddd;
+  margin-bottom: 10px; 
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+}
+
+.notification-item:hover {
+  transform: scale(1.03);
+  background-color: #f9f9f9;
+}
+
+
+.notification-content {
+  flex: 1;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column; /* Hace que el título y mensaje queden en columnas */
+}
+
+.notification-content strong {
+  font-weight: bold;
+  margin-bottom: 3px; /* Espacio entre título y mensaje */
+  display: block;
+}
+
+
+
+.fa-check {
+  cursor: pointer;
+  font-size: 20px;
+  margin-left: 10px;
+  color: green;
+}
+
+.iconNoti{
+  font-size: 23px;
+  margin-right: 9px;
+}

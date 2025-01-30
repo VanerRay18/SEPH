@@ -5,7 +5,27 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <img src="assets/logo_nav.png" class="img">
+
     
+      <i class="fa-solid fa-bell position-relative  ms-lg-3 bell" (click)="toggleNotifications()"  >
+      <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary " style="font-size:12px" >
+        1
+      </span>
+    </i>
+
+    <div *ngIf="showNotifications" class="overlay" (click)="toggleNotifications()"></div>
+
+    <!-- Dropdown de notificaciones -->
+    <div *ngIf="showNotifications" class="notification-dropdown">
+      <div class="notification-item" *ngFor="let notification of notifications">
+        <i class="{{notification.icon}} iconNoti"></i>        
+        <div class="notification-content">
+          <strong>{{ notification.title }}</strong> <!-- Título en negritas arriba -->
+          <span>{{ notification.message }}</span> <!-- Mensaje debajo -->
+        </div>
+        <i class="fa-solid fa-check"></i>
+      </div>
+    </div>
 
     <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
       <div class="offcanvas-header">

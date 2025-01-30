@@ -115,6 +115,16 @@ export interface NominaP{
       }
 
 
+      export interface NotificacionERP{
+        name: any,
+        fecha: any,
+        icon: any,
+        id: any,
+        message:any,
+        title: any,
+        status: any
+        }
+
 
 
 // export interface clave{
@@ -184,4 +194,5 @@ export interface historico {
     total_dias: number;
   }>;
 }
+
 

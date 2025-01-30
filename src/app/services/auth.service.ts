@@ -101,6 +101,12 @@ export class AuthService {
   }
 
 
+    getNotifications(userId: any): Observable<ApiResponse> {
+      let headers = new HttpHeaders({'userId': userId})
+      return this.http.get<ApiResponse>(`${environment.baseService}${'/notifications'}`,
+        {headers}
+      );    
+    }
 
 
 
