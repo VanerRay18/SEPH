@@ -786,13 +786,14 @@ console.log(data)
             ]
           },
           {
-            text: '\nAlberto Noble Gómez\nDirector de Atención y Aclaración de Nómina\nPresente:',
+            text: '\nM.T.I  Alberto Noble Gómez\nDirector de Atención y Aclaración de Nómina\nPresente:',
             style: 'subheader',
             margin: [0, 20, 0, 20]
           },
           {
             text: `Con fundamento en el Artículo 111, de la Ley Federal de los Trabajadores al Servicio del Estado y Artículo 52, Fracción I del Reglamento de las Condiciones Generales de Trabajo del personal de la Secretaría del ramo, por este conducto solicito a Usted, gire instrucciones a quien corresponda a efecto de que la (el) C. ${data.nombre.trim()} R.F.C. ${data.rfc} fecha de ingreso ${data.fecha_ingreso}, quien labora en el CT con clave(s) presupuestal(es) siguientes:`,
-            margin: [0, 20, 0, 20]
+            margin: [0, 20, 0, 20],
+            alignment: 'justify'
           },
           {
             table: {
@@ -811,7 +812,8 @@ console.log(data)
           },
           {
             text: 'Reintegre al Estado el sueldo no devengado, de conformidad con las licencias médicas que se mencionan a continuación:',
-            margin: [0, 20, 0, 10]
+            margin: [0, 20, 0, 10],
+            alignment: 'justify'
           },
           {
             table: {
@@ -844,7 +846,7 @@ console.log(data)
             alignment: 'center'
           },
           {
-            text: 'José Gabriel Castro Bautista\nDirector de Nómina y Control de Plazas',
+            text: 'ING. José Gabriel Castro Bautista\nDirector de Nómina y Control de Plazas',
             alignment: 'center',
             bold: true
           }
