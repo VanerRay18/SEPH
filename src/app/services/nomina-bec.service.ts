@@ -39,6 +39,10 @@ export class NominaBecService {
     return this.http.get<ApiResponse>(`${environment.baseService}${'/nomina/catalogo'}`);
   }
 
+  getHistory(): Observable<ApiResponse> {//Trae la nomina actual
+    return this.http.get<ApiResponse>(`${environment.baseService}${'/nomina/nominaHistorial'}`);
+  }
+
   NewCatalogos(data:any): Observable<ApiResponse> {//Trae la nomina actual
     return this.http.post<ApiResponse>(`${environment.baseService}${'/nomina/catalogo'}`,data);
   }
@@ -95,6 +99,9 @@ export class NominaBecService {
   }
 
 
+  sentNomina(data:any): Observable<ApiResponse> {//Guarda la nomina
+    return this.http.post<ApiResponse>(`${environment.baseService}${'/nomina/sentNomina'}`,data);
+  }
 
 
 }
