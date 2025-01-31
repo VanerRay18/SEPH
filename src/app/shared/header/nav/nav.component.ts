@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
-import { interval, pipe, startWith, Subscription, switchMap } from 'rxjs';
+import { catchError, interval, of, pipe, startWith, Subscription, switchMap } from 'rxjs';
 import { AuthService } from 'src/app/services/auth.service';
 import Swal from 'sweetalert2';
 import { BusquedaserlService } from 'src/app/services/busquedaserl.service';
@@ -42,20 +42,24 @@ export class NavComponent implements OnInit, OnDestroy {
     private BusquedaserlService: BusquedaserlService,
     private cdr: ChangeDetectorRef
   ) {     this.currentRoute = this.router.url;}
-
   fetchData() {
-    interval(15000) // Consulta cada 5 segundos
+    interval(15000)
       .pipe(
         startWith(0),
         switchMap(() => {
           const userId = localStorage.getItem('userId');
-          return this.authService.getNotifications(userId); // Llama al servicio
+          return this.authService.getNotifications(userId).pipe(
+            catchError((error) => {
+              console.error('Error al obtener notificaciones:', error);
+              return of(null); // Retorna un valor vacío para no detener el intervalo
+            })
+          );
         })
       )
       .subscribe((response) => {
         if (response) {
-          this.numNoti = response.message ; // Asegura un valor por defecto
-          this.notifications = response.data ;
+          this.numNoti = response.message ?? 0; // Asegura un valor por defecto
+          this.notifications = response.data ?? []; // Asegura un array vacío si no hay datos
           this.cdr.detectChanges(); // Fuerza actualización
         }
       });
@@ -119,8 +123,7 @@ export class NavComponent implements OnInit, OnDestroy {
             vista: item.vista,
             children: []
           }));
-// console.log(modules)
-          // Construye el árbol de módulos
+
           this.menuItems = this.buildTree(modules);
         },
       });

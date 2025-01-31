@@ -6,6 +6,7 @@ import { AuthService } from 'src/app/services/auth.service';
 import { HttpResponse, HttpHeaders } from '@angular/common/http';
 import { Module } from 'src/app/shared/interfaces/utils';
 import { PermisosUserService } from 'src/app/services/permisos-user.service';
+import { BusquedaserlService } from 'src/app/services/busquedaserl.service';
 @Component({
   selector: 'login',
   templateUrl: './login.component.html',
@@ -19,6 +20,7 @@ export class LoginComponent implements OnInit {
 
   constructor(private fb: FormBuilder, private authService: AuthService, private router: Router,
     private PermisosUserService: PermisosUserService,
+    private busqueda: BusquedaserlService
   ) {
     this.loginForm = this.fb.group({
       user: ['', [Validators.required , Validators.minLength(4) ]],
@@ -106,6 +108,7 @@ logout() {
   localStorage.removeItem('token');
   localStorage.removeItem('tokenExpiration');
   localStorage.removeItem('rolId');
+  this.busqueda.clearSrlEmp();
   this.router.navigate(['/login']); // Redirige al login
 }
 

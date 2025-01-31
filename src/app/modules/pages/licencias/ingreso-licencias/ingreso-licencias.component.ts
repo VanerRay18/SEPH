@@ -9,6 +9,7 @@ import { ImageToBaseService } from './../../../../services/image-to-base.service
 import { BusquedaserlService } from 'src/app/services/busquedaserl.service';
 import { PermisosUserService } from 'src/app/services/permisos-user.service';
 import { LicMedica } from 'src/app/shared/interfaces/utils';
+import { distinctUntilChanged } from 'rxjs';
 @Component({
   selector: 'ingreso-licencias',
   templateUrl: './ingreso-licencias.component.html',
@@ -33,8 +34,7 @@ export class IngresoLicenciasComponent implements OnInit {
   diasRegistrados: number = 0;
   Total_lic: any | null;
   isReadyToSend: boolean = false; // Variable para cambiar el color del botón
-
-
+  @Input() arrayUser: any; 
 
   tabs = [
     { id: 'licencias', title: 'Licencias Médicas', icon: 'fas fa-file-medical' },
@@ -56,8 +56,6 @@ export class IngresoLicenciasComponent implements OnInit {
 
   ngOnInit() {
 
-
-
     this.PermisosUserService.getPermisosSpring(this.PermisosUserService.getPermisos().Licencias).subscribe((response: ApiResponse) => {
       this.eliminar = response.data.eliminar
       this.modificar = response.data.editar
@@ -66,18 +64,23 @@ export class IngresoLicenciasComponent implements OnInit {
         this.headers.push('Acciones');
     });
 
-    this.BusquedaserlService.srlEmp$.subscribe(value => {
-      this.fecha_ingreso = value.fecha_ingreso
-      this.showCard = value.mostrar;
-      if (value.mostrar == true) {
-        this.srl_emp = value.srl_emp;
-        this.buscar(this.srl_emp);
-        this.verificarLicencias();
-      }
-
-    });
     this.HOLA()
     this.verificarLicencias();
+  }
+
+  arrayUserRecibido: any;  
+
+  recibirArrayUser(event: any) {
+    this.arrayUserRecibido = event;
+
+    const card = this.arrayUserRecibido.mostrar;
+    this.showCard = card
+    if(card == true){
+     this.buscar(this.arrayUserRecibido.srl_emp);
+     this.HOLA()
+     this.verificarLicencias();
+    }
+
   }
 
   HOLA() {
@@ -121,9 +124,8 @@ export class IngresoLicenciasComponent implements OnInit {
     this.srl_emp = srl_emp;
     this.Total_lic = 0;
     this.currentDate = this.getCurrentDate(this.fecha_ingreso).date; // Usa `getCurrentDate` para formatear la fecha
-    console.log(this.srl_emp)
+   // console.log(this.srl_emp)
     this.LicenciasService.getLicencias(srl_emp).subscribe((response: ApiResponse) => {
-      // console.log("Respuesta de la API:", response);
       this.table = true;
 
 
@@ -346,8 +348,6 @@ export class IngresoLicenciasComponent implements OnInit {
       }
     }).then((result) => {
       if (result.isConfirmed) {
-        console.log("//////////////////////////////////////////////////")
-        console.log(data)
         const dataEditada = result.value;
         this.guardarCambios2(dataEditada, data.id);
       }
@@ -356,9 +356,6 @@ export class IngresoLicenciasComponent implements OnInit {
 
   guardarCambios2(data: any, licenciaId: any) {
     const userId = localStorage.getItem('userId')!;
-    console.log(data)
-    console.log(userId)
-    console.log(licenciaId)
     this.LicenciasService.updateLic(data, licenciaId, userId).subscribe(
       response => {
         this.buscar(this.srl_emp);
@@ -431,11 +428,10 @@ export class IngresoLicenciasComponent implements OnInit {
       }
     });
   }
-
+ 
   onEdit(data: any) {
     //AAGP790513HH4
-console.log(data)
-    console.log(data.formato)
+    
     Swal.fire({
       title: 'Editar Registro',
       html: `
@@ -573,7 +569,7 @@ console.log(data)
       if (response.data && response.data.licencias && response.data.licencias.length > 0) {
         const canSendToOficio = response.data.licencias.some((item: LicMedica) => {
 
-          console.log('observaciones:', item.observaciones, 'nueva:', item.nueva);
+          //console.log('observaciones:', item.observaciones, 'nueva:', item.nueva);
 
           return (item.observaciones === 2 || item.observaciones === 1) && item.nueva === "1"  && item.color ===  "black";
         });
@@ -724,7 +720,7 @@ console.log(data)
             // Llama al servicio para crear un oficio
             this.LicenciasService.patchLicenciasOficio(licenciasid, userId, this.srl_emp).subscribe(
               (response: { data: { oficio: string } }) => { // Asegúrate de definir el tipo de respuesta
-                console.log(response.data)
+             //   console.log(response.data)
                 const oficioId = response.data.oficio; // Accede al 'oficio' dentro de 'data'
 
 
@@ -759,7 +755,7 @@ console.log(data)
 
 
   onPdf(oficioId: any) {
-    console.log(oficioId);
+ //   console.log(oficioId);
     this.LicenciasService.getLicenciasOficioPdf(oficioId).subscribe(async response => {
       const data = response.data;
       const claves = data.claves || []; // Asegura que 'claves' esté definido
