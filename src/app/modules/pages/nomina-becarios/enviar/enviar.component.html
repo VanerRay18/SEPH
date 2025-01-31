@@ -59,9 +59,8 @@
 
 
       <div class="boton-container col-auto col-lg-12 m-3 ">
-        <button type="submit" class="btn  btn-sm">Guardar</button>
-        <button type="submit" class="btn  btn-sm"
-          onclick="window.location.href='pages/NominaBecarios/Nominas-Enviar'">Continuar</button>
+        <button type="submit" class="btn  btn-sm" (click)="saveNomina('hdhj')" [disabled]="data2?.status >= 4">Guardar</button>
+        <button type="submit" class="btn  btn-sm" (click)="continueNomina()"[disabled]="data2?.status == 3">Terminar y enviar</button>
       </div>
     </div>
   </div>
