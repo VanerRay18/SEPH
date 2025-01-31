@@ -807,7 +807,7 @@ export class IngresoLicenciasComponent implements OnInit {
             margin: [0, 10, 0, 20]
           },
           {
-            text: 'Reintegre al Estado el sueldo no devengado, de conformidad con las licencias médicas que se mencionan a continuación:',
+            text: 'Reintegre al Estado el sueldo no devengado, de conformidad con la(s) licencia(s) médica(s) que se mencionan a continuación:',
             margin: [0, 20, 0, 10],
             alignment: 'justify'
           },
@@ -977,7 +977,7 @@ export class IngresoLicenciasComponent implements OnInit {
           {
             table: {
               headerRows: 1,
-              widths: ['auto', '*', 'auto', 'auto', '*'],
+              widths: ['*', '*', 'auto', 'auto', '*','auto'],
               body: [
                 // Cabeceras de la tabla
                 [
@@ -986,15 +986,17 @@ export class IngresoLicenciasComponent implements OnInit {
                   { text: 'Días', bold: true, fillColor: '#eeeeee', alignment: 'center' },
                   { text: 'Oficio', bold: true, fillColor: '#eeeeee', alignment: 'center' },
                   { text: 'Fecha de captura', bold: true, fillColor: '#eeeeee', alignment: 'center' },
+                  { text: 'Fecha de impresion', bold: true, fillColor: '#eeeeee', alignment: 'center' }
                 ],
                // Agregar cada licencia correspondiente a este periodo
-               ...licencias.map((licencia: { folio: any, desde: any, hasta: any, total_days: any, oficio: any, fechaCaptura: any, color: string, accidente: number }) => {
+               ...licencias.map((licencia: { folio: any, desde: any, hasta: any, total_days: any, oficio: any, fechaCaptura: any, color: string, accidente: number, impresion : any }) => {
                 return [
                   { text: licencia.folio, alignment: 'center', color: licencia.color },
                   { text: `${licencia.desde} - ${licencia.hasta}`, alignment: 'center', color: licencia.color },
                   { text: licencia.total_days, alignment: 'center', color: licencia.color },
                   { text: licencia.oficio, alignment: 'center', color: licencia.color },
                   { text: licencia.fechaCaptura, alignment: 'center', color: licencia.color },
+                  { text: licencia.impresion, alignment: 'center', color: licencia.color }
                 ];
               })
             ]
@@ -1096,7 +1098,7 @@ export class IngresoLicenciasComponent implements OnInit {
           {
             table: {
               headerRows: 1,
-              widths: ['auto', '*', 'auto', 'auto', '*'],
+              widths: ['*', '*', 'auto', 'auto', 'auto', 'auto'],
               body: [
                 // Cabeceras de la tabla
                 [
@@ -1105,15 +1107,17 @@ export class IngresoLicenciasComponent implements OnInit {
                   { text: 'Días', bold: true, fillColor: '#eeeeee', alignment: 'center' },
                   { text: 'Oficio', bold: true, fillColor: '#eeeeee', alignment: 'center' },
                   { text: 'Fecha de captura', bold: true, fillColor: '#eeeeee', alignment: 'center' },
+                  { text: 'Fecha de impresion', bold: true, fillColor: '#eeeeee', alignment: 'center' }
                 ],
                 // Agregar cada licencia correspondiente a este periodo
-                ...licencias.map((licencia: { folio: any, desde: any, hasta: any, total_days: any, oficio: any, fechaCaptura: any, color: string, accidente: number }) => {
+                ...licencias.map((licencia: { folio: any, desde: any, hasta: any, total_days: any, oficio: any, fechaCaptura: any, color: string, accidente: number, impresion : any  }) => {
                   return [
                     { text: licencia.folio, alignment: 'center', color: licencia.color },
                     { text: `${licencia.desde} - ${licencia.hasta}`, alignment: 'center', color: licencia.color },
                     { text: licencia.total_days, alignment: 'center', color: licencia.color },
                     { text: licencia.oficio, alignment: 'center', color: licencia.color },
                     { text: licencia.fechaCaptura, alignment: 'center', color: licencia.color },
+                    { text: licencia.impresion, alignment: 'center', color: licencia.color }
                   ];
                 })
               ]
@@ -1201,7 +1205,7 @@ export class IngresoLicenciasComponent implements OnInit {
           {
             table: {
               headerRows: 1,
-              widths: ['auto', '*', 'auto', 'auto', '*'],
+              widths: ['*', '*', 'auto', 'auto', '*', 'auto'],
               body: [
                 // Cabeceras de la tabla
                 [
@@ -1210,15 +1214,17 @@ export class IngresoLicenciasComponent implements OnInit {
                   { text: 'Días', bold: true, fillColor: '#eeeeee', alignment: 'center' },
                   { text: 'Oficio', bold: true, fillColor: '#eeeeee', alignment: 'center' },
                   { text: 'Fecha de captura', bold: true, fillColor: '#eeeeee', alignment: 'center' },
+                  { text: 'Fecha de impresion', bold: true, fillColor: '#eeeeee', alignment: 'center' }
                 ],
                 // Agregar cada licencia correspondiente a este periodo
-                ...licencias.map((licencia: { folio: any, desde: any, hasta: any, total_days: any, oficio: any, fechaCaptura: any, color: string, accidente: number }) => {
+                ...licencias.map((licencia: { folio: any, desde: any, hasta: any, total_days: any, oficio: any, fechaCaptura: any, color: string, accidente: number ,  impresion : any}) => {
                   return [
                     { text: licencia.folio, alignment: 'center', color: licencia.color },
                     { text: `${licencia.desde} - ${licencia.hasta}`, alignment: 'center', color: licencia.color },
                     { text: licencia.total_days, alignment: 'center', color: licencia.color },
                     { text: licencia.oficio, alignment: 'center', color: licencia.color },
                     { text: licencia.fechaCaptura, alignment: 'center', color: licencia.color },
+                    { text: licencia.impresion, alignment: 'center', color: licencia.color },
                   ];
                 })
               ]
@@ -1321,7 +1327,7 @@ export class IngresoLicenciasComponent implements OnInit {
           {
             table: {
               headerRows: 1,
-              widths: ['auto', '*', 'auto', 'auto', '*'],
+              widths: ['*', '*', 'auto', 'auto', '*', 'auto'],
               body: [
                 // Cabeceras de la tabla
                 [
@@ -1330,14 +1336,16 @@ export class IngresoLicenciasComponent implements OnInit {
                   { text: 'Días', bold: true, fillColor: '#eeeeee', alignment: 'center' },
                   { text: 'Oficio', bold: true, fillColor: '#eeeeee', alignment: 'center' },
                   { text: 'Fecha de captura', bold: true, fillColor: '#eeeeee', alignment: 'center' },
+                  { text: 'Fecha de impresion', bold: true, fillColor: '#eeeeee', alignment: 'center' }
                 ],
                 // Agregar cada licencia correspondiente a este periodo
-                ...licenciasPorPeriodo[aux].map((licencia: { folio: any, desde: any, hasta: any, total_dias: any, oficio: any, fechaCaptura: any, apartir: any }) => [
+                ...licenciasPorPeriodo[aux].map((licencia: { folio: any, desde: any, hasta: any, total_dias: any, oficio: any, fechaCaptura: any, apartir: any,  impresion : any}) => [
                   { text: licencia.folio, alignment: 'center' },
                   { text: `${licencia.desde} - ${licencia.hasta}`, alignment: 'center' },
                   { text: licencia.total_dias, alignment: 'center' },
                   { text: licencia.oficio, alignment: 'center' },
                   { text: licencia.fechaCaptura, alignment: 'center' },
+                  { text: licencia.impresion, alignment: 'center' }
                 ])
               ]
             },
