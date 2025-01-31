@@ -74,6 +74,7 @@ export class IngresoLicenciasComponent implements OnInit {
     this.arrayUserRecibido = event;
 
     const card = this.arrayUserRecibido.mostrar;
+    console.log(this.arrayUserRecibido)
     this.showCard = card
     if(card == true){
      this.buscar(this.arrayUserRecibido.srl_emp);
