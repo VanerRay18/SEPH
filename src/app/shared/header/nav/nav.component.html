@@ -9,21 +9,21 @@
     
       <i class="fa-solid fa-bell position-relative  ms-lg-3 bell" (click)="toggleNotifications()"  >
       <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary " style="font-size:12px" >
-        1
+        {{this.numNoti}}
       </span>
     </i>
 
     <div *ngIf="showNotifications" class="overlay" (click)="toggleNotifications()"></div>
 
     <!-- Dropdown de notificaciones -->
-    <div *ngIf="showNotifications" class="notification-dropdown">
-      <div class="notification-item" *ngFor="let notification of notifications">
+    <div *ngIf="showNotifications" class="notification-dropdown" >
+      <div class="notification-item" *ngFor="let notification of notifications; let i = index">
         <i class="{{notification.icon}} iconNoti"></i>        
         <div class="notification-content">
-          <strong>{{ notification.title }}</strong> <!-- Título en negritas arriba -->
-          <span>{{ notification.message }}</span> <!-- Mensaje debajo -->
+          <strong>{{ notification.title }}</strong> 
+          <span>{{ notification.message }}</span> 
         </div>
-        <i class="fa-solid fa-check"></i>
+        <i class="fa-solid fa-check" (click)="visto(i, notification.id)"></i>
       </div>
     </div>
 

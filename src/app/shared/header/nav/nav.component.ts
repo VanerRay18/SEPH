@@ -1,11 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { interval, pipe, startWith, Subscription, switchMap } from 'rxjs';
 import { AuthService } from 'src/app/services/auth.service';
 import Swal from 'sweetalert2';
 import { BusquedaserlService } from 'src/app/services/busquedaserl.service';
 import { ApiResponse } from 'src/app/models/ApiResponse';
 import { NotificacionERP } from '../../interfaces/utils';
+import { ChangeDetectorRef, NgZone } from '@angular/core';
+
 export class TreeNode {
   moduleId!: number; // ID del módulo
   moduleName!: string; // Nombre del módulo
@@ -29,7 +31,7 @@ export class NavComponent implements OnInit, OnDestroy {
   showNotifications = false; // Controla la visibilidad de las notificaciones
   notificationCount = 1; // Número de notificaciones no leídas
   notifications: NotificacionERP[] = []; // Inicializamos como un array vacío
-
+  numNoti: any = 0 ;
   // Alternar la visibilidad de las notificaciones
   toggleNotifications() {
     this.showNotifications = !this.showNotifications;
@@ -38,20 +40,51 @@ export class NavComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private router: Router,
     private BusquedaserlService: BusquedaserlService,
+    private cdr: ChangeDetectorRef
   ) {     this.currentRoute = this.router.url;}
 
-  fetchData(){
-    const userId = localStorage.getItem('userId');
-    this.authService.getNotifications(userId).subscribe((response: ApiResponse)=>{
-      this.notifications = response.data;
-    })
+  fetchData() {
+    interval(15000) // Consulta cada 5 segundos
+      .pipe(
+        startWith(0),
+        switchMap(() => {
+          const userId = localStorage.getItem('userId');
+          return this.authService.getNotifications(userId); // Llama al servicio
+        })
+      )
+      .subscribe((response) => {
+        if (response) {
+          this.numNoti = response.message ; // Asegura un valor por defecto
+          this.notifications = response.data ;
+          this.cdr.detectChanges(); // Fuerza actualización
+        }
+      });
   }
+  
 
   ngOnInit(): void {
-     // Obtiene la ruta actual al iniciar
+    
     this.fetchData();
     this.getCurrentRoute(); // Escucha los eventos de navegación
     this.getUserModules(); // Llama al servicio para obtener los módulos del usuario
+  }
+  visto(index: number, id:any): void {
+
+     this.authService.changeStatus(id,2).subscribe(
+                  response => {
+                  },
+                  error => {
+                    Swal.fire({
+                      title: 'Error',
+                      text: error.error.message,
+                      icon: 'error',
+                      confirmButtonText: 'Aceptar'
+                    });
+                  }
+                );
+
+                this.numNoti = this.numNoti-1;
+    this.notifications.splice(index, 1);
   }
 
   // Escucha los cambios en la ruta actual del navegador

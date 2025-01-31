@@ -109,7 +109,12 @@ export class AuthService {
     }
 
 
-
+    changeStatus(notificationId: any, status: any): Observable<ApiResponse> {//Cambia el estado de la nomina
+      let headers = new HttpHeaders({'notificationId': notificationId, 'status': status})
+      return this.http.patch<ApiResponse>(`${environment.baseService}${'/notifications/status'}`,null,
+        {headers}
+      );
+    }
 
 
 }
