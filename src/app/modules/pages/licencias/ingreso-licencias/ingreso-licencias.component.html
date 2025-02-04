@@ -5,8 +5,13 @@
     <h1>Licencias médicas</h1>
     <h5>Ingreso de licencias médicas</h5>
   </div>
+
+
+
+
+
   <ng-container>
-    <app-busqueda></app-busqueda>
+    <app-busqueda   (arrayUser)="recibirArrayUser($event)"></app-busqueda>
   </ng-container>
 
   <div *ngIf="showCard == true" class="contLic m-3">
@@ -56,7 +61,7 @@
             </div>
             <div class="col-auto">
               <h5>{{ currentDate }} &nbsp;&nbsp; Fecha de ingreso: {{
-                fecha_ingreso }}</h5>
+                this.arrayUserRecibido.fecha_ingreso }}</h5>
             </div>
           </div>
           <form [formGroup]="insertarLic" class="m-3" (ngSubmit)="onSumit()"
