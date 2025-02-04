@@ -57,6 +57,17 @@ export interface NominaA{
   status:any
   }
 
+  export interface NominaH{
+    id: any,
+    retentionTotal: any;
+    total:any,
+    importeTotal:any,
+    becarios:any,
+    quincena: any,
+    status:any,
+    fecha : any
+    }
+
 
 export interface NominaP{
   retentionTotal: any,

@@ -112,3 +112,25 @@ border-color: black;
   color: #660033;
   font-size: 16px;
 }
+
+
+
+button {
+  background: none;
+  border: 1px solid #6A1B4D;
+  color: #6A1B4D;
+  padding: 8px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+button:hover {
+  background-color: #621132; /* Fondo marrón en hover */
+  color: #ffffff; /* Texto blanco en hover */
+  border-color: #621132; /* Borde marrón en hover */
+}
+button:active {
+  background-color: #3d0b1e; /* Fondo más oscuro para active */
+  color: #ffffff; /* Texto blanco en active */
+  border-color: #3d0b1e; /* Borde oscuro en active */
+  outline: none; /* Sin borde adicional */
+}
