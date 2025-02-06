@@ -43,6 +43,21 @@ export class NominaBecService {
     return this.http.get<ApiResponse>(`${environment.baseService}${'/nomina/nominaHistorial'}`);
   }
 
+  getPreAnexo6(): Observable<ApiResponse> {//Trae la nomina actual
+    return this.http.get<ApiResponse>(`${environment.baseService}${'/nomina/preAnexo06'}`);
+  }
+
+  getPreAnexo5(): Observable<ApiResponse> {//Trae la nomina actual
+    return this.http.get<ApiResponse>(`${environment.baseService}${'/nomina/preAnexo05'}`);
+  }
+
+  getHistoryById(nominaId: any): Observable<ApiResponse> {//Trae las claves bancarias del empleado
+    let headers = new HttpHeaders({'nominaId': nominaId})
+    return this.http.get<ApiResponse>(`${environment.baseService}${'/nomina/nominaHistorialById'}`,
+      {headers}
+    );
+  }
+
   NewCatalogos(data:any): Observable<ApiResponse> {//Trae la nomina actual
     return this.http.post<ApiResponse>(`${environment.baseService}${'/nomina/catalogo'}`,data);
   }

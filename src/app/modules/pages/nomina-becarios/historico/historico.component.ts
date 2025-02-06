@@ -6,6 +6,9 @@ import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { NominaA } from 'src/app/shared/interfaces/utils';
 import Swal from 'sweetalert2';
+import { ImageToBaseService } from './../../../../services/image-to-base.service';
+import * as pdfMake from 'pdfmake/build/pdfmake';
+import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 
 @Component({
   selector: 'app-historico',
@@ -18,14 +21,20 @@ export class HistoricoComponent {
     data: NominaA | null = null;
     nominaId:any;
     data2 : NominaH [] = [];
+    formattedDates: any[] = [];
+    years: number[] = [];          // Años extraídos de las fechas
+    selectedYear: number = 2025;   // Año seleccionado en el dropdown
+    groupedByMonth: { [month: string]: any[] } = {}; // Agrupar datos por mes
+    objectKeys = Object.keys;
 
 
     constructor(
 
       private NominaBecService: NominaBecService,
+      private ImageToBaseService: ImageToBaseService
 
     ) {
-      // Registrar las fuentes necesarias
+   (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
     }
     async ngOnInit(): Promise<void> {
       this.nominaId = await this.loadNominaId();
@@ -42,18 +51,56 @@ export class HistoricoComponent {
 
       this.NominaBecService.getHistory().subscribe((response: ApiResponse) => {
         this.data2 = response.data;
+        this.formattedDates = this.data2.map(item => this.formatDate(item.fecha));
+        this.years = [...new Set(this.formattedDates.map(date => parseInt(date.split('-')[0])))];
+        console.log(this.formattedDates);
+        this.groupDataByMonth();
       },
         (error) => {
           console.error('Error al obtener los datos:', error);
         });
 
-        this.NominaBecService.getNomina().subscribe((response: ApiResponse) => {
-          this.data = response.data;
-        },
-          (error) => {
-            console.error('Error al obtener los datos:', error);
-          });
 
+
+    }
+
+    formatDate(timestamp: number): string {
+      const date = new Date(timestamp);  // Crear un objeto Date con el timestamp
+      const year = date.getFullYear();   // Obtener el año
+      const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Obtener el mes y formatearlo a '01', '02', ...
+
+      return `${year}-${month}`; // Devolver el formato Año-Mes
+    }
+
+    groupDataByMonth(): void {
+      this.groupedByMonth = {};
+
+      this.data2.forEach(item => {
+        const formattedDate = this.formatDate(item.fecha);
+        const year = formattedDate.split('-')[0];
+        const month = formattedDate.split('-')[1];
+
+        const key = `${year}-${month}`;
+
+        if (!this.groupedByMonth[key]) {
+          this.groupedByMonth[key] = [];
+        }
+
+        this.groupedByMonth[key].push(item);
+      });
+    }
+
+    monthNumberToName(month: string): string {
+      const months = [
+        'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+        'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+      ];
+      return months[parseInt(month) - 1]; // Convertir el mes numérico al nombre
+    }
+
+    // Cambiar el año seleccionado
+    onYearChange(event: any): void {
+      this.selectedYear = parseInt(event.target.value);
     }
 
  generateExcelAnexo5(nominaId :any): Promise<void> {
@@ -190,143 +237,170 @@ export class HistoricoComponent {
     saveAs(data, `${fileName}.xlsx`);
   }
 
-  getCurrentFormattedDate() {
-    const today = new Date();
-    const day = String(today.getDate()).padStart(2, '0');
-    const month = String(today.getMonth() + 1).padStart(2, '0'); // Los meses empiezan en 0
-    const year = today.getFullYear();
-    return `${day}/${month}/${year}`;
-  }
+//   getCurrentFormattedDate() {
+//     const today = new Date();
+//     const day = String(today.getDate()).padStart(2, '0');
+//     const month = String(today.getMonth() + 1).padStart(2, '0'); // Los meses empiezan en 0
+//     const year = today.getFullYear();
+//     return `${day}/${month}/${year}`;
+//   }
 
-  generateDailyNumber(): string {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = (today.getMonth() + 1).toString().padStart(2, '0'); // Asegura dos dígitos
-    const day = today.getDate().toString().padStart(2, '0');          // Asegura dos dígitos
+//   generateDailyNumber(): string {
+//     const today = new Date();
+//     const year = today.getFullYear();
+//     const month = (today.getMonth() + 1).toString().padStart(2, '0'); // Asegura dos dígitos
+//     const day = today.getDate().toString().padStart(2, '0');          // Asegura dos dígitos
 
-    // Concatenar día, mes y año para generar el número único
-    const dailyNumber = `${day}${month}${year}`;
+//     // Concatenar día, mes y año para generar el número único
+//     const dailyNumber = `${day}${month}${year}`;
 
-    return dailyNumber;
+//     return dailyNumber;
+// }
+
+generatePdfNomina(nominaId: any) {
+  this.NominaBecService.getHistoryById(nominaId).subscribe(async response => {
+    if (response && response.data) {
+      const nominaData = response.data;
+      const imageBase64 = await this.ImageToBaseService.convertImageToBase64('assets/IHE_LOGO.png');
+
+      const documentDefinition: any = {
+        pageOrientation: 'landscape',
+        content: [
+          {
+            table: {
+              widths: ['auto', '*'],
+              body: [
+                [
+                  {
+                    image: imageBase64,
+                    alignment: 'left',
+                    width: 170,
+                    height: 50,
+                    margin: [0, 0, 0, 30]
+                  },
+                  {
+                    text: 'Coordinación General de Administración y Finanzas\nDirección General de Recursos Humanos\nDirección de Nómina y Control de Plazas',
+                    alignment: 'right',
+                    bold: true,
+                    color: '#621132',
+                    margin: [0, 0, 0, 30]
+                  }
+                ],
+                [
+                  {
+                    text: '',
+                    alignment: 'left',
+                    bold: true
+                  },
+                  {
+                    text: ``,
+                    alignment: 'right'
+                  }
+                ]
+              ]
+            },
+            layout: 'noBorders',
+          },
+          { text: 'Datos Generales de la Nómina', style: 'header', margin: [0, 30, 0, 10] },
+          {
+            table: {
+              widths: ['*', '*', '*', '*'],
+              body: [
+                [
+                  { text: 'Retención Total', bold: true },
+                  { text: 'Fecha', bold: true },
+                  { text: 'Total', bold: true },
+                  { text: 'Importe Total', bold: true }
+                ],
+                [
+                  nominaData.retentionTotal,
+                  new Date(nominaData.fecha).toLocaleDateString(),
+                  nominaData.total,
+                  nominaData.importeTotal
+                ]
+              ]
+            },
+            layout: 'lightHorizontalLines'
+          },
+          ...nominaData.nomina.map((empleado: any) => [
+            { text: empleado.nombre, style: 'subheader', margin: [0, 20, 0, 5] },
+            {
+              table: {
+                widths: ['*', '*', '*', '*', '*'],
+                body: [
+                  [
+                    { text: 'Retención Total', bold: true },
+                    { text: 'SRL_EMP', bold: true },
+                    { text: 'Líquido Total', bold: true },
+                    { text: 'Importe Total', bold: true },
+                    { text: 'CURP', bold: true }
+                  ],
+                  [
+                    empleado.retentionTotal,
+                    empleado.srl_emp,
+                    empleado.liquidTotal,
+                    empleado.importTotal,
+                    empleado.curp
+                  ]
+                ]
+              },
+              layout: 'lightHorizontalLines'
+            },
+            {
+              table: {
+                headerRows: 1,
+                widths: ['auto', '*', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto'],
+                body: [
+                  [
+                    { text: 'Retención', bold: true },
+                    { text: 'Quincena Inicial', bold: true },
+                    { text: 'Quincena Final', bold: true },
+                    { text: 'Plaza', bold: true },
+                    { text: 'Motivo', bold: true },
+                    { text: 'Comprobante', bold: true },
+                    { text: 'Tipo', bold: true },
+                    { text: 'Pago', bold: true }
+                  ],
+                  ...empleado.detalles.map((detalle: any) => [
+                    detalle.retention,
+                    detalle.QNAINI,
+                    detalle.QNAFIN,
+                    detalle.plaza,
+                    detalle.motiv,
+                    detalle.comprobante,
+                    detalle.type,
+                    detalle.pago
+                  ])
+                ]
+              },
+              layout: 'lightHorizontalLines'
+            }
+          ]).flat()
+        ],
+        styles: {
+          header: {
+            fontSize: 18,
+            bold: true,
+            alignment: 'center'
+          },
+          subheader: {
+            fontSize: 14,
+            bold: true,
+            alignment: 'left'
+          },
+          tableHeader: {
+            bold: true,
+            fontSize: 12,
+            fillColor: '#621132',
+            color: 'white'
+          }
+        }
+      };
+
+      pdfMake.createPdf(documentDefinition).open();
+    }
+  });
 }
 
-  // generatePdfNomina() {
-//   const dailyNumber = this.generateDailyNumber();
-//   const formattedDate = this.getCurrentFormattedDate();
-//   this.NominaBecService.getLicenciasArchivo().subscribe(async response => {
-//     if (response && response.data && Array.isArray(response.data)) {
-
-//       const sortedData = response.data.sort((a, b) => {
-//         const nameA = a.rfc.toLowerCase();
-//         const nameB = b.rfc.toLowerCase();
-//         return nameA.localeCompare(nameB); // Orden alfabético
-//       });
-
-
-//       const data = sortedData.map((item, index) => ({
-//         no: index + 1, // Número autoincremental
-//         nombre: item.nombre,
-//         rfc: item.rfc,
-//         licenciasMedicas: item.folio
-//       }));
-//       const imageBase64 = await this.ImageToBaseService.convertImageToBase64('assets/IHE_LOGO.png');
-//       const documentDefinition: any = {
-//         pageOrientation: 'landscape',
-
-//         content: [
-//           {
-//             table: {
-//               widths: ['auto', '*'], // Asegura que solo haya dos columnas como especificado
-//               body: [
-//                 [
-//                   {
-//                     image: imageBase64,
-//                     alignment: 'left',
-//                     width: 170,
-//                     height: 50,
-//                     margin: [0, 0, 0, 30]
-//                   },
-//                   {
-//                     text: 'Coordinación General de Administración y Finanzas\nDirección General de Recursos Humanos\nDirección de Nómina y Control de Plazas',
-//                     alignment: 'right',
-//                     bold: true,
-//                     color: '#621132',
-//                     margin: [0, 0, 0, 30]
-//                   }
-//                 ],
-//                 [
-
-//                   {
-//                     text: 'Para: Lic. Brenda Martínez Alavéz\nJefa de la Unidad Técnica de Resguardo Documental\n\n De: Lic. Guillermo Paredes Camarena\nSubdirector de incidencias y Control de Plazas',
-//                     alignment: 'left',
-//                     bold: true
-//                   },
-//                   {
-//                     text: `NO. OFICIO: DNCP/SNI/${dailyNumber}/2024\nFECHA: ${formattedDate}`,
-//                     alignment: 'right'
-//                   }
-//                 ]
-//               ]
-//             },
-//             layout: 'noBorders', // Sin bordes para la tabla de encabezado
-//           },
-//           { text: '', margin: [0, 30, 0, 0] }, // Espacio de 20 unidades de margen arriba
-//           {
-//             table: {
-//               headerRows: 1,
-//               widths: ['auto', '*', 'auto', 'auto'], // Anchos para las columnas de la tabla
-//               body: [
-//                 // Encabezados de la tabla
-//                 [
-//                   { text: 'No.', bold: true, color: '#FFFFFF', fillColor: '#621132', alignment: 'center' },
-//                   { text: 'Nombre', bold: true, color: '#FFFFFF', fillColor: '#621132', alignment: 'center' },
-//                   { text: 'RFC', bold: true, color: '#FFFFFF', fillColor: '#621132', alignment: 'center' },
-//                   { text: 'Licencias Médicas', bold: true, color: '#FFFFFF', fillColor: '#621132', alignment: 'center' },
-
-//                 ],
-//                 // Filas de contenido de la tabla
-//                 ...data.map(item => [
-//                   { text: item.no, color: '#000000', fillColor: '#FFFFFF', alignment: 'left' },
-//                   { text: item.nombre, color: '#000000', fillColor: '#FFFFFF', alignment: 'left' },
-//                   { text: item.rfc, color: '#000000', fillColor: '#FFFFFF', alignment: 'left' },
-//                   { text: item.licenciasMedicas, color: '#000000', fillColor: '#FFFFFF', alignment: 'left' },
-
-//                 ])
-//               ]
-//             },
-//             layout: {
-//               hLineWidth: () => 0.5, // Grosor de las líneas horizontales
-//               vLineWidth: () => 0.5, // Grosor de las líneas verticales
-//               hLineColor: () => '#000000', // Color de las líneas horizontales
-//               vLineColor: () => '#000000', // Color de las líneas verticales
-//             }
-//           }
-//         ],
-//         styles: {
-//           header: {
-//             fontSize: 18,
-//             bold: true,
-//             alignment: 'center'
-//           },
-//           subheader: {
-//             fontSize: 14,
-//             bold: true,
-//             alignment: 'center'
-//           },
-//           tableHeader: {
-//             bold: true,
-//             fontSize: 12,
-//             fillColor: '#621132',
-//             color: 'white'
-//           }
-//         }
-//       };
-
-//       pdfMake.createPdf(documentDefinition).open();
-
-
-//     }
-//   });
-// }
 
 }

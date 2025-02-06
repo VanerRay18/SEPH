@@ -69,7 +69,7 @@ export class RevisionComponent {
   }
 
   saveNomina(event: any): void {
-    console.log(this.status, this.nominaId)
+    // console.log(this.status, this.nominaId)
     this.NominaBecService.changeStatus(this.nominaId, this.status).subscribe(
       response => {
         console.log('Se cambio el status');

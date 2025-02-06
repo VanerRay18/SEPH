@@ -12,8 +12,8 @@ import Swal from 'sweetalert2';
 export class CatalogosComponent {
 
   searchTerm: string = '';
-  headers = ['Sustitutos', '48', '01', 'Liquido', 'Tipo','Acciones'];
-  displayedColumns = ['category', 'import', 'retention', 'liquid', 'type'];
+  headers = ['Categoria', 'PD', 'Concepto', 'Importe', 'Tipo','Acciones'];
+  displayedColumns = ['category', 'pd', 'concept', 'importe', 'type'];
   data = [];
   nominaId:any;
   data2: NominaA | null = null;

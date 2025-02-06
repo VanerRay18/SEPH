@@ -91,6 +91,7 @@ export class EnviarComponent {
                           //   showConfirmButton: false
                           // });
                   // El usuario confirmó, proceder a enviar los datos
+                  this.router.navigate(['/pages/NominaBecarios/Nominas-Activas']);
                   this.NominaBecService.sentNomina(this.data).subscribe(
                     response => {
                       this.fetchData();
@@ -113,7 +114,7 @@ export class EnviarComponent {
 
                 }
               })
-        this.router.navigate(['/pages/NominaBecarios/Nominas-Activas']);
+
         this.fetchData();
       },
       error => {

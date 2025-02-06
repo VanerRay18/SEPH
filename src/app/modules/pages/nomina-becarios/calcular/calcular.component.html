@@ -36,11 +36,14 @@
           </div>
         </div>
       </div>
-      <div class="form-floating col-auto col-lg-4 m-3">
+      <div class="form-floating col-auto col-lg-4 m-3 row">
         <input type="text" class=" buscar form-control" id="busqueda"
           placeholder="Buscar"
           [(ngModel)]="searchTerm" name="busqueda">
         <label for="User">&nbsp;&nbsp;<i class="fa-solid fa-magnifying-glass"></i>  Buscar</label>
+      </div>
+      <div class="col-auto col-lg-7 d-flex justify-content-end mt-auto">
+        <button type="submit" class="btn  btn-sm" (click)="generateAnexos()">PreAnexos 5 y 6</button>
       </div>
       <div class="col-auto col-lg-12 mt-4 justify-content-center align-items-center ">
         <app-tables

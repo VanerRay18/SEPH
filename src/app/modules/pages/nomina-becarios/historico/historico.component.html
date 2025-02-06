@@ -6,31 +6,44 @@
     <div class="row">
 
       <div class="col-auto col-lg-12 mt-4">
-        <h2>Nominas del 2025</h2>
+        <h2>Nominas del {{ selectedYear }}</h2>
         <br>
-        <select class="yearNomina" aria-label="Default select example">
-          <option selected value="1">2025</option>
-          <option value="2">2024</option>
-          <option value="3">2023</option>
+        <!-- Mostrar el dropdown con los años -->
+        <select class="yearNomina" aria-label="Seleccione el año" (change)="onYearChange($event)">
+          <option *ngFor="let year of years" [value]="year">
+            {{ year }}
+          </option>
         </select>
-      </div>
 
-      <div class="col-auto col-lg-12 m-4">
-       <div class="card nominas" *ngFor="let historial of data2"> <!-- //*ngFor="let variable of data" -->
-          <div class="card-title mt-3 ms-3">
-            <h4>Enero 2025</h4>
-          </div>
-          <div class="card-body">
-            <div class="accordion" id="accordionExample">
-              <div class="accordion-item">
-                <h2 class="accordion-header">
-                  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                    Nomina Quincenal Becarios {{historial.quincena}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Quincena pagada: {{historial.quincena}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Becarios: {{historial.becarios}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Total: {{historial.total}}
-                  </button>
-                </h2>
-                <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
-                  <div class="accordion-body">
-                    <button (click)="generateExcelAnexo5(historial.id)">Descargar PDF de nomina</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button (click)="generateExcelAnexo5(historial.id)">Descargar Anexo 5</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button (click)="generateExcelAnexo6(historial.id)">Descargar Anexo 6</button>
+      </div>
+      <div class="col-auto col-lg-12 m-4" *ngFor="let monthKey of objectKeys(groupedByMonth)">
+        <div *ngIf="monthKey.startsWith(selectedYear.toString())">
+          <div class="card nominas" *ngFor="let historial of groupedByMonth[monthKey]">
+            <!-- Card existente con detalles de la nómina -->
+            <div class="card-title mt-3 ms-3">
+              <h3>{{ monthNumberToName(monthKey.split('-')[1]) }} {{ monthKey.split('-')[0] }}</h3> <!-- Mostrar mes y año -->
+            </div>
+            <div class="card-body">
+              <div class="accordion" id="accordionExample">
+                <div class="accordion-item">
+                  <h2 class="accordion-header">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+                      aria-expanded="true" aria-controls="collapseOne">
+                      Nomina Quincenal Becarios
+                      {{ historial.quincena }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Quincena
+                      pagada: {{ historial.quincena }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      Becarios: {{ historial.becarios }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      Total: {{ historial.total }}
+                    </button>
+                  </h2>
+                  <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                      <button (click)="generatePdfNomina(historial.id)">Descargar PDF de nomina &nbsp;<i class="fa-solid fa-file-pdf"></i></button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button
+                        (click)="generateExcelAnexo5(historial.id)">Descargar Anexo 5 &nbsp;<i
+                        class="fa-solid fa-file-arrow-down"></i></button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button
+                        (click)="generateExcelAnexo6(historial.id)">Descargar Anexo 6 &nbsp;<i
+                        class="fa-solid fa-file-arrow-down"></i></button>
+                    </div>
                   </div>
                 </div>
               </div>
