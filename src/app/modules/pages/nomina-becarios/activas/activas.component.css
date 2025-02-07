@@ -68,7 +68,9 @@ h5{
   border-radius: 20px;
   cursor: pointer;
 }
-
+.button:disabled {
+  background-color: #7e787b;
+}
 .button:hover {
   background-color: #550029;
 }

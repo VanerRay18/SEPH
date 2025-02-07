@@ -4,7 +4,7 @@ import { NominaBecService } from 'src/app/services/nomina-bec.service';
 import { NominaA } from 'src/app/shared/interfaces/utils';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
-
+import { PermisosUserService } from 'src/app/services/permisos-user.service';
 
 @Component({
   selector: 'app-activas',
@@ -16,15 +16,29 @@ export class ActivasComponent {
   data: NominaA | null = null;
 
 
+  eliminar: boolean = false;
+  agregar: boolean = false;
+  modificar: boolean = false;
+  autorizar: boolean = false;
+
+
   constructor(
     private router: Router,
-    private NominaBecService: NominaBecService
+    private NominaBecService: NominaBecService,
+    private PermisosUserService: PermisosUserService
   ) {
     // Registrar las fuentes necesarias
   }
 
   ngOnInit(): void {
     this.fetchData();
+    this.PermisosUserService.getPermisosSpring(this.PermisosUserService.getPermisos().NominasB).subscribe((response: ApiResponse) => {
+      this.eliminar = response.data.eliminar
+      this.modificar = response.data.editar
+      this.agregar = response.data.agregar
+      this.autorizar = response.data.autorizar
+    });
+    console.log(this.data?.status)
   }
 
   fetchData() {
