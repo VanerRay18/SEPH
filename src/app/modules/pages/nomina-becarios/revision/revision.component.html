@@ -62,8 +62,9 @@
       </div>
 
       <div class="boton-container col-auto col-lg-12 m-3 ">
-        <button type="submit" class="btn  btn-sm" (click)="saveNomina('hdhj')" [disabled]="data2?.status >= 3">Guardar</button>
-        <button type="submit" class="btn  btn-sm" (click)="continueNomina()"[disabled]="data2?.status == 2">Continuar</button>
+        <button type="submit" class="btn  btn-sm" (click)="saveNomina('hdhj')" [disabled]="data2?.status >= 3 || this.agregar ">Guardar</button>
+        <button type="submit" class="btn  btn-sm" (click)="continueNomina()"[disabled]="data2?.status == 2 || data2?.status == 3" *ngIf="this.agregar">Continuar</button>
+        <button type="submit" class="btn  btn-sm" (click)="continueNomina()"[disabled]="data2?.status == 2" *ngIf="this.autorizar">Autorizar</button>
       </div>
     </div>
   </div>

@@ -140,7 +140,7 @@ export class CatalogosComponent {
     this.NominaBecService.NewCatalogos(data).subscribe(
 
       response => {
-       
+
         this.fetchData();
         Swal.fire({
           title: '¡Éxito!',

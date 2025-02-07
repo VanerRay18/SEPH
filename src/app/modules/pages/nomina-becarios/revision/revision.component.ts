@@ -5,6 +5,7 @@ import { NominaBecService } from 'src/app/services/nomina-bec.service';
 import { Anexo06, NominaA } from 'src/app/shared/interfaces/utils';
 import Swal from 'sweetalert2';
 import * as XLSX from 'xlsx';
+import { PermisosUserService } from 'src/app/services/permisos-user.service';
 import { saveAs } from 'file-saver';
 import { Anexo05 } from 'src/app/shared/interfaces/utils';
 import { ChangeDetectorRef } from '@angular/core';
@@ -26,6 +27,11 @@ export class RevisionComponent {
 
   ];
 
+  eliminar: boolean = false;
+  agregar: boolean = false;
+  modificar: boolean = false;
+  autorizar: boolean = false;
+
   isLoading = true;
   activeTab: string = 'anexo5';
   nominaId: any;
@@ -35,15 +41,23 @@ export class RevisionComponent {
   constructor(
     private NominaBecService: NominaBecService,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private PermisosUserService: PermisosUserService
   ) {
     // Registrar las fuentes necesarias
   }
 
   async ngOnInit(): Promise<void> {
-    this.isLoading =true;
+    this.isLoading = true;
     this.nominaId = await this.loadNominaId();
     this.fetchData();
+
+    this.PermisosUserService.getPermisosSpring(this.PermisosUserService.getPermisos().NominasB).subscribe((response: ApiResponse) => {
+      this.eliminar = response.data.eliminar
+      this.modificar = response.data.editar
+      this.agregar = response.data.agregar
+      this.autorizar = response.data.autorizar
+    });
   }
 
   async loadNominaId() {
@@ -56,6 +70,8 @@ export class RevisionComponent {
   }
 
   fetchData() {
+
+
     this.NominaBecService.getNomina().subscribe((response: ApiResponse) => {
       this.data2 = response.data;
     },
@@ -66,7 +82,7 @@ export class RevisionComponent {
     this.NominaBecService.getAnexo05(this.nominaId).subscribe((response: ApiResponse) => {
       this.data = response.data; // Aquí concatenas las fechas
       this.cdr.detectChanges();
-      console.log(this.data)
+      // console.log(this.data)
       this.isLoading = this.data.length === 0;
     },
       (error) => {
@@ -98,6 +114,41 @@ export class RevisionComponent {
     this.router.navigate(['/pages/NominaBecarios/Nominas-Enviar']);
     this.fetchData();
   }
+
+  autorizarNomina(): void {
+    let status = 4;
+    Swal.fire({
+      title: 'Confirmar',
+      html: `¿Está seguro de autorizar la nomina?<br><br>`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, autorizar',
+      cancelButtonText: 'No, cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.NominaBecService.changeStatus(this.nominaId, status).subscribe(
+          response => {
+            console.log('Se cambio el status');
+            this.fetchData();
+            this.router.navigate(['/pages/NominaBecarios/Nominas-Activas']);
+          },
+          error => {
+            Swal.fire({
+              title: 'Error',
+              text: error.error.message,
+              icon: 'error',
+              confirmButtonText: 'Aceptar'
+            });
+          }
+        );
+
+      }
+
+    })
+
+
+  }
+
 
   async generateAnexos(): Promise<void> {
     Swal.fire({
@@ -197,7 +248,7 @@ export class RevisionComponent {
         next: async response => {
           if (response && response.data && Array.isArray(response.data)) {
             const headers = [
-              'NO_COMPROBANTE', 'UR', 'PERIODO', 'TIPO_NOMINA','CLAVE_PLAZA', 'CURP', 'TIPO_CONCEPTO', 'COD_CONCEPTO', 'DESC_CONCEPTO', 'IMPORTE',
+              'NO_COMPROBANTE', 'UR', 'PERIODO', 'TIPO_NOMINA', 'CLAVE_PLAZA', 'CURP', 'TIPO_CONCEPTO', 'COD_CONCEPTO', 'DESC_CONCEPTO', 'IMPORTE',
               'BASE_CALCULO_ISR'
             ];
 
