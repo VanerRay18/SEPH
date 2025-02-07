@@ -7,6 +7,7 @@ import Swal from 'sweetalert2';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { Anexo05 } from 'src/app/shared/interfaces/utils';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-revision',
@@ -25,7 +26,7 @@ export class RevisionComponent {
 
   ];
 
-
+  isLoading = true;
   activeTab: string = 'anexo5';
   nominaId: any;
   status = 3;
@@ -34,11 +35,13 @@ export class RevisionComponent {
   constructor(
     private NominaBecService: NominaBecService,
     private router: Router,
+    private cdr: ChangeDetectorRef
   ) {
     // Registrar las fuentes necesarias
   }
 
   async ngOnInit(): Promise<void> {
+    this.isLoading =true;
     this.nominaId = await this.loadNominaId();
     this.fetchData();
   }
@@ -62,9 +65,13 @@ export class RevisionComponent {
 
     this.NominaBecService.getAnexo05(this.nominaId).subscribe((response: ApiResponse) => {
       this.data = response.data; // Aquí concatenas las fechas
+      this.cdr.detectChanges();
+      console.log(this.data)
+      this.isLoading = this.data.length === 0;
     },
       (error) => {
         console.error('Error al obtener los datos:', error);
+        this.isLoading = false;
       });
   }
 

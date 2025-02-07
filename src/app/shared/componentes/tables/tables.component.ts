@@ -27,6 +27,8 @@ export class TablesComponent implements OnChanges{
 @Input() showDetailsColumn: boolean = false;
 @Input() showActiveCheckbox: boolean = false;
 @Input() showVerifiedCheckbox: boolean = false;
+@Input() isLoading: boolean = false;
+
 // Outputs para emitir eventos de editar o eliminar
 @Output() check: EventEmitter<any> = new EventEmitter();
 @Output() edit: EventEmitter<any> = new EventEmitter();
@@ -63,24 +65,22 @@ totalPages: number = 1;
 
 async ngOnInit(): Promise<void> {
   this.nominaId = await this.loadNominaId();
-  console.log('ID de la nómina (desde ngOnInit):', this.nominaId);
+  // console.log('ID de la nómina (desde ngOnInit):', this.nominaId);
 }
 
 async loadNominaId() {
   const nominaId = await this.NominaBecService.getNominaId();
-  console.log('ID de la nómina:', nominaId);
+  // console.log('ID de la nómina:', nominaId);
   return nominaId
 }
 
 
 
 ngOnChanges(changes: SimpleChanges): void {
-  if (changes['data'] || changes['itemsPerPage']) {
-    this.updatePagination();
 
-  }
+      this.updatePagination();
+
 }
-
 
 
 private updatePagination(): void {

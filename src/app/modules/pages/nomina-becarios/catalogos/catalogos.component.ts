@@ -12,8 +12,8 @@ import Swal from 'sweetalert2';
 export class CatalogosComponent {
 
   searchTerm: string = '';
-  headers = ['Categoria', 'PD', 'Concepto', 'Importe', 'Tipo','Acciones'];
-  displayedColumns = ['category', 'pd', 'concept', 'importe', 'type'];
+  headers = ['Categoria', 'PD', 'Concepto', 'Importe', 'Tipo','Quincena incio', 'Quincena fin','Acciones'];
+  displayedColumns = ['category', 'pd', 'concept', 'importe', 'type','quinini', 'quinfin'];
   data = [];
   nominaId:any;
   data2: NominaA | null = null;
@@ -64,28 +64,38 @@ export class CatalogosComponent {
       title: 'Agregar Sustituto', // 🔹 Cambio de título
       html: `
       <div style="display: flex; flex-direction: column; text-align: left;">
-        <label style="margin-left:33px;" for="category">Sustituto:</label>
-        <input id="category" class="swal2-input" placeholder="Ingresa el sustituto" style="padding: 0px; font-size: 16px;">
+        <label style="margin-left:33px;" for="category">Categoria:</label>
+        <input id="category" class="swal2-input" placeholder="Ingresa el nombre de la categoria" style="padding: 0px; font-size: 16px;">
       </div>
 
       <div style="display: flex; flex-direction: column; text-align: left;">
-        <label style="margin-left:33px;" for="importt">Cantidad del motivo 48:</label>
-        <input id="importt" class="swal2-input" placeholder="Ingresa cantidad" style="padding: 0px; font-size: 16px;">
+        <label style="margin-left:33px;" for="pd">Ingresa el pd: </label>
+        <input id="pd" class="swal2-input" placeholder="Escriba 'p' si es percepcion o 'd' si es deduccion" style="padding: 0px; font-size: 16px;">
       </div>
 
       <div style="display: flex; flex-direction: column; text-align: left;">
-        <label style="margin-left:33px;" for="retention">Cantidad del motivo 01:</label>
-        <input id="retention" class="swal2-input" placeholder="Ingresa cantidad" style="padding: 0px; font-size: 16px;">
+        <label style="margin-left:33px;" for="concept">Clave del concepto: </label>
+        <input id="concept" class="swal2-input" placeholder="Ingresa la clave del concepto" style="padding: 0px; font-size: 16px;">
       </div>
 
       <div style="display: flex; flex-direction: column; text-align: left;">
-        <label style="margin-left:33px;" for="liquid">Líquido:</label>
-        <input id="liquid" class="swal2-input" placeholder="Ingresa valor" style="padding: 0px; font-size: 16px;">
+        <label style="margin-left:33px;" for="importe">Importe:</label>
+        <input id="importe" class="swal2-input" placeholder="Ingresa valor del concepto" style="padding: 0px; font-size: 16px;">
       </div>
 
       <div style="display: flex; flex-direction: column; text-align: left;">
         <label style="margin-left:33px;" for="type">Tipo:</label>
         <input id="type" class="swal2-input" placeholder="Ingresa tipo" style="padding: 0px; font-size: 16px;">
+      </div>
+
+        <div style="display: flex; flex-direction: column; text-align: left;">
+        <label style="margin-left:33px;" for="quinini">Quincena Inicio:</label>
+        <input id="quinini" class="swal2-input" placeholder="Ingresa la quinciena en la inicia" style="padding: 0px; font-size: 16px;">
+      </div>
+
+      <div style="display: flex; flex-direction: column; text-align: left;">
+        <label style="margin-left:33px;" for="quinfin">Quincena Fin:</label>
+        <input id="quinfin" class="swal2-input" placeholder="Ingresa la quinciena en la termina" style="padding: 0px; font-size: 16px;">
       </div>
       `,
 
@@ -94,12 +104,14 @@ export class CatalogosComponent {
       cancelButtonText: 'Cancelar',
       preConfirm: () => {
         const category = (document.getElementById('category') as HTMLInputElement).value;
-        const importe = (document.getElementById('importt') as HTMLInputElement).value;
-        const retention = (document.getElementById('retention') as HTMLInputElement).value;
-        const liquid = (document.getElementById('liquid') as HTMLInputElement).value;
+        const importe = (document.getElementById('importe') as HTMLInputElement).value;
+        const pd = (document.getElementById('pd') as HTMLInputElement).value;
+        const concepto = (document.getElementById('concept') as HTMLInputElement).value;
         const type = (document.getElementById('type') as HTMLInputElement).value;
+        const quinini = (document.getElementById('quinini') as HTMLInputElement).value;
+        const quinfin = (document.getElementById('quinfin') as HTMLInputElement).value;
 
-        if (!category || !importe || !retention || !liquid || !type) {
+        if (!category || !importe || !pd || !concepto || !type || !quinini || !quinfin) {
           Swal.showValidationMessage('Todos los campos son obligatorios');
           return false;
         }
@@ -107,9 +119,11 @@ export class CatalogosComponent {
         return {
           category,
           importe,
-          retention,
-          liquid,
-          type
+          pd,
+          concepto,
+          type,
+          quinini,
+          quinfin
         };
       }
     }).then((result) => {
@@ -122,9 +136,11 @@ export class CatalogosComponent {
   }
 
   saveNew(data: any) {
-
+    console.log(data)
     this.NominaBecService.NewCatalogos(data).subscribe(
+
       response => {
+       
         this.fetchData();
         Swal.fire({
           title: '¡Éxito!',
@@ -153,29 +169,39 @@ export class CatalogosComponent {
         title: 'Editar Sustituto',
         html: `
         <div style="display: flex; flex-direction: column; text-align: left;">
-          <label style="margin-left:33px;" for="category">Sustituto:</label>
+          <label style="margin-left:33px;" for="category">Categoria:</label>
           <input id="category" class="swal2-input" value="${data.category}" style="padding: 0px; font-size: 16px;">
         </div>
 
          <div style="display: flex; flex-direction: column; text-align: left;">
-          <label style="margin-left:33px;" for="importt">Cantidad del motivo 48: </label>
-          <input id="importt" class="swal2-input" value="${data.import}" style="padding: 0px; font-size: 16px;">
+            <label style="margin-left:33px;" for="pd">Ingresa el pd: </label>
+          <input id="pd" class="swal2-input" value="${data.pd}" style="padding: 0px; font-size: 16px;">
         </div>
 
          <div style="display: flex; flex-direction: column; text-align: left;">
-          <label style="margin-left:33px;" for="retention">Cantidad del motivo 01: </label>
-          <input id="retention" class="swal2-input" value="${data.retention}" style="padding: 0px; font-size: 16px;">
+          <label style="margin-left:33px;" for="concept">Clave del concepto: </label>
+          <input id="concept" class="swal2-input" value="${data.concept}" style="padding: 0px; font-size: 16px;">
         </div>
 
          <div style="display: flex; flex-direction: column; text-align: left;">
-          <label style="margin-left:33px;" for="liquid">Liquido: </label>
-          <input id="liquid" class="swal2-input" value="${data.liquid}" style="padding: 0px; font-size: 16px;">
+          <label style="margin-left:33px;" for="importe">Importe: </label>
+          <input id="importe" class="swal2-input" value="${data.importe}" style="padding: 0px; font-size: 16px;">
         </div>
 
          <div style="display: flex; flex-direction: column; text-align: left;">
           <label style="margin-left:33px;" for="type">Tipo: </label>
           <input id="type" class="swal2-input" value="${data.type}" style="padding: 0px; font-size: 16px;">
         </div>
+
+           <div style="display: flex; flex-direction: column; text-align: left;">
+        <label style="margin-left:33px;" for="quinini">Quincena Inicio:</label>
+        <input id="quinini" class="swal2-input" value="${data.quinini}" style="padding: 0px; font-size: 16px;">
+      </div>
+
+      <div style="display: flex; flex-direction: column; text-align: left;">
+        <label style="margin-left:33px;" for="quinfin">Quincena Fin:</label>
+        <input id="quinfin" class="swal2-input" value="${data.quinfin}" style="padding: 0px; font-size: 16px;">
+      </div>
      `,
 
         showCancelButton: true,
@@ -183,11 +209,13 @@ export class CatalogosComponent {
         cancelButtonText: 'Cancelar',
         preConfirm: () => {
           const category = (document.getElementById('category') as HTMLInputElement).value;
-          const importe = (document.getElementById('importt') as HTMLInputElement).value;
-          const retention = (document.getElementById('retention') as HTMLInputElement).value;
-          const liquid = (document.getElementById('liquid') as HTMLInputElement).value;
+          const importe = (document.getElementById('importe') as HTMLInputElement).value;
+          const pd = (document.getElementById('pd') as HTMLInputElement).value;
+          const concepto = (document.getElementById('concept') as HTMLInputElement).value;
           const type = (document.getElementById('type') as HTMLInputElement).value;
-          if (!category || !importe || !retention || !liquid || !type) {
+          const quinini = (document.getElementById('quinini') as HTMLInputElement).value;
+          const quinfin = (document.getElementById('quinfin') as HTMLInputElement).value;
+          if (!category || !importe || !pd || !concepto || !type || !quinini || !quinfin) {
             Swal.showValidationMessage('Todos los campos son obligatorios');
             return false;
           }
@@ -195,9 +223,11 @@ export class CatalogosComponent {
           return {
             category,
             importe,
-            retention,
-            liquid,
-            type
+            pd,
+            concepto,
+            type,
+            quinini,
+            quinfin
           };
         }
       }).then((result) => {

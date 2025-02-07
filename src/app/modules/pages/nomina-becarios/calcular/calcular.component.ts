@@ -26,6 +26,7 @@ export class CalcularComponent {
   data2: NominaA | null = null;
   isButtonDisabled: boolean = false;
   isButtonDisabled2: boolean = false;
+  isLoading = true;
 
   constructor(
     private router: Router,
@@ -37,6 +38,7 @@ export class CalcularComponent {
   async ngOnInit(): Promise<void> {
     this.nominaId = await this.loadNominaId();
     this.fetchData();
+    this.isLoading =true;
 
   }
 
@@ -64,6 +66,7 @@ export class CalcularComponent {
 
     this.NominaBecService.getInformationCalculation(this.nominaId).subscribe((response: ApiResponse) => {
       this.data = response.data; // Aquí concatenas las fechas
+      this.isLoading = this.data.length === 0;
     },
       (error) => {
         console.error('Error al obtener los datos:', error);
@@ -250,7 +253,7 @@ export class CalcularComponent {
               const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
 
               // Guardar el archivo
-              this.saveAsExcelFile(excelBuffer, `Anexo05 ${quincena}`);
+              this.saveAsExcelFile(excelBuffer, `PreAnexo05 ${quincena}`);
               resolve();
             } else {
               reject('Datos no válidos en la respuesta');
@@ -301,7 +304,7 @@ export class CalcularComponent {
               const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
 
               // Guardar el archivo
-              this.saveAsExcelFile(excelBuffer, `Anexo06 ${quincena}`);
+              this.saveAsExcelFile(excelBuffer, `PreAnexo06 ${quincena}`);
               resolve();
             } else {
               reject('Datos no válidos en la respuesta');

@@ -22,6 +22,7 @@ searchTerm: string = '';
   status = 2;
   clabes: any[] = [];
   nominaId :any;
+  isLoading = true;
   changePay: Array<{ clabe: number; srl_emp: string; nominaId: any }> = []; // Array para almacenar los cambios
 
   constructor(
@@ -34,6 +35,7 @@ searchTerm: string = '';
   async ngOnInit(): Promise<void> {
     this.nominaId = await this.loadNominaId();
     this.fetchData();
+    this.isLoading =true;
   }
 
   async loadNominaId() {
@@ -50,6 +52,7 @@ searchTerm: string = '';
           ...item,
           activo: item.clabe ? 1 : 0,        // Pago por transferencia activo si clabe es true
         }));
+        this.isLoading = this.data.length === 0;
       },
         (error) => {
           console.error('Error al obtener los datos:', error);

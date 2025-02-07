@@ -58,7 +58,9 @@
           [showActionsPdf]=false
           [showActiveCheckbox]=false
           [showDetailsColumn]=true
-          (show)="showDetails($event)"
+          [isLoading]="isLoading"
+          (show)="showDetails($event)
+          "
           >
         </app-tables>
       </div>

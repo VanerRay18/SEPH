@@ -62,7 +62,8 @@
           [showActiveCheckbox]="true"
           (clavesBanco)="this.clabes =$event"
           (check)="toggleCheckbox($event)"
-          [showDetailsColumn]=false>
+          [showDetailsColumn]=false
+          [isLoading]="isLoading">
         </app-tables>
       </div>
       <div class="boton-container col-auto col-lg-12 m-3 " >
