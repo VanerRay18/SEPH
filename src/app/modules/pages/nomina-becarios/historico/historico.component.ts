@@ -53,7 +53,7 @@ export class HistoricoComponent {
         this.data2 = response.data;
         this.formattedDates = this.data2.map(item => this.formatDate(item.fecha));
         this.years = [...new Set(this.formattedDates.map(date => parseInt(date.split('-')[0])))];
-        console.log(this.formattedDates);
+        //console.log(this.formattedDates);
         this.groupDataByMonth();
       },
         (error) => {

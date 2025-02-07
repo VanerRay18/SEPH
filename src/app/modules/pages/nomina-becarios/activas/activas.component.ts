@@ -46,7 +46,7 @@ export class ActivasComponent {
       this.data = response.data;
     },
       (error) => {
-        console.error('Error al obtener los datos:', error);
+        // console.error('Error al obtener los datos:', error);
         Swal.fire({
           icon: 'warning',
           title: 'No hay nominas para procesar',
