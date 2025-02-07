@@ -38,7 +38,7 @@ export class ActivasComponent {
       this.agregar = response.data.agregar
       this.autorizar = response.data.autorizar
     });
-    console.log(this.data?.status)
+    // console.log(this.data?.status)
   }
 
   fetchData() {
@@ -47,6 +47,12 @@ export class ActivasComponent {
     },
       (error) => {
         console.error('Error al obtener los datos:', error);
+        Swal.fire({
+          icon: 'warning',
+          title: 'No hay nominas para procesar',
+          text: 'La quincena actual ya fue procesada',
+          confirmButtonText: 'Aceptar'
+        });
       });
   }
 
