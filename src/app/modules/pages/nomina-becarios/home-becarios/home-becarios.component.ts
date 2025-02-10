@@ -4,6 +4,11 @@ import { NominaBecService } from 'src/app/services/nomina-bec.service';
 import { NominaA } from 'src/app/shared/interfaces/utils';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
+import { catchError, interval, of, pipe, startWith, Subscription, switchMap } from 'rxjs';
+import { AuthService } from 'src/app/services/auth.service';
+import { NotificacionERP } from 'src/app/shared/interfaces/utils';
+import { ChangeDetectorRef, NgZone } from '@angular/core';
+
 
 @Component({
   selector: 'app-home-becarios',
@@ -13,11 +18,21 @@ import { Router } from '@angular/router';
 export class HomeBecariosComponent {
  searchTerm: string = '';
   data: NominaA | null = null;
+    showNotifications = false; // Controla la visibilidad de las notificaciones
+    notificationCount = 1; // Número de notificaciones no leídas
+    notifications: NotificacionERP[] = []; // Inicializamos como un array vacío
+    numNoti: any = 0 ;
+    // Alternar la visibilidad de las notificaciones
+    toggleNotifications() {
+      this.showNotifications = !this.showNotifications;
+    }
 
 
   constructor(
     private router: Router,
-    private NominaBecService: NominaBecService
+    private NominaBecService: NominaBecService,
+    private authService: AuthService,
+        private cdr: ChangeDetectorRef
   ) {
     // Registrar las fuentes necesarias
   }
@@ -33,6 +48,40 @@ export class HomeBecariosComponent {
       (error) => {
         console.error('Error al obtener los datos:', error);
       });
+
+          interval(15000)
+            .pipe(
+              startWith(0),
+              switchMap(() => {
+                const userId = localStorage.getItem('userId');
+                return this.authService.getNotifications(userId).pipe(
+                  catchError((error) => {
+                    console.error('Error al obtener notificaciones:', error);
+                    return of(null); // Retorna un valor vacío para no detener el intervalo
+                  })
+                );
+              })
+            )
+            .subscribe((response) => {
+              if (response && response.data) {
+                this.notifications = response.data.map((noti: any) => ({
+                  ...noti,
+                  timeAgo: this.calculateTimeAgo(noti.fecha),
+                }));
+                this.numNoti = response.message ?? 0;
+                this.cdr.detectChanges();
+              }
+            });
+
+
+  }
+
+  calculateTimeAgo(fecha: string): string {
+    const diff = Math.floor((Date.now() - new Date(fecha).getTime()) / 1000);
+    if (diff < 60) return 'Hace unos segundos';
+    if (diff < 3600) return `Hace ${Math.floor(diff / 60)} min`;
+    if (diff < 86400) return `Hace ${Math.floor(diff / 3600)} h`;
+    return `Hace ${Math.floor(diff / 86400)} días`;
   }
 
   startNomina(): void {

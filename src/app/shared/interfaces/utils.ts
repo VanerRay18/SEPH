@@ -133,7 +133,8 @@ export interface NominaP{
         id: any,
         message:any,
         title: any,
-        status: any
+        status: any,
+        timeAgo?: string;
         }
 
 

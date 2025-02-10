@@ -39,37 +39,24 @@
         <button class="btn-ver" onclick="window.location.href='/pages/NominaBecarios/Becarios';" style="cursor: pointer;">VER REGISTROS</button>
       </div>
     </div>
+<!-- Alertas -->
+<div class="card alertas">
+  <div class="card-title">
+    <h5>ALERTAS</h5>
+  </div>
+  <div class="card-body">
+    <div *ngFor="let noti of notifications" class="alert">
+      <i class="{{noti.icon}} iconNoti"></i>
+      <div class="alert-content">
+        <p class="alert-title"><strong>{{ noti.title }}</strong></p>
+        <p class="alert-text">{{ noti.message }}</p>
+        <p class="alert-time">{{ noti.timeAgo }}</p>
 
-    <!-- Alertas -->
-    <div class="card alertas">
-      <div class="card-title">
-        <h5>ALERTAS</h5>
-      </div>
-      <div class="card-body">
-        <div class="alert">
-          <div class="alert-icon"></div>
-          <div class="alert-content">
-            <p class="alert-time"><strong>Hace 15 días</strong></p>
-            <p class="alert-text">Sonia Juana González Niño ha solicitado vacaciones del 10/01/24 al 14/01/24 para Erik Randon Perez</p>
-          </div>
-        </div>
-        <div class="alert">
-          <div class="alert-icon" style="background-color: gray;"></div>
-          <div class="alert-content">
-            <p class="alert-time"><strong>Hace 15 días</strong></p>
-            <p class="alert-text">El contrato de Álvaro Clemente López Valderas finaliza el 19/01/2024</p>
-          </div>
-        </div>
-        <div class="alert">
-          <div class="alert-icon" style="background-color: gray;"></div>
-          <div class="alert-content">
-            <p class="alert-time"><strong>Hace 15 días</strong></p>
-            <p class="alert-text">Ernest León Hernández ha sido dado de alta</p>
-          </div>
-        </div>
-        <button class="btn-ver">VER TODAS</button>
       </div>
     </div>
+  </div>
+</div>
+
 
   </div>
 </div>

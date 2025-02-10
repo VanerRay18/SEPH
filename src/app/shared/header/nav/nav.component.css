@@ -1,4 +1,8 @@
-
+.alert-time {
+  text-align: right; /* Alinea el texto de la fecha hacia la izquierda */
+  color: #858585;
+  font-size: 12px;
+}
 
 .navbar{
   background-color:#8a1538;
@@ -13,7 +17,7 @@ color:rgb(184, 184, 184);
 
     margin-right: 8px; /* Ajusta el valor según el espacio que necesites */
 
-  
+
   font-size: 1.2em; /* Ajusta el tamaño del icono si es necesario */
 }
 .active-custom {
@@ -69,7 +73,7 @@ color: #FFD700;
 
 /* Estilo de los elementos del menú (links) */
 .nav-link {
-  
+
   color: white; /* blanco */
   font-weight: 500;
 }
@@ -115,7 +119,7 @@ color: #FFD700;
 
 .navbar-toggler{
   color: #8a1538;
-  
+
   margin-left: 10px;
   font-size: 22px;
 }
@@ -144,7 +148,7 @@ color: #FFD700;
   position: relative;
   display: inline-block;
   padding: 8px;
-  
+
 }
 
 .notification .fa-bell {
@@ -227,9 +231,9 @@ max-width: 32px;
   align-items: center;
   padding: 15px;
   background: white;
-  border-radius: 20px; 
+  border-radius: 20px;
   border: 1px solid #ddd;
-  margin-bottom: 10px; 
+  margin-bottom: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s;
   max-height: inherit;

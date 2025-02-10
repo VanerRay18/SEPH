@@ -54,47 +54,11 @@ button:active {
   text-align: center;
   align-items: center;
   justify-content: center;
-}
-
-
-.alert {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 10px 0;
-  border-bottom: 1px solid #ddd;
-}
-
-.alert:last-child {
-  border-bottom: none;
-}
-
-.alert-icon {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: red;
-  margin-top: 5px;
-}
-
-.alert-content {
-  flex-grow: 1;
-}
-
-.alert-time {
+  grid-column: span 2; /* Ocupa toda la fila */
+  font-size: 1.8rem;
   font-weight: bold;
-  font-size: 14px;
-  color: #5a5a5a;
 }
 
-.alert-text {
-  font-size: 14px;
-  color: #333;
-}
-
-.historico{
-  height: 230px;
-}
 
 /* .container{
   display: grid;
@@ -115,13 +79,6 @@ button:active {
   gap: 20px; /* Espacio entre elementos */
 }
 
-/* Tamaño de cada sección */
-.titulos {
-  grid-column: span 2; /* Ocupa toda la fila */
-  font-size: 1.8rem;
-  font-weight: bold;
-}
-
 .nomina {
   grid-column: span 1;
 }
@@ -132,6 +89,9 @@ button:active {
 
 .alertas {
   grid-column: span 1;
+  overflow-y: auto;
+  overflow-x: auto;
+  height: 350px;
 }
 
 .becarios {
@@ -170,34 +130,55 @@ button:active {
   cursor: pointer;
 }
 
-/* Estilo de alertas */
+
 .alert {
   display: flex;
-  align-items: center;
-  margin-bottom: 15px;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid #ddd;
+  overflow-y: auto;
+  overflow-x: auto;
+}
+
+.alert:last-child {
+  border-bottom: none;
 }
 
 .alert-icon {
   width: 10px;
   height: 10px;
-  background-color: red;
   border-radius: 50%;
+  background-color: red;
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
   margin-right: 10px;
 }
 
 .alert-content {
+  flex-grow: 1;
+  overflow-y: auto;
+  overflow-x: auto;
   flex: 1;
+  overflow-y: auto;
+  overflow-x: auto;
 }
 
 .alert-time {
+  font-weight: bold;
+  font-size: 14px;
+  color: #5a5a5a;
   font-size: 0.9rem;
-  color: #333;
 }
 
 .alert-text {
-  font-size: 0.85rem;
-  color: #555;
+  font-size: 14px;
+  color: #333;
 }
+
+
 
 h3{
   font-size: 65px;
@@ -210,4 +191,26 @@ h3{
   padding: 8px 12px;
   border-radius: 20px;
   cursor: pointer;
+}
+
+::-webkit-scrollbar {
+  width: 10px; /* Ancho del scrollbar */
+}
+
+/* Personaliza el track (fondo del scroll) */
+::-webkit-scrollbar-track {
+  background-color: #0000007c; /* Fondo del track */
+  border-radius: 10px;
+}
+
+/* Personaliza el thumb (el "deslizador" del scroll) */
+::-webkit-scrollbar-thumb {
+  background-color: #ffffffbb; /* Color del deslizador */
+  border-radius: 10px;
+  border: 5px solid transparent; /* Hace que se vea un borde alrededor del deslizador */
+}
+
+/* Hover para el thumb */
+::-webkit-scrollbar-thumb:hover {
+  background-color: #555; /* Color del deslizador al pasar el mouse */
 }

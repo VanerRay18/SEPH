@@ -57,17 +57,27 @@ export class NavComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe((response) => {
-        if (response) {
-          this.numNoti = response.message ?? 0; // Asegura un valor por defecto
-          this.notifications = response.data ?? []; // Asegura un array vacío si no hay datos
-          this.cdr.detectChanges(); // Fuerza actualización
+        if (response && response.data) {
+          this.notifications = response.data.map((noti: any) => ({
+            ...noti,
+            timeAgo: this.calculateTimeAgo(noti.fecha),
+          }));
+          this.numNoti = response.message ?? 0;
+          this.cdr.detectChanges();
         }
       });
   }
-  
+
+  calculateTimeAgo(fecha: string): string {
+    const diff = Math.floor((Date.now() - new Date(fecha).getTime()) / 1000);
+    if (diff < 60) return 'Hace unos segundos';
+    if (diff < 3600) return `Hace ${Math.floor(diff / 60)} min`;
+    if (diff < 86400) return `Hace ${Math.floor(diff / 3600)} h`;
+    return `Hace ${Math.floor(diff / 86400)} días`;
+  }
 
   ngOnInit(): void {
-    
+
     this.fetchData();
     this.getCurrentRoute(); // Escucha los eventos de navegación
     this.getUserModules(); // Llama al servicio para obtener los módulos del usuario
