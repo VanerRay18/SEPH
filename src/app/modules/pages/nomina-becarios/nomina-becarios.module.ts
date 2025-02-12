@@ -14,6 +14,7 @@ import { SharedModule } from "../../../shared/shared.module";
 import { Anexo6Component } from './anexo6/anexo6.component';
 import { Anexo7Component } from './anexo7/anexo7.component';
 import { CatalogosComponent } from './catalogos/catalogos.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { CatalogosComponent } from './catalogos/catalogos.component';
     CommonModule,
     FormsModule,
     NominabecaRoutingModule,
-    SharedModule
+    SharedModule,
+    ReactiveFormsModule
 
   ]
 })

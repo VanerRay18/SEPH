@@ -3,6 +3,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ApiResponse } from 'src/app/models/ApiResponse';
 import { environment } from 'src/environments/enviroment';
+import { SendEmailDTO } from '../shared/interfaces/utils'; // Ajusta la ruta de SendEmailDTO según tu estructura
+
 
 
 @Injectable({
@@ -116,6 +118,49 @@ export class NominaBecService {
 
   sentNomina(data:any): Observable<ApiResponse> {//Guarda la nomina
     return this.http.post<ApiResponse>(`${environment.baseService}${'/nomina/sentNomina'}`,data);
+  }
+
+  SentArchives(sendEmailDTO: SendEmailDTO, files: File[]): Observable<ApiResponse> {
+    const formData = new FormData();
+    files.forEach((file) => formData.append(`file`, file, file.name));
+    formData.append('sendEmailDTO', JSON.stringify(sendEmailDTO));
+    // console.log(sendEmailDTO)
+    // console.log(files.length)
+    return this.http.post<ApiResponse>(`${environment.baseService}/email/file`, formData);
+  }
+
+
+  getEmails(system: any): Observable<ApiResponse> {//Trae el anexo 5
+    let headers = new HttpHeaders({'system': system})
+    return this.http.get<ApiResponse>(`${environment.baseService}${'/email/system'}`,
+      {headers}
+    );
+  }
+
+  DeleteEmails(idEmail: any): Observable<ApiResponse> {//Trae el anexo 5
+    let headers = new HttpHeaders({'idEmail': idEmail})
+    console.log(idEmail)
+    return this.http.patch<ApiResponse>(`${environment.baseService}${'/email/softdelete'}`,
+      {headers}
+    );
+  }
+
+  addEmail(data:any): Observable<ApiResponse> {//Cambia el tipode pago del empleado
+    return this.http.post<ApiResponse>(`${environment.baseService}${'/email'}`,data);
+  }
+
+  ChangEmail(idEmail: any): Observable<ApiResponse> {//Trae el anexo 5
+    let headers = new HttpHeaders({'idEmail': idEmail})
+    return this.http.patch<ApiResponse>(`${environment.baseService}${'/email'}`,
+      {headers}
+    );
+  }
+
+  getEmailForInput(system: any): Observable<ApiResponse> {//Trae el anexo 5
+    let headers = new HttpHeaders({'system': system})
+    return this.http.get<ApiResponse>(`${environment.baseService}${'/email/input'}`,
+      {headers}
+    );
   }
 
 

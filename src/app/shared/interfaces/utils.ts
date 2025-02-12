@@ -16,60 +16,60 @@ export interface Oficio {
   fecha_ultima_licencia: string;
   total_folios: number;
   apartir: string;
-  status : string;
+  status: string;
 }
 
 
 export interface Logs {
-  usuario:string;
+  usuario: string;
   nombre: string;
-  accion:string;
-  data:string;
-  tiempo:any;
-  prev:string;
-  folio:string;
+  accion: string;
+  data: string;
+  tiempo: any;
+  prev: string;
+  folio: string;
 }
 
-export interface LicMedica{
-sep?: any;
-sumaDias:any,
-desde:any,
-hasta:any,
-fechaFisica: any,
-total_days:any,
-nueva:any,
-formato: any,
-apartir:any,
-accidente:any,
-observaciones: any,
-fechaCaptura: any,
-id: any,
-color: any
+export interface LicMedica {
+  sep?: any;
+  sumaDias: any,
+  desde: any,
+  hasta: any,
+  fechaFisica: any,
+  total_days: any,
+  nueva: any,
+  formato: any,
+  apartir: any,
+  accidente: any,
+  observaciones: any,
+  fechaCaptura: any,
+  id: any,
+  color: any
 }
 
-export interface NominaA{
+export interface NominaA {
   id: any,
   retentionTotal: any;
-  total:any,
-  importeTotal:any,
-  becarios:any,
+  total: any,
+  importeTotal: any,
+  becarios: any,
   quincena: any,
-  status:any
-  }
+  status: any
+}
 
-  export interface NominaH{
-    id: any,
-    retentionTotal: any;
-    total:any,
-    importeTotal:any,
-    becarios:any,
-    quincena: any,
-    status:any,
-    fecha : any
-    }
+export interface NominaH {
+  id: any,
+  retentionTotal: any;
+  total: any,
+  importeTotal: any,
+  becarios: any,
+  quincena: any,
+  status: any,
+  fecha: any
+}
 
 
-export interface NominaP{
+export interface NominaP {
   retentionTotal: any,
   clabeBanco: any,
   srl_emp: any,
@@ -78,64 +78,79 @@ export interface NominaP{
   importTotal: any,
   clabe: any,
   curp: any
-  }
+}
 
-  export interface Anexo05{
-    FORMA_PAGO: any,
-    FECHA_INICIO: any,
-    RFC: any,
-    NIVEL_CM: any,
-    SEGUNDO_APELLIDO: any,
-    NETO: any,
-    DEDUCCIONES: any,
-    TIPO_NOMINA: any,
-    UR: any,
-    NO_COMPROBANTE: any,
-    srl_emp: any,
-    FECHA_TERMINO: any,
-    CLABE: any,
-    NOMBRE: any,
-    PRIMER_APELLIDO: any,
-    CURP: any,
-    NSS: any,
-    CT: any,
-    CLAVE_PLAZA: any,
-    CVE_BANCO: any,
-    PERIODO: any,
-    FECHA_PAGO: any,
-    PERCEPCIONES: any,
-    HORAS_EXTRAS: any,
-    DOMINGOS_TRABAJADOS: any,
-    DIAS_HORAS_EXTRA: any,
-    TIPO_HORAS_EXTRA: any,
-    SEMANAS_HORAS_EXTRA: any
-    }
+export interface Anexo05 {
+  FORMA_PAGO: any,
+  FECHA_INICIO: any,
+  RFC: any,
+  NIVEL_CM: any,
+  SEGUNDO_APELLIDO: any,
+  NETO: any,
+  DEDUCCIONES: any,
+  TIPO_NOMINA: any,
+  UR: any,
+  NO_COMPROBANTE: any,
+  srl_emp: any,
+  FECHA_TERMINO: any,
+  CLABE: any,
+  NOMBRE: any,
+  PRIMER_APELLIDO: any,
+  CURP: any,
+  NSS: any,
+  CT: any,
+  CLAVE_PLAZA: any,
+  CVE_BANCO: any,
+  PERIODO: any,
+  FECHA_PAGO: any,
+  PERCEPCIONES: any,
+  HORAS_EXTRAS: any,
+  DOMINGOS_TRABAJADOS: any,
+  DIAS_HORAS_EXTRA: any,
+  TIPO_HORAS_EXTRA: any,
+  SEMANAS_HORAS_EXTRA: any
+}
 
-    export interface Anexo06{
-      TIPO_NOMINA: any,
-      UR: any,
-      NO_COMPROBANTE: any,
-      CURP: any,
-      PERIODO: any,
-      CLAVE_PLAZA: any,
-      TIPO_CONCEPTO: any,
-      DESC_CONCEPTO: any,
-      IMPORTE: any,
-      COD_CONCEPTO: any,
-      BASE_CALCULO_ISR: any
-      }
+export interface Anexo06 {
+  TIPO_NOMINA: any,
+  UR: any,
+  NO_COMPROBANTE: any,
+  CURP: any,
+  PERIODO: any,
+  CLAVE_PLAZA: any,
+  TIPO_CONCEPTO: any,
+  DESC_CONCEPTO: any,
+  IMPORTE: any,
+  COD_CONCEPTO: any,
+  BASE_CALCULO_ISR: any
+}
 
 
-      export interface NotificacionERP{
-        name: any,
-        fecha: any,
-        icon: any,
-        id: any,
-        message:any,
-        title: any,
-        status: any,
-        timeAgo?: string;
-        }
+export interface NotificacionERP {
+  name: any,
+  fecha: any,
+  icon: any,
+  id: any,
+  message: any,
+  title: any,
+  status: any,
+  timeAgo?: string;
+}
+
+export interface SendEmailDTO {
+  subject: any,
+  message: any,
+  from: any
+}
+
+export interface Email {
+  email: any,
+  deleted:any,
+  active:any,
+  id: any
+  system: any
+}
+
 
 
 
@@ -199,7 +214,7 @@ export interface historico {
     oficio: number | null,
     fechaCaptura: string;
     observaciones: string;
-    apartir: string |null;
+    apartir: string | null;
     sumaDias: number;
     accidente: number;
     sep: number;

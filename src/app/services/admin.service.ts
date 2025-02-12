@@ -27,4 +27,9 @@ export class AdminService {
     return this.http.get<any>(`${environment.baseService}${'/rol/asignacion'}`);
   }
 
+  
+  getEmails(data: FormData): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(`${environment.baseService}${'/nomina/sentArchive'}`,data);
+  }
+
 }

@@ -13,8 +13,9 @@
             </a></div>
           <div class="step active"><a href="pages/NominaBecarios/Nominas-Pagar"
               class="step-link"><strong>2 - Pagos</strong></a></div>
-          <div class="step active"><a href="pages/NominaBecarios/Nominas-Revision"
-            class="step-link"><strong>3 - Revision</strong></a></div>
+          <div class="step active"><a
+              href="pages/NominaBecarios/Nominas-Revision"
+              class="step-link"><strong>3 - Revision</strong></a></div>
           <div class="step active"><strong>4 - Enviar</strong></div>
         </div>
       </div>
@@ -25,42 +26,51 @@
           <input
             type="email"
             id="email"
-            value="Admin@gmail.com"
             disabled
-            class="email-input"
-          />
-          <button class="modify-btn">Modificar</button>
+            [value]="emailList"
+            class="email-input" />
+          <button class="modify-btn" (click)="showCrudSwal()">Modificar</button>
+        </div>
+        <div class="email-subjet">
+          <form [formGroup]="emailForm">
+            <label for="subjet">Asunto:</label>
+            <input
+              type="text"
+              id="subjet"
+              placeholder="Asuto del Correo"
+              class="email-input" />
+              <label for="emailMessage">Mensaje del Correo:</label>
+              <textarea id="emailMessage" placeholder="Escribe tu mensaje aquí..."></textarea>
+          </form>
         </div>
         <div class="files-section">
           <label>Archivos que se van a enviar:</label>
+          <br><br>
           <ul class="files-list">
             <li class="file-item">
-              <img src="csv-icon.png" alt="CSV icon" class="file-icon" />
-              Anexo62025.csv
+              <i class="fa-solid fa-file-csv"></i>&nbsp;
+              Anexo5.csv
             </li>
             <li class="file-item">
-              <img src="csv-icon.png" alt="CSV icon" class="file-icon" />
-              Anexo62025.csv
-            </li>
-            <li class="file-item">
-              <img src="csv-icon.png" alt="CSV icon" class="file-icon" />
-              Anexo62025.csv
-            </li>
-            <li class="file-item">
-              <img src="csv-icon.png" alt="CSV icon" class="file-icon" />
-              Anexo62025.csv
+              <i class="fa-solid fa-file-csv"></i>&nbsp;
+              Anexo6.csv
             </li>
           </ul>
-          <div class="upload-section">
-            <button class=" button ">Subir un Archivo CSV</button>
+          <div class="custom-file-upload">
+            <input type="file" id="fileInput" (change)="onFileSelected($event)">
+            <label for="fileInput">
+              📂 Seleccionar Archivo
+            </label>
+            <span *ngIf="selectedFile">{{ selectedFile.name }}</span>
           </div>
         </div>
       </div>
 
-
       <div class="boton-container col-auto col-lg-12 m-3 ">
-        <button type="submit" class="btn  btn-sm" (click)="saveNomina('hdhj')" [disabled]="data2?.status >= 4">Guardar</button>
-        <button type="submit" class="btn  btn-sm" (click)="continueNomina()"[disabled]="data2?.status == 3">Terminar y enviar</button>
+        <button type="submit" class="btn  btn-sm" (click)="saveNomina('hdhj')"
+          [disabled]="data2?.status >= 4">Guardar</button>
+        <button type="submit" class="btn  btn-sm" (click)="continueNomina()"
+          [disabled]="data2?.status == 3">Terminar y enviar</button>
       </div>
     </div>
   </div>
