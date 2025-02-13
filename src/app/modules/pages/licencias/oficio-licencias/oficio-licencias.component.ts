@@ -6,6 +6,7 @@ import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { Oficio } from 'src/app/shared/interfaces/utils';
 import { OficioPdf } from 'src/app/shared/interfaces/utils';
+import { style } from '@angular/animations';
 @Component({
   selector: 'app-oficio-licencias',
   templateUrl: './oficio-licencias.component.html',
@@ -89,7 +90,7 @@ export class OficioLicenciasComponent {
           {
             text: '\n M.T.I Alberto Noble Gómez\nDirector de Atención y Aclaración de Nómina\nPresente:',
             style: 'subheader',
-            margin: [0, 20, 0, 20]
+            margin: [0, 20, 0, 15]
           },
           {
             text: `Con fundamento en el Artículo 111, de la Ley Federal de los Trabajadores al Servicio del Estado y Artículo 52, Fracción I del Reglamento de las Condiciones Generales de Trabajo del personal de la Secretaría del ramo, por este conducto solicito a Usted, gire instrucciones a quien corresponda a efecto de que la (el) C. ${data.nombre.trim()} R.F.C. ${data.rfc} fecha de ingreso ${data.fecha_ingreso}, quien labora en el CT con clave(s) presupuestal(es) siguientes:`,
@@ -104,8 +105,8 @@ export class OficioLicenciasComponent {
                 // Agregar una fila de cabecera si 'claves' no está vacío
                 [{ text: 'PLAZA', alignment: 'center', bold: true, fillColor: '#eeeeee'}, { text: 'CT', alignment: 'center', bold: true, fillColor: '#eeeeee' }],
                 ...claves.map((clave: { PLAZA: any; CT: any; }) => [
-                  { text: clave.PLAZA, alignment: 'center', bold: true },
-                  { text: clave.CT, alignment: 'center', bold: true }
+                  { text: clave.PLAZA, alignment: 'center', bold: true,  style: 'textT' },
+                  { text: clave.CT, alignment: 'center', bold: true, style: 'textT'  }
                 ])
               ]
             },
@@ -131,11 +132,11 @@ export class OficioLicenciasComponent {
                 ],
                 // Agregar filas si 'licencias' no está vacío
                 ...licencias.map((licencia: { foliolic: any; total_dias: any; desde: any; hasta: any; observaciones: any; apartir: any; }) => [
-                  { text: licencia.foliolic, alignment: 'center' },
-                  { text: licencia.total_dias, alignment: 'center' },
-                  { text: `${licencia.desde} - ${licencia.hasta}`, alignment: 'center' },
-                  { text: licencia.observaciones, alignment: 'center' },
-                  { text: licencia.apartir || '---', alignment: 'center' }
+                  { text: licencia.foliolic, alignment: 'center', style: 'textT' },
+                  { text: licencia.total_dias, alignment: 'center', style: 'textT' },
+                  { text: `${licencia.desde} - ${licencia.hasta}`, alignment: 'center', style: 'textT' },
+                  { text: licencia.observaciones, alignment: 'center', style: 'textT' },
+                  { text: licencia.apartir || '---', alignment: 'center', style: 'textT'}
                 ])
               ]
             },
@@ -147,7 +148,7 @@ export class OficioLicenciasComponent {
             alignment: 'center'
           },
           {
-            text: ' ING. José Gabriel Castro Bautista\nDirector de Nómina y Control de Plazas',
+            text: ' M.A.T.I. José Jayli Callejas Barrera\nDirector de Nómina y Control de Plazas',
             alignment: 'center',
             bold: true
           }
@@ -156,6 +157,9 @@ export class OficioLicenciasComponent {
           header: {
             fontSize: 12,
             bold: true
+          }
+          , textT: {
+            fontSize: 10
           }
         }
       };
