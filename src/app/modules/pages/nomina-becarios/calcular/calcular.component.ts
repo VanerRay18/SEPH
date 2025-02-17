@@ -269,6 +269,7 @@ export class CalcularComponent {
     generateExcelAnexo6(): Promise<void> {
       return new Promise((resolve, reject) => {
         const quincena = this.data2?.quincena;
+        let ordinaria = true;
 
         this.NominaBecService.getPreAnexo6().subscribe({
           next: async response => {

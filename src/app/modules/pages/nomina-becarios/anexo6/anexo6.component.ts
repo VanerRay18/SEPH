@@ -43,7 +43,8 @@ export class Anexo6Component {
   }
 
   fetchData() {
-    this.NominaBecService.getAnexo06(this.nominaId).subscribe((response: ApiResponse) => {
+    let ordinaria = true;
+    this.NominaBecService.getAnexo06(this.nominaId, ordinaria).subscribe((response: ApiResponse) => {
       this.data = response.data; // Aquí concatenas las fechas
     },
       (error) => {

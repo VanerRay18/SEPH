@@ -10,6 +10,8 @@ import { Anexo06 } from 'src/app/shared/interfaces/utils';
 import * as XLSX from 'xlsx';
 import { Email } from 'src/app/shared/interfaces/utils';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import * as pdfMake from 'pdfmake/build/pdfmake';
+import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 @Component({
   selector: 'app-enviar',
   templateUrl: './enviar.component.html',
@@ -24,16 +26,21 @@ export class EnviarComponent {
   message = '';
   anexo5Buffer: any;
   anexo6Buffer: any;
+  anexo5EBuffer: any;
+  anexo6EBuffer: any;
   files: File[] = [];  // Aquí se almacenarán los archivos seleccionados
   system = 'becarios';
   emailList: string = '';
   emailForm: FormGroup;
+  updatedEmail = [];
+
 
   constructor(
     private NominaBecService: NominaBecService,
     private router: Router,
     private fb: FormBuilder
   ) {
+       (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
     this.emailForm = this.fb.group({
       subjet: ['', Validators.required],  // Campo obligatorio
       emailMessage: ['', Validators.required] // Campo obligatorio
@@ -117,23 +124,24 @@ background-color: #ffffff;
         showCancelButton: true,
         confirmButtonText: 'Guardar',
         preConfirm: () => {
-          const updatedItems = items.map((item: { id: any; system: any; }) => ({
-            id: item.id,
-            email: (document.getElementById(`email-${item.id}`) as HTMLInputElement).value,
-            active: (document.getElementById(`check-${item.id}`) as HTMLInputElement).checked ? 1 : 0,
-            system: this.system
-          }));
-          console.log(updatedItems)
-          return updatedItems;
-        }
-      }).then((result) => {
-        if (result.isConfirmed) {
-          result.value.forEach((item: any) => {
-            this.NominaBecService.ChangEmail(item.id).subscribe(() => {
-              console.log(`Email ${item.email} actualizado.`);
-            });
+        const updatedItems = items.map((item: { id: any; }) => ({
+          idEmail: item.id,
+          email: (document.getElementById(`email-${item.id}`) as HTMLInputElement).value,
+          active: (document.getElementById(`check-${item.id}`) as HTMLInputElement).checked ? 1 : 0,
+          system: this.system
+        }));
+
+        console.log("Datos actualizados:", updatedItems);
+        return updatedItems; // ✅ Retornar los datos para que .then los reciba
+      }
+    }).then((result) => {
+      if (result.isConfirmed && result.value) {
+        result.value.forEach((item: any) => {
+          this.NominaBecService.ChangEmail(item, item.idEmail,).subscribe(() => {
+            console.log(`Email ${item.email} actualizado.`);
           });
-        }
+        });
+      }
       });
 
       // Agregar evento para eliminar usuario
@@ -142,11 +150,11 @@ background-color: #ffffff;
           btn.addEventListener('click', (event) => {
             const idAttr = (event.target as HTMLElement).getAttribute('data-id');
             console.log(idAttr)
-            const id = idAttr ? parseInt(idAttr, 10) : null;
+            const idEmail = idAttr ? parseInt(idAttr, 10) : null;
 
-            if (id !== null && !isNaN(id)) {
-              this.NominaBecService.DeleteEmails(id).subscribe(() => {
-                console.log(`Email con ID ${id} eliminado.`);
+            if (idEmail !== null && !isNaN(idEmail)) {
+              this.NominaBecService.DeleteEmails(idEmail).subscribe(() => {
+                console.log(`Email con ID ${idEmail} eliminado.`);
                 this.showCrudSwal(); // Recargar swal
               });
             } else {
@@ -204,6 +212,8 @@ background-color: #ffffff;
   async onUpload(): Promise<void> {
     await this.generateExcelAnexo5();
     await this.generateExcelAnexo6();
+    await this.generateExcelAnexo5Extra();
+    await this.generateExcelAnexo6Extra();
 
 
 
@@ -228,6 +238,29 @@ background-color: #ffffff;
       files.push(anexo5File);
     }
 
+    if (this.anexo5EBuffer) {
+      const anexo5Blob = new Blob([this.anexo5EBuffer], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      });
+
+      const anexo5EFile = new File([anexo5Blob], `Anexo05Extraordinarias ${this.data2?.quincena}.xlsx`, {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      });
+
+      files.push(anexo5EFile);
+    }
+
+    if (this.anexo6EBuffer) {
+      const anexo6EBlob = new Blob([this.anexo6EBuffer], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      });
+
+      const anexo6File = new File([anexo6EBlob], `Anexo06Extraordinarias ${this.data2?.quincena}.xlsx`, {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      });
+
+      files.push(anexo6File);
+    }
     if (this.anexo6Buffer) {
       const anexo6Blob = new Blob([this.anexo6Buffer], {
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
@@ -262,8 +295,9 @@ background-color: #ffffff;
   generateExcelAnexo5(): Promise<void> {
     return new Promise((resolve, reject) => {
       const quincena = this.data2?.quincena;
+      let ordinaria = true;
 
-      this.NominaBecService.getAnexo05(this.nominaId).subscribe({
+      this.NominaBecService.getAnexo05(this.nominaId, ordinaria).subscribe({
         next: async response => {
           if (response && response.data && Array.isArray(response.data)) {
             const headers = [
@@ -319,11 +353,74 @@ background-color: #ffffff;
     });
   }
 
+  generateExcelAnexo5Extra(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const quincena = this.data2?.quincena;
+      let ordinaria = false;
+
+      this.NominaBecService.getAnexo05(this.nominaId, ordinaria).subscribe({
+        next: async response => {
+          if (response && response.data && Array.isArray(response.data)) {
+            const headers = [
+              'NO_COMPROBANTE', 'UR', 'PERIODO', 'TIPO_NOMINA', 'PRIMER_APELLIDO', 'SEGUNDO_APELLIDO',
+              'NOMBRE', 'CLAVE_PLAZA', 'CURP', 'RFC', 'FECHA_PAGO', 'FECHA_INICIO', 'FECHA_TERMINO',
+              'PERCEPCIONES', 'DEDUCCIONES', 'NETO', 'NSS', 'CTT', 'FORMA_PAGO', 'CVE_BANCO', 'CLABE',
+              'NIVEL_CM', 'DOMINGOS_TRABAJADOS', 'DIAS_HORAS_EXTRA', 'TIPO_HORAS_EXTRA',
+              'SEMANAS_HORAS_EXTRA', 'HORAS_EXTRAS'
+            ];
+
+            const sortedData = response.data.sort((b, a) =>
+              Number(b.NO_COMPROBANTE) - Number(a.NO_COMPROBANTE)
+            );
+
+            const excelData = sortedData.map((item: Anexo05) => ([
+              item.NO_COMPROBANTE, item.UR, item.PERIODO, item.TIPO_NOMINA, item.PRIMER_APELLIDO,
+              item.SEGUNDO_APELLIDO, item.NOMBRE, item.CLAVE_PLAZA, item.CURP, item.RFC, item.FECHA_PAGO,
+              item.FECHA_INICIO, item.FECHA_TERMINO, item.PERCEPCIONES, item.DEDUCCIONES, item.NETO,
+              item.NSS, item.CT, item.FORMA_PAGO, item.CVE_BANCO, item.CLABE, item.NIVEL_CM,
+              item.DOMINGOS_TRABAJADOS, item.DIAS_HORAS_EXTRA, item.TIPO_HORAS_EXTRA,
+              item.SEMANAS_HORAS_EXTRA, item.HORAS_EXTRAS
+            ]));
+
+            // Unir encabezados con los datos
+            const hojaCompleta = [headers, ...excelData];
+
+            // Crear hoja de Excel
+            const worksheet: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(hojaCompleta);
+
+            // Ajustar ancho de columnas
+            worksheet['!cols'] = headers.map(() => ({ wpx: 120 }));
+
+            // Crear libro de Excel
+            const workbook: XLSX.WorkBook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Anexo05');
+
+            // Generar archivo Excel
+            const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+            this.anexo5EBuffer = excelBuffer; // Guardar buffer para envío posterior
+
+            // Guardar el archivo
+            resolve();
+          } else {
+            reject('Datos no válidos en la respuesta');
+          }
+
+
+        },
+        error: err => {
+          reject(err);
+        }
+      });
+    });
+  }
+
+
   generateExcelAnexo6(): Promise<void> {
     return new Promise((resolve, reject) => {
       const quincena = this.data2?.quincena;
+      let ordinaria = true;
 
-      this.NominaBecService.getAnexo06(this.nominaId).subscribe({
+      this.NominaBecService.getAnexo06(this.nominaId, ordinaria).subscribe({
         next: async response => {
           if (response && response.data && Array.isArray(response.data)) {
             const headers = [
@@ -368,6 +465,56 @@ background-color: #ffffff;
       });
     });
   }
+  generateExcelAnexo6Extra(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const quincena = this.data2?.quincena;
+      let ordinaria = false;
+
+      this.NominaBecService.getAnexo06(this.nominaId, ordinaria).subscribe({
+        next: async response => {
+          if (response && response.data && Array.isArray(response.data)) {
+            const headers = [
+              'NO_COMPROBANTE', 'UR', 'PERIODO', 'TIPO_NOMINA', 'CLAVE_PLAZA', 'CURP', 'TIPO_CONCEPTO', 'COD_CONCEPTO', 'DESC_CONCEPTO', 'IMPORTE',
+              'BASE_CALCULO_ISR'
+            ];
+
+            const sortedData = response.data.sort((b, a) =>
+              Number(b.NO_COMPROBANTE) - Number(a.NO_COMPROBANTE)
+            );
+
+            const excelData = sortedData.map((item: Anexo06) => ([
+              item.NO_COMPROBANTE, item.UR, item.PERIODO, item.TIPO_NOMINA, item.CLAVE_PLAZA, item.CURP, item.TIPO_CONCEPTO, item.COD_CONCEPTO,
+              item.DESC_CONCEPTO, item.IMPORTE, item.BASE_CALCULO_ISR
+            ]));
+
+            // Unir encabezados con los datos
+            const hojaCompleta = [headers, ...excelData];
+
+            // Crear hoja de Excel
+            const worksheet: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(hojaCompleta);
+
+            // Ajustar ancho de columnas
+            worksheet['!cols'] = headers.map(() => ({ wpx: 120 }));
+
+            // Crear libro de Excel
+            const workbook: XLSX.WorkBook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Anexo06');
+
+            // Generar archivo Excel
+            const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+            this.anexo6EBuffer = excelBuffer;
+
+            resolve();
+          } else {
+            reject('Datos no válidos en la respuesta');
+          }
+        },
+        error: err => {
+          reject(err);
+        }
+      });
+    });
+  }
 
   // Método para guardar el archivo Excel
   // private saveAsExcelFile(buffer: any, fileName: string): void {
@@ -375,6 +522,108 @@ background-color: #ffffff;
   //   saveAs(data, `${fileName}.xlsx`);
   // }
 
+  numfup = '12345'; // Ejemplo de variable numfup
+  fec_fup = '2025-02-13'; // Ejemplo de fecha
+
+  // Función para generar el PDF
+  generatePDF() {
+    const docDefinition: any = {
+      pageSize: 'A4',
+      pageOrientation: 'landscape',
+      content: [
+        {
+          text: 'I.H.E FORMATO ÚNICO DE PERSONAL',
+          fontSize: 22,
+          alignment: 'left',
+          margin: [0, 0, 0, 5]
+        },
+        {
+          text: '(CONSTANCIA DE NOMBRAMIENTO)',
+          fontSize: 15,
+          alignment: 'left',
+          margin: [0, 0, 0, 10]
+        },
+        {
+          style: 'tableExample',
+          table: {
+            headerRows: 1,
+            widths: [20, 20, '*', 'auto', 'auto', 30, 30, 10, 10],
+            body: [
+              [
+                { text: 'No. OFICIO', style: 'tableHeader' },
+                { text: 'FECHA', style: 'tableHeader' },
+                { text: this.numfup, alignment: 'center' },
+                { text: this.fec_fup, alignment: 'center' },
+                'GOBIERNO DEL ESTADO DE HIDALGO',
+                'UNIDAD ADMINISTRATIVA: Coordinación General de Administración y Finanzas',
+                'FORH8-01 (01)',
+              ]
+            ]
+          },
+          layout: 'lightHorizontalLines'
+        },
+        {
+          text: 'GOBIERNO DEL ESTADO DE HIDALGO',
+          margin: [0, 10, 0, 0]
+        },
+        {
+          style: 'tableExample',
+          table: {
+            widths: [30, 35, 20, 20, 30, 10, 10, 10, 95],
+            body: [
+              [
+                { text: 'FILIACIÓN', style: 'tableHeader' },
+                { text: 'C.U.R.P.', style: 'tableHeader' },
+                { text: 'PATERNO', style: 'tableHeader' },
+                { text: 'MATERNO', style: 'tableHeader' },
+                { text: 'NOMBRE', style: 'tableHeader' },
+                { text: 'E.NAC.', style: 'tableHeader' },
+                { text: 'SEXO', style: 'tableHeader' },
+                { text: 'E.CIV.', style: 'tableHeader' },
+                { text: 'DOMICILIO', style: 'tableHeader' },
+              ],
+              [
+                'RFC', 'CURP', 'PATERNO', 'MATERNO', 'NOMBRE', 'E.NAC.', 'SEXO', 'E.CIV.', 'DOMICILIO',
+              ]
+            ]
+          },
+          layout: 'lightHorizontalLines'
+        },
+        {
+          style: 'tableExample',
+          table: {
+            widths: ['*', '*', '*', '*'],
+            body: [
+              [
+                { text: 'Observaciones', style: 'tableHeader' },
+                { text: 'Firma', style: 'tableHeader' },
+                { text: 'Fecha', style: 'tableHeader' },
+                { text: 'Aprobado', style: 'tableHeader' },
+              ],
+              [
+                'Observación 1', 'Firma 1', '2025-02-13', 'Sí',
+              ]
+            ]
+          },
+          layout: 'lightHorizontalLines'
+        }
+      ],
+      styles: {
+        tableHeader: {
+          bold: true,
+          fontSize: 10,
+          alignment: 'center',
+          fillColor: '#d3d3d3'
+        },
+        tableExample: {
+          margin: [0, 5, 0, 15]
+        }
+      }
+    };
+
+    // Generar el PDF
+    pdfMake.createPdf(docDefinition).open();
+  }
 
 
   saveNomina(event: any): void {

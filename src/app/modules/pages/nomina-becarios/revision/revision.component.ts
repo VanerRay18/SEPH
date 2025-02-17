@@ -78,8 +78,8 @@ export class RevisionComponent {
       (error) => {
         console.error('Error al obtener los datos:', error);
       });
-
-    this.NominaBecService.getAnexo05(this.nominaId).subscribe((response: ApiResponse) => {
+      let ordinaria = true;
+    this.NominaBecService.getAnexo05(this.nominaId, ordinaria).subscribe((response: ApiResponse) => {
       this.data = response.data; // Aquí concatenas las fechas
       this.cdr.detectChanges();
       // console.log(this.data)
@@ -164,6 +164,8 @@ export class RevisionComponent {
     try {
       await this.generateExcelAnexo5(); // Espera a que se complete
       await this.generateExcelAnexo6(); // Espera a que se complete
+      await this.generateExcelAnexo5Extr();
+      await this.generateExcelAnexo6Extr();
       Swal.fire({
         icon: 'success',
         title: 'Anexos generados',
@@ -185,8 +187,68 @@ export class RevisionComponent {
   generateExcelAnexo5(): Promise<void> {
     return new Promise((resolve, reject) => {
       const quincena = this.data2?.quincena;
+      let ordinaria = true;
 
-      this.NominaBecService.getAnexo05(this.nominaId).subscribe({
+      this.NominaBecService.getAnexo05(this.nominaId, ordinaria).subscribe({
+        next: async response => {
+          if (response && response.data && Array.isArray(response.data)) {
+            const headers = [
+              'NO_COMPROBANTE', 'UR', 'PERIODO', 'TIPO_NOMINA', 'PRIMER_APELLIDO', 'SEGUNDO_APELLIDO',
+              'NOMBRE', 'CLAVE_PLAZA', 'CURP', 'RFC', 'FECHA_PAGO', 'FECHA_INICIO', 'FECHA_TERMINO',
+              'PERCEPCIONES', 'DEDUCCIONES', 'NETO', 'NSS', 'CTT', 'FORMA_PAGO', 'CVE_BANCO', 'CLABE',
+              'NIVEL_CM', 'DOMINGOS_TRABAJADOS', 'DIAS_HORAS_EXTRA', 'TIPO_HORAS_EXTRA',
+              'SEMANAS_HORAS_EXTRA', 'HORAS_EXTRAS'
+            ];
+
+            const sortedData = response.data.sort((b, a) =>
+              Number(b.NO_COMPROBANTE) - Number(a.NO_COMPROBANTE)
+            );
+
+            const excelData = sortedData.map((item: Anexo05) => ([
+              item.NO_COMPROBANTE, item.UR, item.PERIODO, item.TIPO_NOMINA, item.PRIMER_APELLIDO,
+              item.SEGUNDO_APELLIDO, item.NOMBRE, item.CLAVE_PLAZA, item.CURP, item.RFC, item.FECHA_PAGO,
+              item.FECHA_INICIO, item.FECHA_TERMINO, item.PERCEPCIONES, item.DEDUCCIONES, item.NETO,
+              item.NSS, item.CT, item.FORMA_PAGO, item.CVE_BANCO, item.CLABE, item.NIVEL_CM,
+              item.DOMINGOS_TRABAJADOS, item.DIAS_HORAS_EXTRA, item.TIPO_HORAS_EXTRA,
+              item.SEMANAS_HORAS_EXTRA, item.HORAS_EXTRAS
+            ]));
+
+            // Unir encabezados con los datos
+            const hojaCompleta = [headers, ...excelData];
+
+            // Crear hoja de Excel
+            const worksheet: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(hojaCompleta);
+
+            // Ajustar ancho de columnas
+            worksheet['!cols'] = headers.map(() => ({ wpx: 120 }));
+
+            // Crear libro de Excel
+            const workbook: XLSX.WorkBook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Anexo05');
+
+            // Generar archivo Excel
+            const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+
+            // Guardar el archivo
+            this.saveAsExcelFile(excelBuffer, `Anexo05 ${quincena}`);
+            resolve();
+          } else {
+            reject('Datos no válidos en la respuesta');
+          }
+        },
+        error: err => {
+          reject(err);
+        }
+      });
+    });
+  }
+
+  generateExcelAnexo5Extr(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const quincena = this.data2?.quincena;
+      let ordinaria = false;
+
+      this.NominaBecService.getAnexo05(this.nominaId, ordinaria).subscribe({
         next: async response => {
           if (response && response.data && Array.isArray(response.data)) {
             const headers = [
@@ -243,8 +305,9 @@ export class RevisionComponent {
   generateExcelAnexo6(): Promise<void> {
     return new Promise((resolve, reject) => {
       const quincena = this.data2?.quincena;
+      let ordinaria = true;
 
-      this.NominaBecService.getAnexo06(this.nominaId).subscribe({
+      this.NominaBecService.getAnexo06(this.nominaId, ordinaria).subscribe({
         next: async response => {
           if (response && response.data && Array.isArray(response.data)) {
             const headers = [
@@ -290,10 +353,64 @@ export class RevisionComponent {
       });
     });
   }
-  // Método para guardar el archivo Excel
-  private saveAsExcelFile(buffer: any, fileName: string): void {
-    const data: Blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' });
-    saveAs(data, `${fileName}.xlsx`);
+
+
+  generateExcelAnexo6Extr(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const quincena = this.data2?.quincena;
+      let ordinaria = false;
+
+      this.NominaBecService.getAnexo06(this.nominaId, ordinaria).subscribe({
+        next: async response => {
+          if (response && response.data && Array.isArray(response.data)) {
+            const headers = [
+              'NO_COMPROBANTE', 'UR', 'PERIODO', 'TIPO_NOMINA', 'CLAVE_PLAZA', 'CURP', 'TIPO_CONCEPTO', 'COD_CONCEPTO', 'DESC_CONCEPTO', 'IMPORTE',
+              'BASE_CALCULO_ISR'
+            ];
+
+            const sortedData = response.data.sort((b, a) =>
+              Number(b.NO_COMPROBANTE) - Number(a.NO_COMPROBANTE)
+            );
+
+            const excelData = sortedData.map((item: Anexo06) => ([
+              item.NO_COMPROBANTE, item.UR, item.PERIODO, item.TIPO_NOMINA, item.CLAVE_PLAZA, item.CURP, item.TIPO_CONCEPTO, item.COD_CONCEPTO,
+              item.DESC_CONCEPTO, item.IMPORTE, item.BASE_CALCULO_ISR
+            ]));
+
+            // Unir encabezados con los datos
+            const hojaCompleta = [headers, ...excelData];
+
+            // Crear hoja de Excel
+            const worksheet: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(hojaCompleta);
+
+            // Ajustar ancho de columnas
+            worksheet['!cols'] = headers.map(() => ({ wpx: 120 }));
+
+            // Crear libro de Excel
+            const workbook: XLSX.WorkBook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Anexo06');
+
+            // Generar archivo Excel
+            const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+
+            // Guardar el archivo
+            this.saveAsExcelFile(excelBuffer, `Anexo06 ${quincena}`);
+            resolve();
+          } else {
+            reject('Datos no válidos en la respuesta');
+          }
+        },
+        error: err => {
+          reject(err);
+        }
+      });
+    });
   }
+
+    // Método para guardar el archivo Excel
+    private saveAsExcelFile(buffer: any, fileName: string): void {
+      const data: Blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' });
+      saveAs(data, `${fileName}.xlsx`);
+    }
 
 }

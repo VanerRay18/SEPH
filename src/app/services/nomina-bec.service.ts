@@ -87,15 +87,15 @@ export class NominaBecService {
     );
   }
 
-  getAnexo05(nominaId: any): Observable<ApiResponse> {//Trae el anexo 5
-    let headers = new HttpHeaders({'nominaId': nominaId})
+  getAnexo05(nominaId: any, ordinaria: Boolean): Observable<ApiResponse> {//Trae el anexo 5
+    let headers = new HttpHeaders({'nominaId': nominaId, 'ordinaria': ordinaria.toString()})
     return this.http.get<ApiResponse>(`${environment.baseService}${'/nomina/anexo05'}`,
       {headers}
     );
   }
 
-  getAnexo06(nominaId: any): Observable<ApiResponse> {//Trae el anexo 6
-    let headers = new HttpHeaders({'nominaId': nominaId})
+  getAnexo06(nominaId: any, ordinaria: Boolean): Observable<ApiResponse> {//Trae el anexo 6
+    let headers = new HttpHeaders({'nominaId': nominaId ,'ordinaria': ordinaria.toString()})
     return this.http.get<ApiResponse>(`${environment.baseService}${'/nomina/anexo06'}`,
       {headers}
     );
@@ -140,7 +140,7 @@ export class NominaBecService {
   DeleteEmails(idEmail: any): Observable<ApiResponse> {//Trae el anexo 5
     let headers = new HttpHeaders({'idEmail': idEmail})
     console.log(idEmail)
-    return this.http.patch<ApiResponse>(`${environment.baseService}${'/email/softdelete'}`,
+    return this.http.patch<ApiResponse>(`${environment.baseService}${'/email/softdelete'}`,null,
       {headers}
     );
   }
@@ -149,9 +149,11 @@ export class NominaBecService {
     return this.http.post<ApiResponse>(`${environment.baseService}${'/email'}`,data);
   }
 
-  ChangEmail(idEmail: any): Observable<ApiResponse> {//Trae el anexo 5
+  ChangEmail(data:any, idEmail: any): Observable<ApiResponse> {//Trae el anexo 5
     let headers = new HttpHeaders({'idEmail': idEmail})
-    return this.http.patch<ApiResponse>(`${environment.baseService}${'/email'}`,
+    console.log(data)
+    console.log(idEmail)
+    return this.http.patch<ApiResponse>(`${environment.baseService}${'/email'}`,data,
       {headers}
     );
   }
