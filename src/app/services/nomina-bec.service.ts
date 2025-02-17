@@ -45,13 +45,22 @@ export class NominaBecService {
     return this.http.get<ApiResponse>(`${environment.baseService}${'/nomina/nominaHistorial'}`);
   }
 
-  getPreAnexo6(): Observable<ApiResponse> {//Trae la nomina actual
-    return this.http.get<ApiResponse>(`${environment.baseService}${'/nomina/preAnexo06'}`);
+
+  getPreAnexo6(nominaId: any, ordinaria: Boolean): Observable<ApiResponse> {//Trae el anexo 5
+    let headers = new HttpHeaders({'nominaId': nominaId, 'ordinaria': ordinaria.toString()})
+    return this.http.get<ApiResponse>(`${environment.baseService}${'/nomina/preAnexo06'}`,
+      {headers}
+    );
   }
 
-  getPreAnexo5(): Observable<ApiResponse> {//Trae la nomina actual
-    return this.http.get<ApiResponse>(`${environment.baseService}${'/nomina/preAnexo05'}`);
+
+  getPreAnexo5(nominaId: any, ordinaria: Boolean): Observable<ApiResponse> {//Trae el anexo 5
+    let headers = new HttpHeaders({'nominaId': nominaId, 'ordinaria': ordinaria.toString()})
+    return this.http.get<ApiResponse>(`${environment.baseService}${'/nomina/preAnexo05'}`,
+      {headers}
+    );
   }
+
 
   getHistoryById(nominaId: any): Observable<ApiResponse> {//Trae las claves bancarias del empleado
     let headers = new HttpHeaders({'nominaId': nominaId})
