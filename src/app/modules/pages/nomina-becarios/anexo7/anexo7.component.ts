@@ -9,7 +9,7 @@ import { NominaBecService } from 'src/app/services/nomina-bec.service';
 })
 export class Anexo7Component {
   searchTerm: string = '';
-  headers = ['Nombre', 'CURP', 'Clave', 'Banco', 'Total', ''];
+  headers = ['Nombre', 'CURP', 'Clave', 'Banco', 'Total'];
   displayedColumns = ['nombre', 'curp', 'importTotal', 'retentionTotal', 'liquidTotal'];
   data = [];
 

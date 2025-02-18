@@ -16,6 +16,10 @@ h5{
   width: 98%;
 
 }
+.exel{
+  color: #05a100;
+  font-size: 18px;
+}
 
 .progress {
   display: flex;

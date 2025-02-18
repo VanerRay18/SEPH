@@ -18,7 +18,7 @@ import { OnChanges, SimpleChanges } from '@angular/core';
 })
 export class CalcularComponent {
   searchTerm: string = '';
-  headers = ['Nombre', 'CURP', 'Percepciones', 'Deducciones', 'Total', 'Detalles', ''];
+  headers = ['Nombre', 'CURP', 'Percepciones', 'Deducciones', 'Total', 'Detalles'];
   displayedColumns = ['nombre', 'curp', 'importTotal', 'retentionTotal', 'liquidTotal'];
   data = [];
   nominaId :any;
@@ -257,7 +257,7 @@ export class CalcularComponent {
               const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
 
               // Guardar el archivo
-              this.saveAsExcelFile(excelBuffer, `PreAnexo05 ${quincena}`);
+              this.saveAsExcelFile(excelBuffer, `PreAnexo05_Ordinaria_${quincena}`);
               resolve();
             } else {
               reject('Datos no válidos en la respuesta');
@@ -316,7 +316,7 @@ export class CalcularComponent {
               const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
 
               // Guardar el archivo
-              this.saveAsExcelFile(excelBuffer, `PreAnexo05Extra ${quincena}`);
+              this.saveAsExcelFile(excelBuffer, `PreAnexo05_Extraordinaria_${quincena}`);
               resolve();
             } else {
               reject('Datos no válidos en la respuesta');
@@ -368,7 +368,7 @@ export class CalcularComponent {
               const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
 
               // Guardar el archivo
-              this.saveAsExcelFile(excelBuffer, `PreAnexo06 ${quincena}`);
+              this.saveAsExcelFile(excelBuffer, `PreAnexo06_Ordinaria_${quincena}`);
               resolve();
             } else {
               reject('Datos no válidos en la respuesta');
@@ -419,7 +419,7 @@ export class CalcularComponent {
               const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
 
               // Guardar el archivo
-              this.saveAsExcelFile(excelBuffer, `PreAnexo06Extra ${quincena}`);
+              this.saveAsExcelFile(excelBuffer, `PreAnexo06_Extraordinaria_${quincena}`);
               resolve();
             } else {
               reject('Datos no válidos en la respuesta');

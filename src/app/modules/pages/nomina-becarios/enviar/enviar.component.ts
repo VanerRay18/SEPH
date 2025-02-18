@@ -58,14 +58,17 @@ export class EnviarComponent {
     return nominaId
   }
 
-
-  fetchData() {
-
+  emails(){
     this.NominaBecService.getEmailForInput(this.system).subscribe(response => {
       if (response.success) {
+        console.log(response.data)
         this.emailList = response.data; // Guardamos los correos en la variable
       }
     });
+  }
+  fetchData() {
+
+    this.emails();
 
     this.NominaBecService.getNomina().subscribe((response: ApiResponse) => {
       this.data2 = response.data;
@@ -92,34 +95,88 @@ export class EnviarComponent {
       }));
 
       Swal.fire({
-        title: 'Gestión de Usuarios',
+        title: 'Gestión de correos',
         html: `
-          <div id="crud-container">
-            <ul id="item-list" style="list-style: none; padding: 0; display: flex;  flex-direction: column;justify-content: center; align-items: center;">
-              ${items.map((item: { id: any; checked: any; email: any; }) => `
-                <li style="display: flex; align-items: center; margin-bottom: 10px;   border-radius: 8px;">
-                  <input type="checkbox" id="check-${item.id}" ${item.checked ? 'checked' : ''} />
-                  <input type="text" id="email-${item.id}" value="${item.email}" style="margin-left: 10px; border-radius: 5px;" />
-                  <button class="delete-btn" data-id="${item.id}" style="margin-left: 10px;   border: 0px;">🗑️</button>
-                </li>
-              `).join('')}
-            </ul>
-            <button id="add-item" style="margin-top: 10px;   padding: 10px 20px;
-background-color: #ffffff;
-  color: #621132;
-  border-color: #621132;
-  font-weight: bold;
-  height: 38px;
-  border-radius: 15px;
-  margin: 7px;
-  transition: background-color 0.3s, color 0.3s;
-  background: none;
-  border: 1px solid #6A1B4D;
-  color: #6A1B4D;
-  padding: 8px 12px;
-  border-radius: 20px;
-  cursor: pointer;">Agregar</button>
-          </div>
+<div id="crud-container" style="
+  padding: 10px; 
+  text-align: center; 
+  max-height: 400px; 
+  overflow-y: auto; 
+  border-radius: 10px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+">
+  <ul id="item-list" style="
+    list-style: none; 
+    padding: 0; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    width: 100%;
+    max-height: 350px;
+    overflow-y: auto;
+  ">
+    ${items.map((item: { id: any; checked: any; email: any; }) => `
+      <li style="
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+        padding: 10px;
+        border-radius: 10px;
+        background-color: #f9f9f9;
+        width: 100%;
+        max-width: 400px;
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+        justify-content: space-between;
+      ">
+        <input type="checkbox" id="check-${item.id}" ${item.checked ? 'checked' : ''} style="
+          width: 20px;
+          height: 20px;
+          cursor: pointer;
+        "/>
+        
+        <input type="text" id="email-${item.id}" value="${item.email}" style="
+          flex: 1;
+          margin-left: 10px;
+          padding: 8px;
+          border-radius: 5px;
+          border: 1px solid #ccc;
+          outline: none;
+          font-size: 14px;
+          text-align: center;
+        "/>
+
+        <button class="delete-btn" data-id="${item.id}" style="
+          margin-left: 10px;
+          background: none;
+          border: none;
+          cursor: pointer;
+          font-size: 18px;
+          color: #e74c3c;
+        ">
+          <i class="fa-solid fa-trash"></i>
+        </button>
+      </li>
+    `).join('')}
+  </ul>
+
+  <button id="add-item" style="
+    margin-top: 10px;
+    padding: 10px 20px;
+    font-weight: bold;
+    height: 38px;
+    border-radius: 15px;
+    transition: background-color 0.3s, color 0.3s;
+    background: none;
+    border: 1px solid #6A1B4D;
+    color: #6A1B4D;
+    padding: 8px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+  ">Agregar</button>
+</div>
+
         `,
         showCancelButton: true,
         confirmButtonText: 'Guardar',
@@ -137,6 +194,7 @@ background-color: #ffffff;
     }).then((result) => {
       if (result.isConfirmed && result.value) {
         result.value.forEach((item: any) => {
+          this.ngOnInit();
           this.NominaBecService.ChangEmail(item, item.idEmail,).subscribe(() => {
             console.log(`Email ${item.email} actualizado.`);
           });
@@ -148,13 +206,16 @@ background-color: #ffffff;
       setTimeout(() => {
         document.querySelectorAll('.delete-btn').forEach(btn => {
           btn.addEventListener('click', (event) => {
-            const idAttr = (event.target as HTMLElement).getAttribute('data-id');
-            console.log(idAttr)
+            const target = (event.target as HTMLElement).closest('.delete-btn'); // Encuentra el botón más cercano
+            const idAttr = target?.getAttribute('data-id'); // Obtiene el atributo data-id
+            console.log("ID capturado:", idAttr);
+            
             const idEmail = idAttr ? parseInt(idAttr, 10) : null;
-
+      
             if (idEmail !== null && !isNaN(idEmail)) {
               this.NominaBecService.DeleteEmails(idEmail).subscribe(() => {
                 console.log(`Email con ID ${idEmail} eliminado.`);
+                this.ngOnInit();
                 this.showCrudSwal(); // Recargar swal
               });
             } else {
@@ -164,9 +225,6 @@ background-color: #ffffff;
         });
       }, 100);
 
-
-      // Agregar evento para agregar un nuevo usuario
-      // Agregar evento para agregar un nuevo usuario con otro Swal
       setTimeout(() => {
         document.getElementById('add-item')?.addEventListener('click', () => {
           Swal.fire({
@@ -193,6 +251,8 @@ background-color: #ffffff;
               const newItem = { email: result.value, system: this.system, active: 1 };
               this.NominaBecService.addEmail(newItem).subscribe(() => {
                 console.log(`Email ${result.value} agregado.`);
+                this.ngOnInit();
+
                 this.showCrudSwal(); // Recargar swal para actualizar la lista
               });
             }
@@ -231,7 +291,7 @@ background-color: #ffffff;
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
       });
 
-      const anexo5File = new File([anexo5Blob], `Anexo05 ${this.data2?.quincena}.xlsx`, {
+      const anexo5File = new File([anexo5Blob], `Anexo05_Ordinarias_${this.data2?.quincena}.xlsx`, {
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
       });
 
@@ -243,19 +303,23 @@ background-color: #ffffff;
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
       });
 
-      const anexo5EFile = new File([anexo5Blob], `Anexo05Extraordinarias ${this.data2?.quincena}.xlsx`, {
+      const anexo5EFile = new File([anexo5Blob], `Anexo05_Extraordinarias_${this.data2?.quincena}.xlsx`, {
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
       });
 
       files.push(anexo5EFile);
     }
 
+
+
+
+
     if (this.anexo6EBuffer) {
       const anexo6EBlob = new Blob([this.anexo6EBuffer], {
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
       });
 
-      const anexo6File = new File([anexo6EBlob], `Anexo06Extraordinarias ${this.data2?.quincena}.xlsx`, {
+      const anexo6File = new File([anexo6EBlob], `Anexo06_Extraordinarias_${this.data2?.quincena}.xlsx`, {
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
       });
 
@@ -266,7 +330,7 @@ background-color: #ffffff;
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
       });
 
-      const anexo6File = new File([anexo6Blob], `Anexo06 ${this.data2?.quincena}.xlsx`, {
+      const anexo6File = new File([anexo6Blob], `Anexo06_Ordinarias_${this.data2?.quincena}.xlsx`, {
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
       });
 
@@ -289,7 +353,7 @@ background-color: #ffffff;
         this.message = 'Error al subir el archivo';
       }
     });
-    console.log('Archivos a enviar:', files);
+  //  console.log('Archivos a enviar:', files);
   }
 
   generateExcelAnexo5(): Promise<void> {
@@ -643,7 +707,6 @@ background-color: #ffffff;
     );
 
   }
-
 
   continueNomina(): void {
     const status = 5;

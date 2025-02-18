@@ -16,6 +16,7 @@
           <th *ngFor="let header of headers; let i = index"
             (click)="sortData(displayedColums[i])" class="sortable-header">
             {{ header }}
+            <i class="fa-solid fa-bars-staggered" ></i>
             <span *ngIf="sortedColumn === displayedColums[i]">
               <i *ngIf="sortDirection === 'asc'" class="fa-solid fa-arrow-up"></i>
               <i *ngIf="sortDirection === 'desc'" class="fa-solid fa-arrow-down"></i>
@@ -71,7 +72,9 @@
           </td>
 
           <!-- Acciones de editar, eliminar, PDF -->
-          <td>
+         <td *ngIf="showActionsEdit || showActionsDeleted || showActionsPdf">
+
+            
             <button class="edit" *ngIf="showActionsEdit" (click)="onEdit(row)">
               <i class="fa-solid fa-pen-to-square"></i>
             </button>
@@ -81,7 +84,9 @@
             <button class="pdf" *ngIf="showActionsPdf" (click)="onPDF(row)">
               <i class="fa-solid fa-file-pdf"></i>
             </button>
-          </td>
+
+
+          </td> 
         </tr>
       </tbody>
 

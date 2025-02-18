@@ -15,8 +15,8 @@ import Swal from 'sweetalert2';
 })
 export class PagarComponent {
 searchTerm: string = '';
-  headers = ['Nombre', 'CURP', 'Clave', 'Total', 'Pago por transferencia',''];
-  displayedColumns = ['nombre', 'curp','clabeBanco', 'importTotal'];
+  headers = ['Nombre', 'RFC','CURP', 'Clave', 'Total', 'Pago por transferencia'];
+  displayedColumns = ['nombre', 'RFC','curp','clabeBanco', 'importTotal'];
   data = [];
   data2: NominaA | null = null;
   status = 2;

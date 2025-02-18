@@ -9,7 +9,7 @@ import { NominaBecService } from 'src/app/services/nomina-bec.service';
 })
 export class Anexo6Component {
   searchTerm: string = '';
-  headers = [  'NO_COMPROBANTE', 'UR', 'PERIODO', 'TIPO_NOMINA','CLAVE_PLAZA', 'CURP', 'TIPO_CONCEPTO', 'COD_CONCEPTO', 'DESC_CONCEPTO', 'IMPORTE', 'BASE_CALCULO_ISR', ''];
+  headers = [  'NO_COMPROBANTE', 'UR', 'PERIODO', 'TIPO_NOMINA','CLAVE_PLAZA', 'CURP', 'TIPO_CONCEPTO', 'COD_CONCEPTO', 'DESC_CONCEPTO', 'IMPORTE', 'BASE_CALCULO_ISR'];
   displayedColumns = ['NO_COMPROBANTE', 'UR', 'PERIODO', 'TIPO_NOMINA','CLAVE_PLAZA', 'CURP', 'TIPO_CONCEPTO', 'COD_CONCEPTO', 'DESC_CONCEPTO','IMPORTE','BASE_CALCULO_ISR'];
   data = [];
 
