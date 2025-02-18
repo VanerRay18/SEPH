@@ -64,6 +64,68 @@ export class HistoricoComponent {
 
     }
 
+     async generateAnexos5(nominaId :any): Promise<void> {
+        Swal.fire({
+          title: 'Generando los Anexos..',
+          html: 'Por favor, espere mientras se genera el Excel de los anexos.',
+          didOpen: () => {
+            Swal.showLoading();
+          },
+          allowOutsideClick: false,
+          showConfirmButton: false
+        });
+
+        try {
+          await this.generateExcelAnexo5(nominaId); // Espera a que se complete
+          await this.generateExcelAnexo5Extra(nominaId);
+          Swal.fire({
+            icon: 'success',
+            title: 'Anexos generados',
+            text: 'El archivo Excel se ha generado correctamente.',
+            timer: 2000,
+            timerProgressBar: true
+          });
+        } catch (error) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Ocurrió un error al generar los anexos.',
+          });
+          console.error('Error al generar anexos:', error);
+        }
+      }
+
+      async generateAnexos6(nominaId :any): Promise<void> {
+        Swal.fire({
+          title: 'Generando los Anexos..',
+          html: 'Por favor, espere mientras se genera el Excel de los anexos.',
+          didOpen: () => {
+            Swal.showLoading();
+          },
+          allowOutsideClick: false,
+          showConfirmButton: false
+        });
+
+        try {
+          await this.generateExcelAnexo6(nominaId); // Espera a que se complete
+          await this.generateExcelAnexo6Extra(nominaId);
+          Swal.fire({
+            icon: 'success',
+            title: 'Anexos generados',
+            text: 'El archivo Excel se ha generado correctamente.',
+            timer: 2000,
+            timerProgressBar: true
+          });
+        } catch (error) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Ocurrió un error al generar los anexos.',
+          });
+          console.error('Error al generar anexos:', error);
+        }
+      }
+
     formatDate(timestamp: number): string {
       const date = new Date(timestamp);  // Crear un objeto Date con el timestamp
       const year = date.getFullYear();   // Obtener el año
@@ -227,7 +289,7 @@ export class HistoricoComponent {
           const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
 
           // Guardar el archivo
-          this.saveAsExcelFile(excelBuffer, `Anexo05 ${quincena}`);
+          this.saveAsExcelFile(excelBuffer, `Anexo05_Extraordinaria ${quincena}`);
           Swal.close();
           resolve();
         } else {
@@ -315,7 +377,7 @@ export class HistoricoComponent {
     });
 return new Promise((resolve, reject) => {
   const quincena = this.data?.quincena;
-  let ordinaria = false;
+  let ordinaria = true;
 
   this.NominaBecService.getAnexo06(nominaId, ordinaria).subscribe({
     next: async response => {
@@ -351,7 +413,7 @@ return new Promise((resolve, reject) => {
         const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
 
         // Guardar el archivo
-        this.saveAsExcelFile(excelBuffer, `Anexo06 ${quincena}`);
+        this.saveAsExcelFile(excelBuffer, `Anexo06_Extraordinaria ${quincena}`);
         Swal.close();
         resolve();
       } else {
