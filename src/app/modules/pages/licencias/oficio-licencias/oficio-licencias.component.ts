@@ -71,6 +71,8 @@ export class OficioLicenciasComponent {
       const imageBase64 = await this.ImageToBaseService.convertImageToBase64('assets/IHE_LOGO.png');
 
       const documentDefinition: any = {
+        pageSize: 'A4', // Puedes cambiar 'A4' por 'LETTER' si deseas tamaño carta
+        pageMargins: [40, 60, 40, 60], // Márgenes opcionales (izq, arriba, der, abajo)
         content: [
           {
             columns: [
@@ -90,7 +92,7 @@ export class OficioLicenciasComponent {
           {
             text: '\n M.T.I Alberto Noble Gómez\nDirector de Atención y Aclaración de Nómina\nPresente:',
             style: 'subheader',
-            margin: [0, 20, 0, 15]
+            margin: [0, 20, 0, 5]
           },
           {
             text: `Con fundamento en el Artículo 111, de la Ley Federal de los Trabajadores al Servicio del Estado y Artículo 52, Fracción I del Reglamento de las Condiciones Generales de Trabajo del personal de la Secretaría del ramo, por este conducto solicito a Usted, gire instrucciones a quien corresponda a efecto de que la (el) C. ${data.nombre.trim()} R.F.C. ${data.rfc} fecha de ingreso ${data.fecha_ingreso}, quien labora en el CT con clave(s) presupuestal(es) siguientes:`,
@@ -144,7 +146,7 @@ export class OficioLicenciasComponent {
           },
           {
             text: 'Atentamente',
-            margin: [0, 20, 0, 60],
+            margin: [0, 20, 0, 30],
             alignment: 'center'
           },
           {
