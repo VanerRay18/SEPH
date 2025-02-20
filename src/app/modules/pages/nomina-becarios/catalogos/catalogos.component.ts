@@ -136,7 +136,7 @@ export class CatalogosComponent {
   }
 
   saveNew(data: any) {
-    console.log(data)
+    // console.log(data)
     this.NominaBecService.NewCatalogos(data).subscribe(
 
       response => {
@@ -264,6 +264,42 @@ export class CatalogosComponent {
           }
         );
       }
+
+      onDelete(catalogoId: any) {
+        // console.log(catalogoId.id)
+          const userId = localStorage.getItem('userId')!; // Asegúrate de obtener el userId correcto
+          Swal.fire({
+            title: '¿Estás seguro?',
+            text: "No podrás revertir esta acción.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar',
+            iconColor: '#dc3545',
+            confirmButtonColor: '#dc3545'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              // Llama al servicio para eliminar el registro
+              this.NominaBecService.DeleteCatalog(catalogoId.id).subscribe(
+                response => {
+                  this.fetchData()
+                  Swal.fire(
+                    '¡Eliminada!',
+                    'La categoria ha sido eliminada correctamente.',
+                    'success'
+                  );
+                },
+                error => {
+                  Swal.fire(
+                    'Error',
+                    'No se pudo eliminar la categoria.',
+                    'error'
+                  );
+                }
+              );
+            }
+          });
+        }
 
 
 }

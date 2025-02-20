@@ -41,6 +41,14 @@ export class NominaBecService {
     return this.http.get<ApiResponse>(`${environment.baseService}${'/nomina/catalogo'}`);
   }
 
+  DeleteCatalog(catalogoId: any): Observable<ApiResponse> {//Trae el anexo 5
+    let headers = new HttpHeaders({'catalogoId': catalogoId})
+    console.log(catalogoId)
+    return this.http.patch<ApiResponse>(`${environment.baseService}${'/nomina/softdeleteCatalogo'}`,null,
+      {headers}
+    );
+  }
+
   getHistory(): Observable<ApiResponse> {//Trae la nomina actual
     return this.http.get<ApiResponse>(`${environment.baseService}${'/nomina/nominaHistorial'}`);
   }

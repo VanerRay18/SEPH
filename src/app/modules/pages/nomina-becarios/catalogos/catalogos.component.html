@@ -26,8 +26,9 @@
           [maxHeight]="'630px'"
           [itemsPerPage]="20"
           [showActionsEdit]="true"
-            (edit)="onEdit($event)"
-          [showActionsDeleted]=true
+          (edit)="onEdit($event)"
+          [showActionsDeleted]="true"
+          (delete)="onDelete($event)"
           [showActionsPdf]=false
           [showActiveCheckbox]=false
           [showDetailsColumn]=false>
