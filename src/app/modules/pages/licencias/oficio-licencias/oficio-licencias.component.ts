@@ -117,7 +117,7 @@ export class OficioLicenciasComponent {
           },
           {
             text: 'Reintegre al Estado el sueldo no devengado, de conformidad con la(s) licencia(s) médica(s) que se mencionan a continuación:',
-            margin: [0, 20, 0, 10],
+            margin: [0, 10, 0, 10],
             alignment: 'justify',
             fontSize: 12
           },
