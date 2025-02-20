@@ -34,7 +34,7 @@ export class IngresoLicenciasComponent implements OnInit {
   diasRegistrados: number = 0;
   Total_lic: any | null;
   isReadyToSend: boolean = false; // Variable para cambiar el color del botón
-  @Input() arrayUser: any; 
+  @Input() arrayUser: any;
 
   tabs = [
     { id: 'licencias', title: 'Licencias Médicas', icon: 'fas fa-file-medical' },
@@ -68,7 +68,7 @@ export class IngresoLicenciasComponent implements OnInit {
     this.verificarLicencias();
   }
 
-  arrayUserRecibido: any;  
+  arrayUserRecibido: any;
 
   recibirArrayUser(event: any) {
     this.arrayUserRecibido = event;
@@ -429,10 +429,10 @@ export class IngresoLicenciasComponent implements OnInit {
       }
     });
   }
- 
+
   onEdit(data: any) {
     //AAGP790513HH4
-    
+
     Swal.fire({
       title: 'Editar Registro',
       html: `
@@ -593,7 +593,7 @@ export class IngresoLicenciasComponent implements OnInit {
       // Verifica si la propiedad licencias existe en la respuesta y si tiene elementos
 
       if (response.data && response.data.licencias && response.data.licencias.length > 0) {
-        // Verifica si alguna licencia tiene las observaciones "SIN SUELDO" o "MEDIO SUELDO"
+        console.log(response.data)// Verifica si alguna licencia tiene las observaciones "SIN SUELDO" o "MEDIO SUELDO"
         const canSendToOficio = response.data.licencias.some((item: LicMedica) =>
 
           (item.observaciones === 2 || item.observaciones === 1)  && item.color ===  "black");
@@ -618,6 +618,7 @@ export class IngresoLicenciasComponent implements OnInit {
               observaciones: item.observaciones
             };
             licenciasid.push(licenciasid2);
+            console.log(licenciasid2)
           }
         });
 

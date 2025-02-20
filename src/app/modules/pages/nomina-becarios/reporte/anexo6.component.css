@@ -1,0 +1,7 @@
+.card2 {
+  background-color: #ffffff;
+  border-top: none;
+  border-radius: 0 20px 20px 20px; /* Redondea solo las esquinas especificadas */
+  width: 100%;
+  padding: 15px; /* Agregado para un mejor espaciado interno */
+}

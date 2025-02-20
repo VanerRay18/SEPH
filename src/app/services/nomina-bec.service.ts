@@ -69,6 +69,13 @@ export class NominaBecService {
     );
   }
 
+  getReportes(nominaId: any): Observable<ApiResponse> {//Trae las claves bancarias del empleado
+    let headers = new HttpHeaders({'nominaId': nominaId})
+    return this.http.get<ApiResponse>(`${environment.baseService}${'/nomina/reporte'}`,
+      {headers}
+    );
+  }
+
 
   getHistoryById(nominaId: any): Observable<ApiResponse> {//Trae las claves bancarias del empleado
     let headers = new HttpHeaders({'nominaId': nominaId})

@@ -80,6 +80,39 @@ export interface NominaP {
   curp: any
 }
 
+export interface Reporte {
+  FORMA_PAGO: any,
+  FECHA_INICIO: any,
+  RFC: any,
+  NIVEL_CM: any,
+  SEGUNDO_APELLIDO: any,
+  NETO: any,
+  DEDUCCIONES: any,
+  TIPO_NOMINA: any,
+  UR: any,
+  NO_COMPROBANTE: any,
+  srl_emp: any,
+  FECHA_TERMINO: any,
+  CLABE: any,
+  NOMBRE: any,
+  PRIMER_APELLIDO: any,
+  CURP: any,
+  NSS: any,
+  CT: any,
+  CLAVE_PLAZA: any,
+  CVE_BANCO: any,
+  PERIODO: any,
+  FECHA_PAGO: any,
+  PERCEPCIONES: any,
+  HORAS_EXTRAS: any,
+  DOMINGOS_TRABAJADOS: any,
+  DIAS_HORAS_EXTRA: any,
+  TIPO_HORAS_EXTRA: any,
+  SEMANAS_HORAS_EXTRA: any,
+  uno:any,
+  cuatro:any
+}
+
 export interface Anexo05 {
   FORMA_PAGO: any,
   FECHA_INICIO: any,
