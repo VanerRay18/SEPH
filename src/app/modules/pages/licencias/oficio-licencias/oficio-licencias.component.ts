@@ -72,7 +72,7 @@ export class OficioLicenciasComponent {
 
       const documentDefinition: any = {
         pageSize: 'A4', // Puedes cambiar 'A4' por 'LETTER' si deseas tamaño carta
-        pageMargins: [40, 60, 40, 60], // Márgenes opcionales (izq, arriba, der, abajo)
+        pageMargins: [40, 40, 40, 40], // Márgenes opcionales (izq, arriba, der, abajo)
         content: [
           {
             columns: [

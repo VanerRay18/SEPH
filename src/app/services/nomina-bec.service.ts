@@ -41,6 +41,14 @@ export class NominaBecService {
     return this.http.get<ApiResponse>(`${environment.baseService}${'/nomina/catalogo'}`);
   }
 
+  DeleteCatalog(catalogoId: any): Observable<ApiResponse> {//Trae el anexo 5
+    let headers = new HttpHeaders({'catalogoId': catalogoId})
+    console.log(catalogoId)
+    return this.http.patch<ApiResponse>(`${environment.baseService}${'/nomina/softdeleteCatalogo'}`,null,
+      {headers}
+    );
+  }
+
   getHistory(): Observable<ApiResponse> {//Trae la nomina actual
     return this.http.get<ApiResponse>(`${environment.baseService}${'/nomina/nominaHistorial'}`);
   }
@@ -57,6 +65,13 @@ export class NominaBecService {
   getPreAnexo5(nominaId: any, ordinaria: Boolean): Observable<ApiResponse> {//Trae el anexo 5
     let headers = new HttpHeaders({'nominaId': nominaId, 'ordinaria': ordinaria.toString()})
     return this.http.get<ApiResponse>(`${environment.baseService}${'/nomina/preAnexo05'}`,
+      {headers}
+    );
+  }
+
+  getReportes(nominaId: any): Observable<ApiResponse> {//Trae las claves bancarias del empleado
+    let headers = new HttpHeaders({'nominaId': nominaId})
+    return this.http.get<ApiResponse>(`${environment.baseService}${'/nomina/reporte'}`,
       {headers}
     );
   }
