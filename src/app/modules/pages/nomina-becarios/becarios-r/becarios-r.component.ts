@@ -11,7 +11,7 @@ import Swal from 'sweetalert2';
 })
 export class BecariosRComponent {
   searchTerm: string = '';
-  headers = ['Nombre Completo', 'CURP', 'Srl_emp', 'Periodo de pago', 'Clabe interbancaria'];
+  headers = ['Nombre Completo', 'CURP', 'RFC', 'Plazas', 'Clabe interbancaria'];
   displayedColumns = ['nombre', 'curp', 'srl_emp', 'qna_opera', 'liquidTotal'];
   data = [];
   nominaId:any;
