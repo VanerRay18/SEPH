@@ -75,7 +75,6 @@ export class BecariosRComponent {
             <tr>
               <th>Plazas</th>
               <th>Movimento</th>
-              <th>Estatus</th>
             </tr>
           </thead>
           <tbody>
@@ -83,7 +82,6 @@ export class BecariosRComponent {
               <tr>
                 <td>${item.plaza || 'N/A'}</td>
                 <td>${item.MOTIV || 'N/A'}</td>
-                <td>${item.status || 'N/A'}</td>
               </tr>
             `).join('')}
           </tbody>
