@@ -53,6 +53,16 @@ export class NominaBecService {
     return this.http.get<ApiResponse>(`${environment.baseService}${'/nomina/nominaHistorial'}`);
   }
 
+  getBecarios(): Observable<ApiResponse> {//Trae la nomina actual
+    return this.http.get<ApiResponse>(`${environment.baseService}${'/nomina/becarios'}`);
+  }
+
+  getPlazaBecarios(srl_emp: any): Observable<ApiResponse> {//Trae las claves bancarias del empleado
+    let headers = new HttpHeaders({'srl_emp': srl_emp})
+    return this.http.get<ApiResponse>(`${environment.baseService}${'/nomina/plazaBecario'}`,
+      {headers}
+    );
+  }
 
   getPreAnexo6(nominaId: any, ordinaria: Boolean): Observable<ApiResponse> {//Trae el anexo 5
     let headers = new HttpHeaders({'nominaId': nominaId, 'ordinaria': ordinaria.toString()})

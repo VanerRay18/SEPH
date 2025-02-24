@@ -11,11 +11,12 @@ import Swal from 'sweetalert2';
 })
 export class BecariosRComponent {
   searchTerm: string = '';
-  headers = ['Nombre Completo', 'CURP', 'RFC', 'Plazas', 'Clabe interbancaria'];
-  displayedColumns = ['nombre', 'curp', 'srl_emp', 'qna_opera', 'liquidTotal'];
+  headers = ['Nombre Completo', 'CURP', 'RFC', 'Clabe interbancaria', 'Plazas'];
+  displayedColumns = ['nomemp', 'curp', 'rfc', 'CLABE'];
   data = [];
-  nominaId:any;
+  nominaId: any;
   data2: NominaA | null = null;
+  isLoading = true;
 
 
   constructor(
@@ -28,8 +29,9 @@ export class BecariosRComponent {
   async ngOnInit(): Promise<void> {
     this.nominaId = await this.loadNominaId();
     this.fetchData();
-
+    this.isLoading = true;
   }
+
 
 
   async loadNominaId() {
@@ -46,14 +48,56 @@ export class BecariosRComponent {
         console.error('Error al obtener los datos:', error);
       });
 
-    this.NominaBecService.getInformationCalculation(this.nominaId).subscribe((response: ApiResponse) => {
+    this.NominaBecService.getBecarios().subscribe((response: ApiResponse) => {
       this.data = response.data; // Aquí concatenas las fechas
+      this.isLoading = this.data.length === 0;
     },
       (error) => {
         console.error('Error al obtener los datos:', error);
       });
 
 
+  }
+
+  showDetails(srl_emp: any) {
+
+    this.NominaBecService.getPlazaBecarios(srl_emp.SRL_EMP).subscribe((response) => {
+      let items = response.data.map((item: any) => ({
+        plaza: item.plaza,
+        MOTIV: item.MOTIV,
+        status: item.MOTIV === "22" ? "Activa" : item.MOTIV === "30" ? "Inactiva" : "Desconocido"
+      }));
+
+
+      let tableHtml = `
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Plazas</th>
+              <th>Movimento</th>
+              <th>Estatus</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${items.map((item: any) => `
+              <tr>
+                <td>${item.plaza || 'N/A'}</td>
+                <td>${item.MOTIV || 'N/A'}</td>
+                <td>${item.status || 'N/A'}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>`;
+
+      Swal.fire({
+        title: 'Plazas del becario',
+        html: tableHtml,
+        width: '600px',
+        confirmButtonText: 'Cerrar',
+        confirmButtonColor: '#3085d6',
+        backdrop: true,
+      });
+    });
   }
 
 }
