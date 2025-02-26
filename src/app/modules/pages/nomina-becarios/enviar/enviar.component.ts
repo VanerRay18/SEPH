@@ -12,6 +12,7 @@ import { Email } from 'src/app/shared/interfaces/utils';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
+import { HttpResponse } from '@angular/common/http';
 @Component({
   selector: 'app-enviar',
   templateUrl: './enviar.component.html',
@@ -265,7 +266,7 @@ export class EnviarComponent {
   }
 
 
-
+  
   onFileSelected(event: any): void {
     this.selectedFile = event.target.files[0];
   }
@@ -285,14 +286,22 @@ export class EnviarComponent {
     }
 
     // Agregar los archivos ZIP al arreglo files
-    try {
-      const zipBlob = await this.generateFUUPS(); // Espera la descarga del ZIP
-      const zipFileName = `fupps_${this.data2?.quincena}.zip`;
-      files.push( new File([zipBlob], zipFileName, { type: 'application/zip' }));
-
-    } catch (error) {
-      console.log('no se pudo')
+    const zipBlob = await this.generateFUUPS();
+    console.log("📦 Tamaño del ZIP recibido antes de convertirlo:", zipBlob.size);
+    
+    const zipFileName = `fupps_${this.data2?.quincena}.zip`;
+    
+    if (zipBlob.size > 0) {
+      const arrayBuffer = await zipBlob.arrayBuffer(); // Asegura que no haya corrupción de datos
+      const zipFile = new File([arrayBuffer], zipFileName, { type: 'application/zip' });
+    
+      console.log("📦 Archivo ZIP convertido correctamente:", zipFile.size);
+    
+      files.push(zipFile);
+    } else {
+      console.error("🚨 El archivo ZIP está vacío antes de enviarlo.");
     }
+    
 
 
   // Verifica si el ZIP realmente tiene contenido antes de agregarlo
@@ -619,6 +628,7 @@ export class EnviarComponent {
             const matches = contentDisposition.match(/filename="(.+)"/);
             if (matches && matches.length > 1) {
               filename = matches[1]; // Extraer el nombre real
+              console.log("JJSJSJSJS : "+filename)
             }
           }
 
@@ -661,7 +671,7 @@ export class EnviarComponent {
       const zipBlob = await this.generateFUUPS(); // Espera la descarga del ZIP
 
       // Obtener el nombre real desde `this.data2?.quincena`
-      const zipFileName = `fupps_${this.data2?.quincena}.zip`;
+      const zipFileName = `fups_${this.data2?.quincena}.zip`;
 
       // Crear el archivo ZIP con el nombre correcto
       this.zipFiles = new File([zipBlob], zipFileName, { type: 'application/zip' });
@@ -673,7 +683,7 @@ export class EnviarComponent {
         confirmButtonText: 'OK'
       });
 
-      console.log('Archivo FUUPS agregado correctamente:', this.zipFiles);
+      console.log('Archivo FUPS agregado correctamente:', this.zipFiles);
     } catch (error) {
       console.error('Error al agregar el archivo FUUPS:', error);
       Swal.fire('Error', 'No se pudo generar el archivo FUUPS', 'error');
@@ -709,8 +719,9 @@ export class EnviarComponent {
       showCancelButton: true,
       confirmButtonText: 'Sí, enviar',
       cancelButtonText: 'No, cancelar'
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
+        await this.onUpload(); 
         // Mostrar spinner de carga antes de hacer la petición
         Swal.fire({
           title: 'Enviando la nómina...',
@@ -727,7 +738,7 @@ export class EnviarComponent {
         this.NominaBecService.changeStatus(this.nominaId, status).subscribe(
           async response => {
             try {
-              await this.onUpload(); // Esperar a que termine la subida
+              // Esperar a que termine la subida
               await this.fetchData(); // Esperar a que los datos se actualicen
 
               // Cerrar el swal de carga y mostrar el de éxito
