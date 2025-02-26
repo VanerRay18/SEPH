@@ -23,6 +23,7 @@ export class EnviarComponent {
   nominaId: any;
   data2: NominaA | null = null;
   selectedFile: File | null = null;
+  zipFiles: File | null = null; // Nuevo arreglo para los archivos ZIP
   message = '';
   anexo5Buffer: any;
   anexo6Buffer: any;
@@ -40,7 +41,7 @@ export class EnviarComponent {
     private router: Router,
     private fb: FormBuilder
   ) {
-       (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
+    (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
     this.emailForm = this.fb.group({
       subjet: ['', Validators.required],  // Campo obligatorio
       emailMessage: ['', Validators.required] // Campo obligatorio
@@ -58,10 +59,10 @@ export class EnviarComponent {
     return nominaId
   }
 
-  emails(){
+  emails() {
     this.NominaBecService.getEmailForInput(this.system).subscribe(response => {
       if (response.success) {
-        console.log(response.data)
+        // console.log(response.data)
         this.emailList = response.data; // Guardamos los correos en la variable
       }
     });
@@ -98,20 +99,20 @@ export class EnviarComponent {
         title: 'Gestión de correos',
         html: `
 <div id="crud-container" style="
-  padding: 10px; 
-  text-align: center; 
-  max-height: 400px; 
-  overflow-y: auto; 
+  padding: 10px;
+  text-align: center;
+  max-height: 400px;
+  overflow-y: auto;
   border-radius: 10px;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
   background-color: #ffffff;
 ">
   <ul id="item-list" style="
-    list-style: none; 
-    padding: 0; 
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     width: 100%;
     max-height: 350px;
     overflow-y: auto;
@@ -134,7 +135,7 @@ export class EnviarComponent {
           height: 20px;
           cursor: pointer;
         "/>
-        
+
         <input type="text" id="email-${item.id}" value="${item.email}" style="
           flex: 1;
           margin-left: 10px;
@@ -181,25 +182,25 @@ export class EnviarComponent {
         showCancelButton: true,
         confirmButtonText: 'Guardar',
         preConfirm: () => {
-        const updatedItems = items.map((item: { id: any; }) => ({
-          idEmail: item.id,
-          email: (document.getElementById(`email-${item.id}`) as HTMLInputElement).value,
-          active: (document.getElementById(`check-${item.id}`) as HTMLInputElement).checked ? 1 : 0,
-          system: this.system
-        }));
+          const updatedItems = items.map((item: { id: any; }) => ({
+            idEmail: item.id,
+            email: (document.getElementById(`email-${item.id}`) as HTMLInputElement).value,
+            active: (document.getElementById(`check-${item.id}`) as HTMLInputElement).checked ? 1 : 0,
+            system: this.system
+          }));
 
-        console.log("Datos actualizados:", updatedItems);
-        return updatedItems; // ✅ Retornar los datos para que .then los reciba
-      }
-    }).then((result) => {
-      if (result.isConfirmed && result.value) {
-        result.value.forEach((item: any) => {
-          this.ngOnInit();
-          this.NominaBecService.ChangEmail(item, item.idEmail,).subscribe(() => {
-            console.log(`Email ${item.email} actualizado.`);
+          console.log("Datos actualizados:", updatedItems);
+          return updatedItems; // ✅ Retornar los datos para que .then los reciba
+        }
+      }).then((result) => {
+        if (result.isConfirmed && result.value) {
+          result.value.forEach((item: any) => {
+            this.ngOnInit();
+            this.NominaBecService.ChangEmail(item, item.idEmail,).subscribe(() => {
+              console.log(`Email ${item.email} actualizado.`);
+            });
           });
-        });
-      }
+        }
       });
 
       // Agregar evento para eliminar usuario
@@ -209,9 +210,9 @@ export class EnviarComponent {
             const target = (event.target as HTMLElement).closest('.delete-btn'); // Encuentra el botón más cercano
             const idAttr = target?.getAttribute('data-id'); // Obtiene el atributo data-id
             console.log("ID capturado:", idAttr);
-            
+
             const idEmail = idAttr ? parseInt(idAttr, 10) : null;
-      
+
             if (idEmail !== null && !isNaN(idEmail)) {
               this.NominaBecService.DeleteEmails(idEmail).subscribe(() => {
                 console.log(`Email con ID ${idEmail} eliminado.`);
@@ -283,9 +284,26 @@ export class EnviarComponent {
 
     }
 
+    // Agregar los archivos ZIP al arreglo files
+    try {
+      const zipBlob = await this.generateFUUPS(); // Espera la descarga del ZIP
+      const zipFileName = `fupps_${this.data2?.quincena}.zip`;
+      files.push( new File([zipBlob], zipFileName, { type: 'application/zip' }));
+
+    } catch (error) {
+      console.log('no se pudo')
+    }
+
+
+  // Verifica si el ZIP realmente tiene contenido antes de agregarlo
+  // if (this.zipFiles) {
+  //   console.log('ZIP listo para envío:', this.zipFiles);
+  //   files.push(this.zipFiles);
+  // } else {
+  //   console.error('El archivo ZIP no se generó correctamente o está vacío.');
+  // }
+
     // Verifica si los buffers existen antes de agregarlos
-
-
     if (this.anexo5Buffer) {
       const anexo5Blob = new Blob([this.anexo5Buffer], {
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
@@ -309,10 +327,6 @@ export class EnviarComponent {
 
       files.push(anexo5EFile);
     }
-
-
-
-
 
     if (this.anexo6EBuffer) {
       const anexo6EBlob = new Blob([this.anexo6EBuffer], {
@@ -339,7 +353,7 @@ export class EnviarComponent {
     // Crear el SendEmailDTO con los datos necesarios
     const sendEmailDTO: SendEmailDTO = {
       // Rellena los valores de tu DTO según lo que necesites
-      subject:  this.emailForm.get('subjet')?.value,
+      subject: this.emailForm.get('subjet')?.value,
       message: this.emailForm.get('emailMessage')?.value,
       from: 'becarios'
     };
@@ -353,7 +367,7 @@ export class EnviarComponent {
         this.message = 'Error al subir el archivo';
       }
     });
-  //  console.log('Archivos a enviar:', files);
+    //  console.log('Archivos a enviar:', files);
   }
 
   generateExcelAnexo5(): Promise<void> {
@@ -586,108 +600,87 @@ export class EnviarComponent {
   //   saveAs(data, `${fileName}.xlsx`);
   // }
 
-  numfup = '12345'; // Ejemplo de variable numfup
-  fec_fup = '2025-02-13'; // Ejemplo de fecha
+  generateFUUPS(): Promise<Blob> {
+    return new Promise((resolve, reject) => {
+      this.NominaBecService.downloadZip().subscribe({
+        next: (response) => {
+          const blob = response.body; // Recibir directamente el archivo ZIP
 
-  // Función para generar el PDF
-  generatePDF() {
-    const docDefinition: any = {
-      pageSize: 'A4',
-      pageOrientation: 'landscape',
-      content: [
-        {
-          text: 'I.H.E FORMATO ÚNICO DE PERSONAL',
-          fontSize: 22,
-          alignment: 'left',
-          margin: [0, 0, 0, 5]
-        },
-        {
-          text: '(CONSTANCIA DE NOMBRAMIENTO)',
-          fontSize: 15,
-          alignment: 'left',
-          margin: [0, 0, 0, 10]
-        },
-        {
-          style: 'tableExample',
-          table: {
-            headerRows: 1,
-            widths: [20, 20, '*', 'auto', 'auto', 30, 30, 10, 10],
-            body: [
-              [
-                { text: 'No. OFICIO', style: 'tableHeader' },
-                { text: 'FECHA', style: 'tableHeader' },
-                { text: this.numfup, alignment: 'center' },
-                { text: this.fec_fup, alignment: 'center' },
-                'GOBIERNO DEL ESTADO DE HIDALGO',
-                'UNIDAD ADMINISTRATIVA: Coordinación General de Administración y Finanzas',
-                'FORH8-01 (01)',
-              ]
-            ]
-          },
-          layout: 'lightHorizontalLines'
-        },
-        {
-          text: 'GOBIERNO DEL ESTADO DE HIDALGO',
-          margin: [0, 10, 0, 0]
-        },
-        {
-          style: 'tableExample',
-          table: {
-            widths: [30, 35, 20, 20, 30, 10, 10, 10, 95],
-            body: [
-              [
-                { text: 'FILIACIÓN', style: 'tableHeader' },
-                { text: 'C.U.R.P.', style: 'tableHeader' },
-                { text: 'PATERNO', style: 'tableHeader' },
-                { text: 'MATERNO', style: 'tableHeader' },
-                { text: 'NOMBRE', style: 'tableHeader' },
-                { text: 'E.NAC.', style: 'tableHeader' },
-                { text: 'SEXO', style: 'tableHeader' },
-                { text: 'E.CIV.', style: 'tableHeader' },
-                { text: 'DOMICILIO', style: 'tableHeader' },
-              ],
-              [
-                'RFC', 'CURP', 'PATERNO', 'MATERNO', 'NOMBRE', 'E.NAC.', 'SEXO', 'E.CIV.', 'DOMICILIO',
-              ]
-            ]
-          },
-          layout: 'lightHorizontalLines'
-        },
-        {
-          style: 'tableExample',
-          table: {
-            widths: ['*', '*', '*', '*'],
-            body: [
-              [
-                { text: 'Observaciones', style: 'tableHeader' },
-                { text: 'Firma', style: 'tableHeader' },
-                { text: 'Fecha', style: 'tableHeader' },
-                { text: 'Aprobado', style: 'tableHeader' },
-              ],
-              [
-                'Observación 1', 'Firma 1', '2025-02-13', 'Sí',
-              ]
-            ]
-          },
-          layout: 'lightHorizontalLines'
-        }
-      ],
-      styles: {
-        tableHeader: {
-          bold: true,
-          fontSize: 10,
-          alignment: 'center',
-          fillColor: '#d3d3d3'
-        },
-        tableExample: {
-          margin: [0, 5, 0, 15]
-        }
-      }
-    };
+          if (!blob) {
+            reject('El archivo ZIP no se recibió correctamente.');
+            return;
+          }
 
-    // Generar el PDF
-    pdfMake.createPdf(docDefinition).open();
+          // Obtener el nombre del archivo desde el header Content-Disposition
+          const contentDisposition = response.headers.get('Content-Disposition');
+          let filename = 'fupps.zip'; // Nombre por defecto
+
+          if (contentDisposition) {
+            const matches = contentDisposition.match(/filename="(.+)"/);
+            if (matches && matches.length > 1) {
+              filename = matches[1]; // Extraer el nombre real
+            }
+          }
+
+          // Crear un enlace invisible para descargar el archivo
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          window.URL.revokeObjectURL(url);
+
+          resolve(blob); // ✅ Retornar el Blob correctamente
+        },
+        error: (err) => {
+          reject(err);
+        }
+      });
+    });
   }
+
+
+
+
+  // La función addFUUPS debe manejar la agregación correctamente:
+  async addFUUPS(): Promise<void> {
+    Swal.fire({
+      title: 'Generando FUUPS...',
+      text: 'Por favor espera, estamos generando el archivo...',
+      icon: 'info',
+      showConfirmButton: false,
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+
+    try {
+      const zipBlob = await this.generateFUUPS(); // Espera la descarga del ZIP
+
+      // Obtener el nombre real desde `this.data2?.quincena`
+      const zipFileName = `fupps_${this.data2?.quincena}.zip`;
+
+      // Crear el archivo ZIP con el nombre correcto
+      this.zipFiles = new File([zipBlob], zipFileName, { type: 'application/zip' });
+
+      Swal.fire({
+        title: 'Éxito',
+        text: 'El archivo FUUPS se ha generado correctamente.',
+        icon: 'success',
+        confirmButtonText: 'OK'
+      });
+
+      console.log('Archivo FUUPS agregado correctamente:', this.zipFiles);
+    } catch (error) {
+      console.error('Error al agregar el archivo FUUPS:', error);
+      Swal.fire('Error', 'No se pudo generar el archivo FUUPS', 'error');
+    }
+  }
+
+
 
 
   saveNomina(event: any): void {
@@ -709,57 +702,66 @@ export class EnviarComponent {
   }
 
   continueNomina(): void {
-    const status = 5;
-    this.NominaBecService.changeStatus(this.nominaId, status).subscribe(
-      response => {
-
+    Swal.fire({
+      title: 'Confirmar',
+      html: `¿Está seguro de enviar la nómina?<br><br>`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, enviar',
+      cancelButtonText: 'No, cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Mostrar spinner de carga antes de hacer la petición
         Swal.fire({
-          title: 'Confirmar',
-          html: `¿Está seguro de enviar la nomina?<br><br>`,
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonText: 'Sí, enviar',
-          cancelButtonText: 'No, cancelar'
-        }).then((result) => {
-          if (result.isConfirmed) {
-            this.onUpload()
-            // Mostrar spinner de carga
+          title: 'Enviando la nómina...',
+          html: 'Por favor, espere mientras se envía la nómina.',
+          allowOutsideClick: false,
+          showConfirmButton: false,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
+
+        // Realizar la petición
+        const status = 5;
+        this.NominaBecService.changeStatus(this.nominaId, status).subscribe(
+          async response => {
+            try {
+              await this.onUpload(); // Esperar a que termine la subida
+              await this.fetchData(); // Esperar a que los datos se actualicen
+
+              // Cerrar el swal de carga y mostrar el de éxito
+              Swal.fire({
+                title: 'Nómina Enviada',
+                text: 'Se envió la nómina correctamente.',
+                icon: 'success',
+                confirmButtonText: 'Aceptar'
+              }).then(() => {
+                this.router.navigate(['/pages/NominaBecarios/Nominas-Activas']); // Navegar solo después de la confirmación
+              });
+            } catch (error) {
+              Swal.fire({
+                title: 'Error',
+                text: 'Ocurrió un error al enviar la nómina.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+              });
+            }
+          },
+          error => {
             Swal.fire({
-              title: 'Enviado la nomina ...',
-              html: 'Por favor, espere mientras se envia la nomina.',
-              didOpen: () => {
-                Swal.showLoading();
-              },
-              allowOutsideClick: false,
-              showConfirmButton: false
-            });
-            // El usuario confirmó, proceder a enviar los datos
-            this.fetchData();
-            Swal.fire({
-              title: 'Nomina Enviada',
-              text: 'Se envio la Nomina correctamente',
-              icon: 'success',
+              title: 'Error',
+              text: error.error.message,
+              icon: 'error',
               confirmButtonText: 'Aceptar'
             });
-            this.router.navigate(['/pages/NominaBecarios/Nominas-Activas']);
-            this.fetchData();
-
-
           }
-        })
-
-
-      },
-      error => {
-        Swal.fire({
-          title: 'Error',
-          text: error.error.message,
-          icon: 'error',
-          confirmButtonText: 'Aceptar'
-        });
+        );
       }
-    );
-
+    });
   }
+
+
+
 
 }

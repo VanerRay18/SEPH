@@ -16,6 +16,7 @@ import { Anexo7Component } from './anexo7/anexo7.component';
 import { CatalogosComponent } from './catalogos/catalogos.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ReporteComponent } from './reporte/reporte.component';
+import { Anexo5ExtraComponent } from './anexo5-extra/anexo5-extra.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { ReporteComponent } from './reporte/reporte.component';
     Anexo6Component,
     Anexo7Component,
     CatalogosComponent,
-    ReporteComponent
+    ReporteComponent,
+    Anexo5ExtraComponent
   ],
   imports: [
     CommonModule,

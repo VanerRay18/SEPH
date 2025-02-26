@@ -40,16 +40,16 @@
               formControlName="subjet"
               placeholder="Asunto del Correo"
               class="email-input" />
-              
+
             <label for="emailMessage">Mensaje del Correo:</label>
-            <textarea 
-              id="emailMessage" 
-              formControlName="emailMessage" 
+            <textarea
+              id="emailMessage"
+              formControlName="emailMessage"
               placeholder="Escribe tu mensaje aquí..."
             ></textarea>
           </form>
         </div>
-        
+
         <div class="files-section">
           <label>Archivos que se van a enviar:</label>
           <br><br>
@@ -77,13 +77,13 @@
               📂 Seleccionar Archivo
             </label>
             <span *ngIf="selectedFile">{{ selectedFile.name }}</span>
-            <button (click)="generatePDF()">FUUPS</button>
+            <button (click)="addFUUPS()">Agregar FUUPS</button>
           </div>
         </div>
       </div>
 
       <div class="boton-container col-auto col-lg-12 m-3 ">
-  
+
         <button type="submit" class="btn  btn-sm" (click)="continueNomina()"
           [disabled]="data2?.status == 3">Terminar y enviar</button>
       </div>

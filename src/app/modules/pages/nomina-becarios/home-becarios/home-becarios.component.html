@@ -13,7 +13,8 @@
       </div>
       <div class="card-body" style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
         <p>Quincena a pagar:&nbsp;&nbsp;<strong>{{ data?.quincena}}</strong></p>
-        <button class="btn-iniciar" (click)="startNomina()">INICIAR</button>
+        <button class="btn-iniciar" (click)="startNomina()" *ngIf="this.agregar">INICIAR</button>
+        <button class="btn-iniciar" (click)="autorizateN()"  *ngIf="this.autorizar">AUTORIZAR</button>
       </div>
     </div>
 

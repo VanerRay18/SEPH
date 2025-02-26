@@ -9,19 +9,18 @@ import { NominaBecService } from 'src/app/services/nomina-bec.service';
 })
 export class Anexo7Component {
   searchTerm: string = '';
-  headers = ['Nombre', 'CURP', 'Clave', 'Banco', 'Total'];
-  displayedColumns = ['nombre', 'curp', 'importTotal', 'retentionTotal', 'liquidTotal'];
+  headers = [  'NO_COMPROBANTE', 'UR', 'PERIODO', 'TIPO_NOMINA','CLAVE_PLAZA', 'CURP', 'TIPO_CONCEPTO', 'COD_CONCEPTO', 'DESC_CONCEPTO', 'IMPORTE', 'BASE_CALCULO_ISR'];
+  displayedColumns = ['NO_COMPROBANTE', 'UR', 'PERIODO', 'TIPO_NOMINA','CLAVE_PLAZA', 'CURP', 'TIPO_CONCEPTO', 'COD_CONCEPTO', 'DESC_CONCEPTO','IMPORTE','BASE_CALCULO_ISR'];
   data = [];
 
   tabs = [
     { id: 'anexo5', title: 'Anexo 5', icon: 'fas fa-file-medical' },
     { id: 'anexo6', title: 'Anexo 6', icon: 'fas fa-exclamation-triangle' },
-    { id: 'anexo7', title: 'Anexo 7', icon: 'fas fa-handshake' }
   ];
 
 
   activeTab: string = 'anexo5';
-  idNomina: any;
+  nominaId: any;
 
   constructor(
     private NominaBecService: NominaBecService
@@ -29,20 +28,28 @@ export class Anexo7Component {
     // Registrar las fuentes necesarias
   }
 
-  ngOnInit(): void {
+
+  async ngOnInit(): Promise<void> {
+    this.nominaId = await this.loadNominaId();
     this.fetchData();
   }
 
+  async loadNominaId() {
+    const nominaId = await this.NominaBecService.getNominaId();
+    return nominaId
+  }
   setActiveTab(tabId: string) {
     this.activeTab = tabId; // Cambia la pestaña activa
   }
 
   fetchData() {
-    this.NominaBecService.getInformationCalculation(this.idNomina).subscribe((response: ApiResponse) => {
+    let ordinaria = false;
+    this.NominaBecService.getAnexo06(this.nominaId, ordinaria).subscribe((response: ApiResponse) => {
       this.data = response.data; // Aquí concatenas las fechas
     },
       (error) => {
         console.error('Error al obtener los datos:', error);
       });
   }
+
 }

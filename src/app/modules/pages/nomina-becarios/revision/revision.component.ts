@@ -23,9 +23,10 @@ export class RevisionComponent {
   data = [];
 
   tabs = [
-    { id: 'anexo5', title: 'Anexo 5', icon: 'fas fa-file-medical' },
-    { id: 'anexo6', title: 'Anexo 6', icon: 'fas fa-exclamation-triangle' },
-
+    { id: 'anexo5', title: 'Anexo 5', icon: 'fa-solid fa-file-csv' },
+    { id: 'anexo6', title: 'Anexo 6', icon: 'fa-solid fa-file-csv' },
+    { id: 'anexo5Extra', title: 'Anexo 5 Extra', icon: 'fa-solid fa-file-csv' },
+    { id: 'anexo6Extra', title: 'Anexo 6 Extra', icon: 'fa-solid fa-file-csv' },
   ];
 
   eliminar: boolean = false;

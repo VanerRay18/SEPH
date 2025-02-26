@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ApiResponse } from 'src/app/models/ApiResponse';
 import { environment } from 'src/environments/enviroment';
@@ -199,5 +199,12 @@ export class NominaBecService {
     );
   }
 
+
+downloadZip(): Observable<HttpResponse<Blob>> {
+  return this.http.get(`${environment.baseService}/nomina/descargar-zip`, {
+    responseType: 'blob',  // Recibir la respuesta como un Blob
+    observe: 'response'     // Obtener headers en la respuesta
+  });
+}
 
 }
