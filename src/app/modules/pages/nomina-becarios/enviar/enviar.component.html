@@ -70,6 +70,10 @@
               <i class="fa-solid fa-file-csv exel"></i>&nbsp;
               Anexo6_Extraordinaria_{{this.data2?.quincena}}.csv
             </li>
+            <li class="file-item">
+              <i class="fa-solid fa-file-zipper"></i>&nbsp;
+              Fups_{{this.data2?.quincena}}.zip
+            </li>
           </ul>
           <div class="custom-file-upload">
             <input type="file" id="fileInput" (change)="onFileSelected($event)">
@@ -77,7 +81,7 @@
               📂 Seleccionar Archivo
             </label>
             <span *ngIf="selectedFile">{{ selectedFile.name }}</span>
-            <button (click)="addFUUPS()">Agregar FUUPS</button>
+            <button (click)="addFUUPS()"> ⬇️ Descargar FUPS</button>
           </div>
         </div>
       </div>

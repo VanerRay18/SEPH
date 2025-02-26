@@ -5,6 +5,8 @@ import { NominaA } from 'src/app/shared/interfaces/utils';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
 import { PermisosUserService } from 'src/app/services/permisos-user.service';
+import * as ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-activas',
@@ -108,6 +110,128 @@ switch (status) {
 
 
   }
+
+  async generateReport(): Promise<void> {
+    Swal.fire({
+      title: 'Generando el Reporte..',
+      html: 'Por favor, espere mientras se genera el Excel de los anexos.',
+      didOpen: () => {
+        Swal.showLoading();
+      },
+      allowOutsideClick: false,
+      showConfirmButton: false
+    });
+
+    try {
+      await this.generateReporte(); // Espera a que se complete
+      Swal.fire({
+        icon: 'success',
+        title: 'Reporte generado',
+        text: 'El archivo Excel se ha generado correctamente.',
+        timer: 2000,
+        timerProgressBar: true
+      });
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Ocurrió un error al generar el Reporte.',
+      });
+      console.error('Error al generar anexos:', error);
+    }
+  }
+
+  generateReporte(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const quincena = this.data?.quincena;
+      this.NominaBecService.getReportes(this.data?.id).subscribe({
+        next: async response => {
+          if (response && response.data && Array.isArray(response.data)) {
+            const sortedData = response.data.sort((b, a) =>
+              Number(b.NO_COMPROBANTE) - Number(a.NO_COMPROBANTE)
+            );
+
+            const workbook = new ExcelJS.Workbook();
+            const worksheet = workbook.addWorksheet('Reporte_Nomina');
+
+            // Títulos
+            const titleRow1 = worksheet.addRow(["Dirección General de Recursos Humanos"]);
+            const titleRow2 = worksheet.addRow(["Dirección de Nómina y Control de Plazas"]);
+            const titleRow3 = worksheet.addRow([`Nómina de sustitutos de becarios Qna. ${quincena}`]);
+            worksheet.addRow([]);
+
+            // Fusionar celdas
+            worksheet.mergeCells('A1:N1'); // Dirección General de Recursos Humanos
+            worksheet.mergeCells('A2:N2'); // Dirección de Nómina y Control de Plazas
+            worksheet.mergeCells('A3:N3'); // Nómina de sustitutos de becarios
+
+            // Aplicar estilos
+            [titleRow1, titleRow2, titleRow3].forEach(row => {
+              row.eachCell(cell => {
+
+                cell.font = { bold: true };
+                cell.alignment = { horizontal: 'left' };
+              });
+            });
+            // Encabezados con subcolumnas
+            const headersRow1 = worksheet.addRow([
+              "No comprobante", "RFC", "CURP", "NOMBRE(S)", "APELLIDO P", "APELLIDO M",
+              "FECHA INICIO", "FECHA TERMINO", "CLAVE PLAZA", "DEDUCCIONES", "", "PERCEPCIONES", "", "NETO"
+            ]);
+            const headersRow2 = worksheet.addRow([
+              "", "", "", "", "", "", "", "", "", "CPTO", "IMPORTE", "CPTO", "IMPORTE", ""
+            ]);
+
+            worksheet.mergeCells('J5:K5'); // Fusionar "DEDUCCIONES"
+            worksheet.mergeCells('L5:M5'); // Fusionar "PERCEPCIONES"
+
+            // Aplicar estilos a los encabezados
+            [headersRow1, headersRow2].forEach(row => {
+              row.eachCell(cell => {
+                cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'D3D3D3' } };
+                cell.font = { bold: true };
+                cell.alignment = { horizontal: 'center', vertical: 'middle' };
+              });
+            });
+
+            // Agregar datos
+            sortedData.forEach(item => {
+              const row = worksheet.addRow([
+                item.NO_COMPROBANTE, item.RFC, item.CURP, item.NOMBRE, item.PRIMER_APELLIDO,
+                item.SEGUNDO_APELLIDO, item.FECHA_INICIO, item.FECHA_TERMINO, item.CLAVE_PLAZA,
+                item.uno, item.DEDUCCIONES, item.cuatro, item.PERCEPCIONES, item.NETO
+              ]);
+
+              row.eachCell((cell, colNumber) => {
+                cell.alignment = { horizontal: colNumber >= 10 ? 'right' : 'left' };
+              });
+            });
+
+            // Ajustar ancho de columnas
+            worksheet.columns.forEach((column, index) => {
+              column.width = index < 9 ? 18 : 12;
+            });
+
+            // Generar archivo Excel
+            const buffer = await workbook.xlsx.writeBuffer();
+            this.saveAsExcelFile(buffer, `Reporte_Nomina_${quincena}`);
+            resolve();
+          } else {
+            reject('Datos no válidos en la respuesta');
+          }
+        },
+        error: err => {
+          reject(err);
+        }
+      });
+    });
+  }
+
+   private saveAsExcelFile(buffer: any, fileName: string): void {
+      const data: Blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' });
+      saveAs(data, `${fileName}.xlsx`);
+    }
+
 }
 
 
