@@ -215,6 +215,13 @@ export class RevisionComponent {
     }
   }
 
+  private toNumber(value: string): number {
+    // Limpiar el valor de caracteres no numéricos (como '$' y ',')
+    const cleanedValue = value.replace(/[\$,]/g, '').trim();  // Elimina '$' y ',' y espacios extras
+    const parsed = parseFloat(cleanedValue);  // Convertir el valor limpio a número
+    return isNaN(parsed) ? 0 : parsed;  // Si no es un número, devolver 0
+  }
+
   generateReporte(): Promise<void> {
     return new Promise((resolve, reject) => {
       const quincena = this.data2?.quincena;
@@ -325,7 +332,7 @@ export class RevisionComponent {
             const excelData = sortedData.map((item: Anexo05) => ([
               item.NO_COMPROBANTE, item.UR, item.PERIODO, item.TIPO_NOMINA, item.PRIMER_APELLIDO,
               item.SEGUNDO_APELLIDO, item.NOMBRE, item.CLAVE_PLAZA, item.CURP, item.RFC, item.FECHA_PAGO,
-              item.FECHA_INICIO, item.FECHA_TERMINO, item.PERCEPCIONES, item.DEDUCCIONES, item.NETO,
+              item.FECHA_INICIO, item.FECHA_TERMINO, this.toNumber(item.PERCEPCIONES), this.toNumber(item.DEDUCCIONES), this.toNumber(item.NETO),
               item.NSS, item.CT, item.FORMA_PAGO, item.CVE_BANCO, item.CLABE, item.NIVEL_CM,
               item.DOMINGOS_TRABAJADOS, item.DIAS_HORAS_EXTRA, item.TIPO_HORAS_EXTRA,
               item.SEMANAS_HORAS_EXTRA, item.HORAS_EXTRAS
@@ -384,7 +391,7 @@ export class RevisionComponent {
             const excelData = sortedData.map((item: Anexo05) => ([
               item.NO_COMPROBANTE, item.UR, item.PERIODO, item.TIPO_NOMINA, item.PRIMER_APELLIDO,
               item.SEGUNDO_APELLIDO, item.NOMBRE, item.CLAVE_PLAZA, item.CURP, item.RFC, item.FECHA_PAGO,
-              item.FECHA_INICIO, item.FECHA_TERMINO, item.PERCEPCIONES, item.DEDUCCIONES, item.NETO,
+              item.FECHA_INICIO, item.FECHA_TERMINO,this.toNumber(item.PERCEPCIONES), this.toNumber(item.DEDUCCIONES), this.toNumber(item.NETO),
               item.NSS, item.CT, item.FORMA_PAGO, item.CVE_BANCO, item.CLABE, item.NIVEL_CM,
               item.DOMINGOS_TRABAJADOS, item.DIAS_HORAS_EXTRA, item.TIPO_HORAS_EXTRA,
               item.SEMANAS_HORAS_EXTRA, item.HORAS_EXTRAS
@@ -439,7 +446,7 @@ export class RevisionComponent {
 
             const excelData = sortedData.map((item: Anexo06) => ([
               item.NO_COMPROBANTE, item.UR, item.PERIODO, item.TIPO_NOMINA, item.CLAVE_PLAZA, item.CURP, item.TIPO_CONCEPTO, item.COD_CONCEPTO,
-              item.DESC_CONCEPTO, item.IMPORTE, item.BASE_CALCULO_ISR
+              item.DESC_CONCEPTO,this.toNumber(item.IMPORTE), item.BASE_CALCULO_ISR
             ]));
 
             // Unir encabezados con los datos
@@ -492,7 +499,7 @@ export class RevisionComponent {
 
             const excelData = sortedData.map((item: Anexo06) => ([
               item.NO_COMPROBANTE, item.UR, item.PERIODO, item.TIPO_NOMINA, item.CLAVE_PLAZA, item.CURP, item.TIPO_CONCEPTO, item.COD_CONCEPTO,
-              item.DESC_CONCEPTO, item.IMPORTE, item.BASE_CALCULO_ISR
+              item.DESC_CONCEPTO,this.toNumber(item.IMPORTE), item.BASE_CALCULO_ISR
             ]));
 
             // Unir encabezados con los datos
