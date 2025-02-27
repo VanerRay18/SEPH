@@ -184,6 +184,17 @@ export interface Email {
   system: any
 }
 
+export interface Resumen {
+  clabes: any,
+  plazas: any,
+  deducciones:any,
+  personas:any,
+  percepciones:any,
+  liquido:any
+}
+
+
+
 
 
 

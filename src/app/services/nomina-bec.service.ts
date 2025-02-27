@@ -121,6 +121,13 @@ export class NominaBecService {
     );
   }
 
+  getResumeExel(nominaId: any): Observable<ApiResponse> {//Trae el anexo 5
+    let headers = new HttpHeaders({'nominaId': nominaId})
+    return this.http.get<ApiResponse>(`${environment.baseService}${'/nomina/resume'}`,
+      {headers}
+    );
+  }
+
   getAnexo05(nominaId: any, ordinaria: Boolean): Observable<ApiResponse> {//Trae el anexo 5
     let headers = new HttpHeaders({'nominaId': nominaId, 'ordinaria': ordinaria.toString()})
     return this.http.get<ApiResponse>(`${environment.baseService}${'/nomina/anexo05'}`,

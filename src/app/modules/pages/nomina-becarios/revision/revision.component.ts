@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiResponse } from 'src/app/models/ApiResponse';
 import { NominaBecService } from 'src/app/services/nomina-bec.service';
-import { Anexo06, NominaA, Reporte } from 'src/app/shared/interfaces/utils';
+import { Anexo06, NominaA, Reporte, Resumen } from 'src/app/shared/interfaces/utils';
 import Swal from 'sweetalert2';
 import * as XLSX from 'xlsx';
 import { PermisosUserService } from 'src/app/services/permisos-user.service';
@@ -39,6 +39,15 @@ export class RevisionComponent {
   nominaId: any;
   status = 3;
   data2: NominaA | null = null;
+  resumen: Resumen = {
+    clabes: 0,
+    plazas: 0,
+    deducciones: '',
+    personas: 0,
+    percepciones: '',
+    liquido: ''
+  };
+
 
   constructor(
     private NominaBecService: NominaBecService,
@@ -72,8 +81,6 @@ export class RevisionComponent {
   }
 
   fetchData() {
-
-
     this.NominaBecService.getNomina().subscribe((response: ApiResponse) => {
       this.data2 = response.data;
     },
@@ -91,6 +98,14 @@ export class RevisionComponent {
         console.error('Error al obtener los datos:', error);
         this.isLoading = false;
       });
+
+      this.NominaBecService.getResumeExel(this.nominaId).subscribe((response: ApiResponse) => {
+        this.resumen = response.data; // Aquí concatenas las fechas
+
+      },
+        (error) => {
+          console.error('Error al obtener los datos:', error);
+        });
   }
 
   saveNomina(event: any): void {
@@ -347,9 +362,12 @@ export class RevisionComponent {
             // Ajustar ancho de columnas
             worksheet['!cols'] = headers.map(() => ({ wpx: 120 }));
 
+
             // Crear libro de Excel
             const workbook: XLSX.WorkBook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, 'Anexo05');
+                        XLSX.utils.book_append_sheet(workbook, worksheet, 'Anexo05');
+
+
 
             // Generar archivo Excel
             const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
