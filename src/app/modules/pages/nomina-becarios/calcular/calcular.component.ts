@@ -532,4 +532,4 @@ export class CalcularComponent {
 
 
 
-}
+  }

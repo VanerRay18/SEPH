@@ -158,5 +158,13 @@ export class LicenciasService {
     );
   }
 
+  getReporte(desde: any, hasta: any): Observable<ApiResponse> {//Trae el anexo 5
+    let headers = new HttpHeaders({'desde': desde, 'hasta': hasta})
+    console.log(desde,hasta)
+    return this.http.get<ApiResponse>(`${environment.baseService}${'/licMedicas/reporte'}`,
+      {headers}
+    );
+  }
+
 
 }

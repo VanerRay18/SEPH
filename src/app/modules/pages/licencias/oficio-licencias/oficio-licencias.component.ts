@@ -7,6 +7,7 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { Oficio } from 'src/app/shared/interfaces/utils';
 import { OficioPdf } from 'src/app/shared/interfaces/utils';
 import { style } from '@angular/animations';
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-oficio-licencias',
   templateUrl: './oficio-licencias.component.html',
@@ -173,12 +174,123 @@ export class OficioLicenciasComponent {
           }
         }
       };
-
       // Generar y descargar el PDF
       pdfMake.createPdf(documentDefinition).open();
     });
   }
 
+  historyDesc(): void {
+    Swal.fire({
+      title: "Selecciona el rango de fechas",
+      html: `
+        <label for="desde">Desde:</label>
+        <input type="date" id="desde" class="swal2-input"><br>
+        <label for="hasta">Hasta:</label>
+        <input type="date" id="hasta" class="swal2-input">
+      `,
+      showCancelButton: true,
+      confirmButtonText: "Buscar",
+      preConfirm: () => {
+        const desde = (document.getElementById("desde") as HTMLInputElement).value;
+        const hasta = (document.getElementById("hasta") as HTMLInputElement).value;
+
+        if (!desde || !hasta) {
+          Swal.showValidationMessage("Por favor, selecciona ambas fechas.");
+          return false;
+        }
+
+
+        return { desde, hasta, periodo: `${desde} - ${hasta}` };
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const today = new Date().toISOString().split('T')[0];
+
+        // Mostrar spinner de carga antes de hacer la petición
+        Swal.fire({
+          title: 'Generando reporte...',
+          html: 'Por favor, espere mientras se genera el reporte.',
+          allowOutsideClick: false,
+          showConfirmButton: false,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
+
+        this.LicenciasService.getReporte(result.value.desde, result.value.hasta).subscribe({
+          next: async (response) => {
+            const data = response.data || [];
+            const imageBase64 = await this.ImageToBaseService.convertImageToBase64('assets/IHE_LOGO.png');
+
+            const documentDefinition: any = {
+              pageSize: 'A4',
+              pageMargins: [40, 40, 40, 40],
+              pageOrientation: 'landscape',
+              content: [
+                {
+                  columns: [
+                    {
+                      text: `Reporte de Descuentos\nFecha de Generación: ${today}\nPeriodo: ${result.value.periodo}`,
+                      alignment: 'left',
+                      margin: [0, 0, 0, 20],
+                      style: 'header'
+                    },
+                    {
+                      image: imageBase64,
+                      alignment: 'right',
+                      width: 180,
+                      height: 50,
+                      margin: [0, 0, 0, 20]
+                    }
+                  ]
+                },
+                {
+                  table: {
+                    headerRows: 1,
+                    widths: ['*', 'auto', 'auto', 'auto', '*', 'auto'],
+                    body: [
+                      [
+                        { text: 'Nombre', bold: true, fillColor: '#eeeeee', alignment: 'center' },
+                        { text: 'RFC', bold: true, fillColor: '#eeeeee', alignment: 'center' },
+                        { text: 'CT', bold: true, fillColor: '#eeeeee', alignment: 'center' },
+                        { text: 'Cargo', bold: true, fillColor: '#eeeeee', alignment: 'center' },
+                        { text: 'Nivel', bold: true, fillColor: '#eeeeee', alignment: 'center' },
+                        { text: 'Oficio', bold: true, fillColor: '#eeeeee', alignment: 'center' }
+                      ],
+                      ...data.map((item: {
+                        oficio: any; CT: any; cargo: any; nombre: any; nivel: any; RFC: any; }) => [
+                        { text: item.nombre, alignment: 'center', style: 'textT' },
+                        { text: item.RFC, alignment: 'center', style: 'textT' },
+                        { text: item.CT, alignment: 'center', style: 'textT' },
+                        { text: item.cargo, alignment: 'center', style: 'textT' },
+                        { text: item.nivel, alignment: 'center', style: 'textT' },
+                        { text: item.oficio, alignment: 'center', style: 'textT' },
+                      ])
+                    ]
+                  },
+                  margin: [0, 10, 0, 20]
+                }
+              ],
+              styles: {
+                textT: {
+                  fontSize: 10
+                },
+                header: {
+                  fontSize: 12,
+                  bold: true
+                }
+              }
+            };
+            Swal.close();
+            pdfMake.createPdf(documentDefinition).open();
+          },
+          error: () => {
+            Swal.fire("Error", "Hubo un problema al generar el reporte", "error");
+          }
+        });
+      }
+    });
+  }
 
 
 
