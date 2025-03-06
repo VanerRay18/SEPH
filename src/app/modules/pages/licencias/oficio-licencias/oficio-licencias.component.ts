@@ -15,6 +15,7 @@ import Swal from 'sweetalert2';
 })
 export class OficioLicenciasComponent {
   searchTerm: string = '';
+  isLoading = true;
   headers = ['No. de Oficio', 'Año', 'Nombre', 'Rango de fechas', 'Total de Licencias', 'Generar PDF'];
   displayedColumns = ['oficio', 'ultima_fecha_oficio', 'nombre', 'rango_fechas', 'total_folios'];
   data = [];
@@ -29,6 +30,7 @@ export class OficioLicenciasComponent {
 
   ngOnInit(): void {
     this.fetchData();
+    this.isLoading = true;
   }
 
 
@@ -39,6 +41,7 @@ export class OficioLicenciasComponent {
         ...item,
         rango_fechas: `${item.fecha_primera_licencia} al ${item.fecha_ultima_licencia}`
       })); // Aquí concatenas las fechas
+      this.isLoading = this.data.length === 0;
     },
       (error) => {
         console.error('Error al obtener los datos:', error);
