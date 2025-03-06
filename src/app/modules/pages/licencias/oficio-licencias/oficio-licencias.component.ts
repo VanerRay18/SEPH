@@ -15,8 +15,8 @@ import Swal from 'sweetalert2';
 })
 export class OficioLicenciasComponent {
   searchTerm: string = '';
-  headers = ['No. de Oficio','Año', 'Nombre', 'Rango de fechas', 'Total de Licencias', 'Generar PDF'];
-  displayedColumns = ['oficio', 'ultima_fecha_oficio', 'nombre', 'rango_fechas','total_folios' ];
+  headers = ['No. de Oficio', 'Año', 'Nombre', 'Rango de fechas', 'Total de Licencias', 'Generar PDF'];
+  displayedColumns = ['oficio', 'ultima_fecha_oficio', 'nombre', 'rango_fechas', 'total_folios'];
   data = [];
 
   constructor(
@@ -48,9 +48,9 @@ export class OficioLicenciasComponent {
   convertImageToBase64(url: string): Promise<string> {
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
-      xhr.onload = function() {
+      xhr.onload = function () {
         const reader = new FileReader();
-        reader.onloadend = function() {
+        reader.onloadend = function () {
           resolve(reader.result as string);
         };
         reader.readAsDataURL(xhr.response);
@@ -107,10 +107,10 @@ export class OficioLicenciasComponent {
               widths: ['*', '*'],
               body: [
                 // Agregar una fila de cabecera si 'claves' no está vacío
-                [{ text: 'PLAZA', alignment: 'center', bold: true, fillColor: '#eeeeee'}, { text: 'CT', alignment: 'center', bold: true, fillColor: '#eeeeee' }],
+                [{ text: 'PLAZA', alignment: 'center', bold: true, fillColor: '#eeeeee' }, { text: 'CT', alignment: 'center', bold: true, fillColor: '#eeeeee' }],
                 ...claves.map((clave: { PLAZA: any; CT: any; }) => [
-                  { text: clave.PLAZA, alignment: 'center', bold: true,  style: 'textT' },
-                  { text: clave.CT, alignment: 'center', bold: true, style: 'textT'  }
+                  { text: clave.PLAZA, alignment: 'center', bold: true, style: 'textT' },
+                  { text: clave.CT, alignment: 'center', bold: true, style: 'textT' }
                 ])
               ]
             },
@@ -141,7 +141,7 @@ export class OficioLicenciasComponent {
                   { text: licencia.total_dias, alignment: 'center', style: 'textT' },
                   { text: `${licencia.desde} - ${licencia.hasta}`, alignment: 'center', style: 'textT' },
                   { text: licencia.observaciones, alignment: 'center', style: 'textT' },
-                  { text: licencia.apartir || '---', alignment: 'center', style: 'textT'}
+                  { text: licencia.apartir || '---', alignment: 'center', style: 'textT' }
                 ])
               ]
             },
@@ -227,22 +227,26 @@ export class OficioLicenciasComponent {
               pageMargins: [40, 40, 40, 40],
               pageOrientation: 'landscape',
               content: [
+
                 {
-                  columns: [
-                    {
-                      text: `Reporte de Descuentos\nFecha de Generación: ${today}\nPeriodo: ${result.value.periodo}`,
-                      alignment: 'left',
-                      margin: [0, 0, 0, 20],
-                      style: 'header'
-                    },
-                    {
-                      image: imageBase64,
-                      alignment: 'right',
-                      width: 180,
-                      height: 50,
-                      margin: [0, 0, 0, 20]
-                    }
-                  ]
+                  image: imageBase64,
+                  alignment: 'right',
+                  width: 140,
+                  height: 40,
+                  margin: [0, 0, 0, 10]
+                },
+                {
+                  text: `Reporte de Descuentos`,
+                  alignment: 'center',
+                  margin: [0, 0, 0, 20],
+                  style: 'header'
+                },
+
+                {
+                  text: `Fecha de Generación: ${today}\nPeriodo: ${result.value.periodo}`,
+                  alignment: 'left',
+                  margin: [0, 0, 0, 20],
+                  style: 'subheader'
                 },
                 {
                   table: {
@@ -258,14 +262,15 @@ export class OficioLicenciasComponent {
                         { text: 'Oficio', bold: true, fillColor: '#eeeeee', alignment: 'center' }
                       ],
                       ...data.map((item: {
-                        oficio: any; CT: any; cargo: any; nombre: any; nivel: any; RFC: any; }) => [
-                        { text: item.nombre, alignment: 'center', style: 'textT' },
-                        { text: item.RFC, alignment: 'center', style: 'textT' },
-                        { text: item.CT, alignment: 'center', style: 'textT' },
-                        { text: item.cargo, alignment: 'center', style: 'textT' },
-                        { text: item.nivel, alignment: 'center', style: 'textT' },
-                        { text: item.oficio, alignment: 'center', style: 'textT' },
-                      ])
+                        oficio: any; CT: any; cargo: any; nombre: any; nivel: any; RFC: any;
+                      }) => [
+                          { text: item.nombre, alignment: 'center', style: 'textT' },
+                          { text: item.RFC, alignment: 'center', style: 'textT' },
+                          { text: item.CT, alignment: 'center', style: 'textT' },
+                          { text: item.cargo, alignment: 'center', style: 'textT' },
+                          { text: item.nivel, alignment: 'center', style: 'textT' },
+                          { text: item.oficio, alignment: 'center', style: 'textT' },
+                        ])
                     ]
                   },
                   margin: [0, 10, 0, 20]
@@ -275,8 +280,12 @@ export class OficioLicenciasComponent {
                 textT: {
                   fontSize: 10
                 },
-                header: {
+                subheader: {
                   fontSize: 12,
+                  bold: true
+                },
+                header: {
+                  fontSize: 20,
                   bold: true
                 }
               }
@@ -295,13 +304,13 @@ export class OficioLicenciasComponent {
 
 
 
-    // getCurrentDate() {
-    //   const today = new Date();
-    //   const day = String(today.getDate()).padStart(2, '0');
-    //   const month = String(today.getMonth() + 1).padStart(2, '0'); // Meses van de 0-11
-    //   const year = today.getFullYear();
-    //   return `${day}/${month}/${year}`;
-    // }
+  // getCurrentDate() {
+  //   const today = new Date();
+  //   const day = String(today.getDate()).padStart(2, '0');
+  //   const month = String(today.getMonth() + 1).padStart(2, '0'); // Meses van de 0-11
+  //   const year = today.getFullYear();
+  //   return `${day}/${month}/${year}`;
+  // }
 
 
 }
