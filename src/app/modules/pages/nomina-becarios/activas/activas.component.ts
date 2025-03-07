@@ -16,7 +16,7 @@ import { saveAs } from 'file-saver';
 export class ActivasComponent {
   searchTerm: string = '';
   data: NominaA | null = null;
-
+  zipFiles: File | null = null; // Nuevo arreglo para los archivos ZIP
 
   eliminar: boolean = false;
   agregar: boolean = false;
@@ -232,6 +232,86 @@ switch (status) {
       saveAs(data, `${fileName}.xlsx`);
     }
 
+
+     generateFUUPS(): Promise<Blob> {
+        return new Promise((resolve, reject) => {
+          this.NominaBecService.downloadZip().subscribe({
+            next: (response) => {
+              const blob = response.body; // Recibir directamente el archivo ZIP
+
+              if (!blob) {
+                reject('El archivo ZIP no se recibió correctamente.');
+                return;
+              }
+
+              // Obtener el nombre del archivo desde el header Content-Disposition
+              const contentDisposition = response.headers.get('Content-Disposition');
+              let filename = 'fupps.zip'; // Nombre por defecto
+
+              if (contentDisposition) {
+                const matches = contentDisposition.match(/filename="(.+)"/);
+                if (matches && matches.length > 1) {
+                  filename = matches[1]; // Extraer el nombre real
+                  console.log("JJSJSJSJS : " + filename)
+                }
+              }
+
+              // Crear un enlace invisible para descargar el archivo
+              const url = window.URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = filename;
+              document.body.appendChild(a);
+              a.click();
+              document.body.removeChild(a);
+              window.URL.revokeObjectURL(url);
+
+              resolve(blob); // ✅ Retornar el Blob correctamente
+            },
+            error: (err) => {
+              reject(err);
+            }
+          });
+        });
+      }
+
+
+
+
+      // La función addFUUPS debe manejar la agregación correctamente:
+      async addFUUPS(): Promise<void> {
+        Swal.fire({
+          title: 'Generando FUUPS...',
+          text: 'Por favor espera, estamos generando el archivo...',
+          icon: 'info',
+          showConfirmButton: false,
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
+
+        try {
+          const zipBlob = await this.generateFUUPS(); // Espera la descarga del ZIP
+
+          // Obtener el nombre real desde `this.data2?.quincena`
+          const zipFileName = `fups_${this.data?.quincena}.zip`;
+
+          // Crear el archivo ZIP con el nombre correcto
+          this.zipFiles = new File([zipBlob], zipFileName, { type: 'application/zip' });
+
+          Swal.fire({
+            title: 'Éxito',
+            text: 'El archivo FUUPS se ha generado correctamente.',
+            icon: 'success',
+            confirmButtonText: 'OK'
+          });
+
+        } catch (error) {
+          // console.error('Error al agregar el archivo FUUPS:', error);
+          Swal.fire('Error', 'No se pudo generar el archivo FUUPS', 'error');
+        }
+      }
 }
 
 

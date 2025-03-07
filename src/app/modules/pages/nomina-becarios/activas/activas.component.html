@@ -45,6 +45,7 @@
           <button class="button ms-4 mt-2" (click)="startNomina()" *ngIf="this.agregar">CONTINUAR</button>
           <button class="button ms-4 mt-2" (click)="startNomina()" [disabled]="data?.status !== 3 || data?.status == undefined" *ngIf="this.autorizar">AUTORIZAR</button>
           <button class="button ms-4 mt-2" (click)="generateReport()" *ngIf="this.autorizar">DESCARGAR REPORTE</button>
+          <button class="button ms-4 mt-2" (click)="addFUUPS()" *ngIf="this.autorizar">FUPS</button>
         </div>
       </div>
     </div>
