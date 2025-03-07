@@ -320,7 +320,9 @@ export class IngresoLicenciasComponent implements OnInit {
       if (editResult.isConfirmed) {
         this.onEdit2(licencia);
       } else if (editResult.isDenied) {
-        this.onDelete(licencia.id); // Llama a la función de eliminación
+
+
+        this.onDelete(licencia); // Llama a la función de eliminación
       }
     });
   }
