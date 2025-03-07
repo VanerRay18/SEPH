@@ -23,7 +23,7 @@ export class IngresoLicenciasComponent implements OnInit {
   bola: boolean = false;
   insertarLic!: FormGroup;
   headers = ['No. de Licencia', 'Desde', 'Hasta', 'Días', 'Fecha de captura', 'Fecha de formato fisico', 'No. de oficio'];
-  displayedColumns = ['folio', 'desde', 'hasta', 'rango_fechas', 'fechaCaptura','fechaFisica', 'oficio'];
+  displayedColumns = ['folio', 'desde', 'hasta', 'rango_fechas', 'fechaCaptura', 'fechaFisica', 'oficio'];
   data = [];
   showCard: any = false;
   table: any = true;
@@ -76,10 +76,10 @@ export class IngresoLicenciasComponent implements OnInit {
     const card = this.arrayUserRecibido.mostrar;
     console.log(this.arrayUserRecibido)
     this.showCard = card
-    if(card == true){
-     this.buscar(this.arrayUserRecibido.srl_emp);
-     this.HOLA()
-     this.verificarLicencias();
+    if (card == true) {
+      this.buscar(this.arrayUserRecibido.srl_emp);
+      this.HOLA()
+      this.verificarLicencias();
     }
 
   }
@@ -125,7 +125,7 @@ export class IngresoLicenciasComponent implements OnInit {
     this.srl_emp = srl_emp;
     this.Total_lic = 0;
     this.currentDate = this.getCurrentDate(this.fecha_ingreso).date; // Usa `getCurrentDate` para formatear la fecha
-   // console.log(this.srl_emp)
+    // console.log(this.srl_emp)
     this.LicenciasService.getLicencias(srl_emp).subscribe((response: ApiResponse) => {
       this.table = true;
 
@@ -140,14 +140,14 @@ export class IngresoLicenciasComponent implements OnInit {
         this.data = response.data.licencias.map((item: LicMedica) => ({
           ...item,
           fechaCaptura: this.formatDate(item.fechaCaptura),
-          fechaFisica: item.fechaFisica == null ? "":this.formatDate(item.fechaFisica),
+          fechaFisica: item.fechaFisica == null ? "" : this.formatDate(item.fechaFisica),
           desde: this.formatDate(item.desde),
           hasta: this.formatDate(item.hasta),
           rango_fechas: `${item.total_days}  ${item.accidente === 1 ? '-' : ''}`
         }));
         this.bola = false;
-        this.data.forEach(response=>{
-          if(!this.bola){
+        this.data.forEach(response => {
+          if (!this.bola) {
             this.bola = (Number(response['observaciones']) >= 1 && Number(response['nueva']) === 1);
           }
 
@@ -253,50 +253,88 @@ export class IngresoLicenciasComponent implements OnInit {
       confirmButtonText: "Buscar",
     }).then((result) => {
       if (result.isConfirmed) {
-        this.LicenciasService.SearchLic(result.value).subscribe(
-          response => {
-            if (response.data?.message) {
-              Swal.fire({
-                title: response.data.message,
-                icon: "success"
-              });
-            } else {
-              // Mostrar datos y botón para editar
-              Swal.fire({
-                title: "Detalles de Licencia",
-                html: `
-                  <div style="text-align: left; margin-left:30px">
-                    <div><strong>Folio:</strong> ${response.data.folio}</div>
-                    <div><strong>RFC:</strong> ${response.data.rfc}</div>
-                    <div><strong>Nombre:</strong> ${response.data.nombre.trim()}</div>
-                    <div><strong>Fecha de captura:</strong> ${this.formatDate(response.data.fechaCaptura)}</div>
-                    <div><strong>Válida desde:</strong> ${this.formatDate(response.data.desde)}</div>
-                    <div><strong>Hasta:</strong> ${this.formatDate(response.data.hasta)}</div>
-                    <div><strong>Total de días:</strong> ${response.data.total_dias}</div>
-                    <div><strong>Formato:</strong> ${response.data.formato === 0 ? 'Físico' : 'Email'}</div>
-                  </div>
-                `,
-                showCancelButton: true,
-                confirmButtonText: "Editar",
-                cancelButtonText: "Cerrar",
-              }).then(editResult => {
-                if (editResult.isConfirmed) {
-                  // Pasa los datos a la función onEdit
-                  this.onEdit2(response.data);
-                }
-              });
-            }
-          },
+        this.LicenciasService.SearchLic(result.value).subscribe(response => {
+          const data = response.data;
 
-        );
+          if (!data || (Array.isArray(data) && data.length === 0)) {
+            Swal.fire({
+              title: "No se encontraron licencias",
+              icon: "warning"
+            });
+            return;
+          }
+
+          // Si es una sola licencia, mostrarla directamente
+          if (!Array.isArray(data)) {
+            this.mostrarDetallesLicencia(data);
+            return;
+          }
+
+
+          // Si hay varias licencias, mostrar selector
+          let opciones = Array.isArray(data) ? data.map((lic: any, index: number) => ({
+            text: `Folio: ${lic.folio} Fecha: ${lic.desde}-${lic.hasta}`,
+            value: index
+          })) : [];
+
+          Swal.fire({
+            title: "Selecciona una licencia",
+            input: "select",
+            inputOptions: opciones.reduce((acc: Record<string, string>, lic) => {
+              acc[String(lic.value)] = lic.text; // Convertimos el índice a string
+              return acc;
+            }, {}),
+            showCancelButton: true,
+            confirmButtonText: "Ver detalles"
+          }).then((selection) => {
+            if (selection.isConfirmed && Array.isArray(data) && Number(selection.value) >= 0 && Number(selection.value) < data.length) {
+              this.mostrarDetallesLicencia(data[Number(selection.value)]); // Convertimos el valor seleccionado a número
+            }
+          });
+        });
       }
     });
   }
+
+  mostrarDetallesLicencia(licencia: any) {
+    Swal.fire({
+      title: "Detalles de Licencia",
+      html: `
+        <div style="text-align: left; margin-left:30px">
+          <div><strong>Folio:</strong> ${licencia.folio}</div>
+          <div><strong>RFC:</strong> ${licencia.rfc}</div>
+          <div><strong>Nombre:</strong> ${licencia.nombre.trim()}</div>
+          <div><strong>Fecha de captura:</strong> ${this.formatDate(licencia.fechaCaptura)}</div>
+          <div><strong>Desde:</strong> ${this.formatDate(licencia.desde)}</div>
+          <div><strong>Hasta:</strong> ${this.formatDate(licencia.hasta)}</div>
+          <div><strong>Total de días:</strong> ${licencia.total_dias}</div>
+          <div><strong>Formato:</strong> ${licencia.formato === 0 ? 'Físico' : 'Email'}</div>
+        </div>
+      `,
+      showCancelButton: true,
+      showDenyButton: true,
+      confirmButtonText: "Editar",
+      denyButtonText: "Eliminar",
+      cancelButtonText: "Cerrar",
+    }).then(editResult => {
+      if (editResult.isConfirmed) {
+        this.onEdit2(licencia);
+      } else if (editResult.isDenied) {
+        this.onDelete(licencia.id); // Llama a la función de eliminación
+      }
+    });
+  }
+
 
   onEdit2(data: any) {
     Swal.fire({
       title: 'Editar Registro',
       html: `
+        <div style="display: flex; flex-direction: column; text-align: left;">
+          <label style="margin-left:33px;" for="RFC">RFC:</label>
+          <input id="rfc" class="swal2-input" value="${data.rfc}" style="padding: 0px; font-size: 16px;">
+        </div>
+
         <div style="display: flex; flex-direction: column; text-align: left;">
           <label style="margin-left:33px;" for="folio">Folio</label>
           <input id="folioId" class="swal2-input" value="${data.folio}" style="padding: 0px; font-size: 16px;">
@@ -328,6 +366,7 @@ export class IngresoLicenciasComponent implements OnInit {
       confirmButtonText: 'Guardar',
       cancelButtonText: 'Cancelar',
       preConfirm: () => {
+        const rfc = (document.getElementById('rfc') as HTMLInputElement).value;
         const folio = (document.getElementById('folioId') as HTMLInputElement).value;
         const fecha_inicio = ((document.getElementById('fecha_inicioId') as HTMLInputElement).value) + 'T00:00:00';
         const fecha_termino = ((document.getElementById('fecha_terminoId') as HTMLInputElement).value) + 'T00:00:00';
@@ -335,29 +374,31 @@ export class IngresoLicenciasComponent implements OnInit {
         const accidente = 0;
 
         // Validación de campos
-        if (!folio || !fecha_inicio || !fecha_termino) {
+        if (!folio || !fecha_inicio || !fecha_termino || !rfc) {
           Swal.showValidationMessage('Todos los campos son obligatorios');
           return false;
         }
 
         return {
+          rfc,
           folio,
           fecha_inicio,
           fecha_termino,
           formato,
-          accidente };
+          accidente
+        };
       }
     }).then((result) => {
       if (result.isConfirmed) {
         const dataEditada = result.value;
-        this.guardarCambios2(dataEditada, data.id);
+        this.guardarCambios2(dataEditada, data.id, dataEditada.rfc);
       }
     });
   }
 
-  guardarCambios2(data: any, licenciaId: any) {
+  guardarCambios2(data: any, licenciaId: any, rfc: any) {
     const userId = localStorage.getItem('userId')!;
-    this.LicenciasService.updateLic(data, licenciaId, userId).subscribe(
+    this.LicenciasService.updateLic(data, licenciaId, userId, rfc).subscribe(
       response => {
         this.buscar(this.srl_emp);
         this.HOLA();  // Si este método actualiza la tabla
@@ -491,15 +532,15 @@ export class IngresoLicenciasComponent implements OnInit {
       if (result.isConfirmed) {
         const dataEditada = result.value;
         // Envío de los datos editados al backend
-        this.guardarCambios(dataEditada, data.id);
+        this.guardarCambios(dataEditada, data.id, data.rfc);
       }
     });
   }
 
-  guardarCambios(data: any, licenciaId: any) {
+  guardarCambios(data: any, licenciaId: any, rfc: any) {
     const userId = localStorage.getItem('userId')!;
 
-    this.LicenciasService.updateLic(data, licenciaId, userId).subscribe(
+    this.LicenciasService.updateLic(data, licenciaId, userId, rfc).subscribe(
       response => {
         this.buscar(this.srl_emp);
         this.HOLA();  // Si este método actualiza la tabla
@@ -550,7 +591,7 @@ export class IngresoLicenciasComponent implements OnInit {
           error => {
             Swal.fire(
               'Error',
-              'No se pudo eliminar la licencia.',
+              error.error.message,
               'error'
             );
           }
@@ -572,7 +613,7 @@ export class IngresoLicenciasComponent implements OnInit {
 
           //console.log('observaciones:', item.observaciones, 'nueva:', item.nueva);
 
-          return (item.observaciones === 2 || item.observaciones === 1) && item.nueva === "1"  && item.color ===  "black";
+          return (item.observaciones === 2 || item.observaciones === 1) && item.nueva === "1" && item.color === "black";
         });
 
         this.isReadyToSend = canSendToOficio;
@@ -596,7 +637,7 @@ export class IngresoLicenciasComponent implements OnInit {
         console.log(response.data)// Verifica si alguna licencia tiene las observaciones "SIN SUELDO" o "MEDIO SUELDO"
         const canSendToOficio = response.data.licencias.some((item: LicMedica) =>
 
-          (item.observaciones === 2 || item.observaciones === 1)  && item.color ===  "black");
+          (item.observaciones === 2 || item.observaciones === 1) && item.color === "black");
 
 
         if (!canSendToOficio) {
@@ -610,11 +651,11 @@ export class IngresoLicenciasComponent implements OnInit {
           return; // Detener la ejecución si no cumple la condición
         }
         // Si cumple la condición, continuar con el procesamiento de los IDs
-         response.data.licencias.forEach((item: LicMedica) => {
+        response.data.licencias.forEach((item: LicMedica) => {
           if (item.nueva === "1") {
             const licenciasid2 = {
               licenciaId: item.id,
-              apartir: item.apartir == ""?"--":item.apartir,
+              apartir: item.apartir == "" ? "--" : item.apartir,
               observaciones: item.observaciones
             };
             licenciasid.push(licenciasid2);
@@ -698,7 +739,7 @@ export class IngresoLicenciasComponent implements OnInit {
           if (item.nueva === "1") {
             const licenciasid2 = {
               licenciaId: item.id,
-              apartir: item.apartir == ""?"--":item.apartir,
+              apartir: item.apartir == "" ? "--" : item.apartir,
               observaciones: item.observaciones
             };
             licenciasid.push(licenciasid2);
@@ -722,7 +763,7 @@ export class IngresoLicenciasComponent implements OnInit {
             // Llama al servicio para crear un oficio
             this.LicenciasService.patchLicenciasOficio(licenciasid, userId, this.srl_emp).subscribe(
               (response: { data: { oficio: string } }) => { // Asegúrate de definir el tipo de respuesta
-             //   console.log(response.data)
+                //   console.log(response.data)
                 const oficioId = response.data.oficio; // Accede al 'oficio' dentro de 'data'
 
 
@@ -757,7 +798,7 @@ export class IngresoLicenciasComponent implements OnInit {
 
 
   onPdf(oficioId: any) {
- //   console.log(oficioId);
+    //   console.log(oficioId);
     this.LicenciasService.getLicenciasOficioPdf(oficioId).subscribe(async response => {
       const data = response.data;
       const claves = data.claves || []; // Asegura que 'claves' esté definido
@@ -979,7 +1020,7 @@ export class IngresoLicenciasComponent implements OnInit {
           {
             table: {
               headerRows: 1,
-              widths: ['*', '*', 'auto', 'auto', '*','auto'],
+              widths: ['*', '*', 'auto', 'auto', '*', 'auto'],
               body: [
                 // Cabeceras de la tabla
                 [
@@ -990,18 +1031,18 @@ export class IngresoLicenciasComponent implements OnInit {
                   { text: 'Fecha de captura', bold: true, fillColor: '#eeeeee', alignment: 'center' },
                   { text: 'Fecha de impresion', bold: true, fillColor: '#eeeeee', alignment: 'center' }
                 ],
-               // Agregar cada licencia correspondiente a este periodo
-               ...licencias.map((licencia: { folio: any, desde: any, hasta: any, total_days: any, oficio: any, fechaCaptura: any, color: string, accidente: number, impresion : any }) => {
-                return [
-                  { text: licencia.folio, alignment: 'center', color: licencia.color },
-                  { text: `${licencia.desde} - ${licencia.hasta}`, alignment: 'center', color: licencia.color },
-                  { text: licencia.total_days, alignment: 'center', color: licencia.color },
-                  { text: licencia.oficio, alignment: 'center', color: licencia.color },
-                  { text: licencia.fechaCaptura, alignment: 'center', color: licencia.color },
-                  { text: licencia.impresion, alignment: 'center', color: licencia.color }
-                ];
-              })
-            ]
+                // Agregar cada licencia correspondiente a este periodo
+                ...licencias.map((licencia: { folio: any, desde: any, hasta: any, total_days: any, oficio: any, fechaCaptura: any, color: string, accidente: number, impresion: any }) => {
+                  return [
+                    { text: licencia.folio, alignment: 'center', color: licencia.color },
+                    { text: `${licencia.desde} - ${licencia.hasta}`, alignment: 'center', color: licencia.color },
+                    { text: licencia.total_days, alignment: 'center', color: licencia.color },
+                    { text: licencia.oficio, alignment: 'center', color: licencia.color },
+                    { text: licencia.fechaCaptura, alignment: 'center', color: licencia.color },
+                    { text: licencia.impresion, alignment: 'center', color: licencia.color }
+                  ];
+                })
+              ]
             },
             margin: [0, 10, 0, 30]
           },
@@ -1112,7 +1153,7 @@ export class IngresoLicenciasComponent implements OnInit {
                   { text: 'Fecha de impresion', bold: true, fillColor: '#eeeeee', alignment: 'center' }
                 ],
                 // Agregar cada licencia correspondiente a este periodo
-                ...licencias.map((licencia: { folio: any, desde: any, hasta: any, total_days: any, oficio: any, fechaCaptura: any, color: string, accidente: number, impresion : any  }) => {
+                ...licencias.map((licencia: { folio: any, desde: any, hasta: any, total_days: any, oficio: any, fechaCaptura: any, color: string, accidente: number, impresion: any }) => {
                   return [
                     { text: licencia.folio, alignment: 'center', color: licencia.color },
                     { text: `${licencia.desde} - ${licencia.hasta}`, alignment: 'center', color: licencia.color },
@@ -1219,7 +1260,7 @@ export class IngresoLicenciasComponent implements OnInit {
                   { text: 'Fecha de impresion', bold: true, fillColor: '#eeeeee', alignment: 'center' }
                 ],
                 // Agregar cada licencia correspondiente a este periodo
-                ...licencias.map((licencia: { folio: any, desde: any, hasta: any, total_days: any, oficio: any, fechaCaptura: any, color: string, accidente: number ,  impresion : any}) => {
+                ...licencias.map((licencia: { folio: any, desde: any, hasta: any, total_days: any, oficio: any, fechaCaptura: any, color: string, accidente: number, impresion: any }) => {
                   return [
                     { text: licencia.folio, alignment: 'center', color: licencia.color },
                     { text: `${licencia.desde} - ${licencia.hasta}`, alignment: 'center', color: licencia.color },
@@ -1341,7 +1382,7 @@ export class IngresoLicenciasComponent implements OnInit {
                   { text: 'Fecha de impresion', bold: true, fillColor: '#eeeeee', alignment: 'center' }
                 ],
                 // Agregar cada licencia correspondiente a este periodo
-                ...licenciasPorPeriodo[aux].map((licencia: { folio: any, desde: any, hasta: any, total_dias: any, oficio: any, fechaCaptura: any, apartir: any,  impresion : any}) => [
+                ...licenciasPorPeriodo[aux].map((licencia: { folio: any, desde: any, hasta: any, total_dias: any, oficio: any, fechaCaptura: any, apartir: any, impresion: any }) => [
                   { text: licencia.folio, alignment: 'center' },
                   { text: `${licencia.desde} - ${licencia.hasta}`, alignment: 'center' },
                   { text: licencia.total_dias, alignment: 'center' },

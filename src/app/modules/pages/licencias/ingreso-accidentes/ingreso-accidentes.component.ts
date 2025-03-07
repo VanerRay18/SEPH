@@ -134,15 +134,15 @@ export class IngresoAccidentesComponent {
     }).then((result) => {
       if (result.isConfirmed) {
         const dataEditada = result.value;
-        this.guardarCambios(dataEditada, data.id);
+        this.guardarCambios(dataEditada, data.id, data.rfc);
       }
     });
   }
 
-  guardarCambios(data: any, licenciaId: any) {
+  guardarCambios(data: any, licenciaId: any, rfc: any) {
     const userId = localStorage.getItem('userId')!;
 
-    this.LicenciasService.updateLic(data, licenciaId, userId).subscribe(
+    this.LicenciasService.updateLic(data, licenciaId, userId, rfc).subscribe(
       response => {
         this.buscar(this.srl_emp);
         this.HOLA();  // Si este método actualiza la tabla
@@ -211,15 +211,15 @@ export class IngresoAccidentesComponent {
       if (result.isConfirmed) {
         const dataEditada = result.value;
         console.log(dataEditada)
-        this.guardarCambios2(dataEditada, data2.id);
+        this.guardarCambios2(dataEditada, data2.id, data2.rfc);
       }
     });
   }
 
-  guardarCambios2(data2: any, licenciaId: any) {
+  guardarCambios2(data2: any, licenciaId: any, rfc:any) {
     const userId = localStorage.getItem('userId')!;
 
-    this.LicenciasService.updateLic(data2, licenciaId, userId).subscribe(
+    this.LicenciasService.updateLic(data2, licenciaId, userId, rfc).subscribe(
       response => {
         this.buscar2(this.srl_emp);
         this.HOLA();  // Si este método actualiza la tabla
