@@ -272,7 +272,7 @@ export class RevisionComponent {
             // Encabezados con subcolumnas
             const headersRow1 = worksheet.addRow([
               "No comprobante", "RFC", "CURP", "NOMBRE(S)", "APELLIDO P", "APELLIDO M",
-              "FECHA INICIO", "FECHA TERMINO", "CLAVE PLAZA", "DEDUCCIONES", "", "PERCEPCIONES", "", "NETO"
+              "FECHA INICIO", "FECHA TERMINO", "CLAVE PLAZA", "DEDUCCIONES", "", "PERCEPCIONES", "", "NETO","CATEGORIA"
             ]);
             const headersRow2 = worksheet.addRow([
               "", "", "", "", "", "", "", "", "", "CPTO", "IMPORTE", "CPTO", "IMPORTE", ""
@@ -295,7 +295,7 @@ export class RevisionComponent {
               const row = worksheet.addRow([
                 item.NO_COMPROBANTE, item.RFC, item.CURP, item.NOMBRE, item.PRIMER_APELLIDO,
                 item.SEGUNDO_APELLIDO, item.FECHA_INICIO, item.FECHA_TERMINO, item.CLAVE_PLAZA,
-                item.uno, item.DEDUCCIONES, item.cuatro, item.PERCEPCIONES, item.NETO
+                item.uno, item.DEDUCCIONES, item.cuatro, item.PERCEPCIONES, item.NETO, ,item.CATEGORIA
               ]);
 
               row.eachCell((cell, colNumber) => {
