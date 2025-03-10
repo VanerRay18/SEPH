@@ -317,9 +317,9 @@ export class IngresoLicenciasComponent implements OnInit {
       denyButtonText: "Eliminar",
       cancelButtonText: "Cerrar",
     }).then(editResult => {
-      if (editResult.isConfirmed) {
+      if (editResult.isConfirmed  && this.modificar) {
         this.onEdit2(licencia);
-      } else if (editResult.isDenied) {
+      } else if (editResult.isDenied && this.eliminar) {
 
 
         this.onDelete(licencia); // Llama a la función de eliminación
