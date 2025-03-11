@@ -189,7 +189,7 @@ export class OficioLicenciasComponent {
         <label for="desde">Desde:</label>
         <input type="date" id="desde" class="swal2-input"><br>
         <label for="hasta">Hasta:</label>
-        <input type="date" id="hasta" class="swal2-input"><br>
+        <input type="date" id="hasta" class="swal2-input"><br><br>
         <label for="tipo">Tipo:</label>
         <select id="tipo" class="swal2-input">
           <option value="1">Medio sueldo</option>
