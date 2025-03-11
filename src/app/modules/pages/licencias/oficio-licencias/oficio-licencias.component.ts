@@ -184,26 +184,31 @@ export class OficioLicenciasComponent {
 
   historyDesc(): void {
     Swal.fire({
-      title: "Selecciona el rango de fechas",
+      title: "Selecciona el rango de fechas y tipo",
       html: `
         <label for="desde">Desde:</label>
         <input type="date" id="desde" class="swal2-input"><br>
         <label for="hasta">Hasta:</label>
-        <input type="date" id="hasta" class="swal2-input">
+        <input type="date" id="hasta" class="swal2-input"><br>
+        <label for="tipo">Tipo:</label>
+        <select id="tipo" class="swal2-input">
+          <option value="1">Medio sueldo</option>
+          <option value="2">Sin sueldo</option>
+        </select>
       `,
       showCancelButton: true,
       confirmButtonText: "Buscar",
       preConfirm: () => {
         const desde = (document.getElementById("desde") as HTMLInputElement).value;
         const hasta = (document.getElementById("hasta") as HTMLInputElement).value;
+        const tipo = (document.getElementById("tipo") as HTMLSelectElement).value;
 
         if (!desde || !hasta) {
           Swal.showValidationMessage("Por favor, selecciona ambas fechas.");
           return false;
         }
 
-
-        return { desde, hasta, periodo: `${desde} - ${hasta}` };
+        return { desde, hasta, periodo: `${desde} - ${hasta}`, tipo };
       }
     }).then((result) => {
       if (result.isConfirmed) {
@@ -220,89 +225,168 @@ export class OficioLicenciasComponent {
           }
         });
 
-        this.LicenciasService.getReporte(result.value.desde, result.value.hasta).subscribe({
+        this.LicenciasService.getReporte(result.value.desde, result.value.hasta, result.value.tipo).subscribe({
           next: async (response) => {
             const data = response.data || [];
             const imageBase64 = await this.ImageToBaseService.convertImageToBase64('assets/IHE_LOGO.png');
 
-            const documentDefinition: any = {
-              pageSize: 'A4',
-              pageMargins: [40, 40, 40, 40],
-              pageOrientation: 'landscape',
-              content: [
+            // Página principal del reporte
+            const documentContent: any[] = [
 
+              {
+                image: imageBase64,
+                alignment: 'right',
+                width: 140,
+                height: 40,
+                margin: [0, 0, 0, 10]
+              },
+              {
+                text: `Reporte de Descuentos`,
+                alignment: 'center',
+                margin: [0, 0, 0, 20],
+                fontSize: 16,
+                bold: true
+              },
+              {
+                text: `Fecha de Generación: ${today}\nPeriodo: ${result.value.periodo}\nTipo: ${result.value.tipo === "1" ? "Medio sueldo" : "Sin sueldo"}`,
+                alignment: 'left',
+                margin: [0, 0, 0, 20],
+                style: 'subheader'
+              },
+              {
+                table: {
+                  headerRows: 1,
+                  widths: ['auto', 'auto', 'auto', 'auto', 'auto', 'auto'],
+                  body: [
+                    [
+                      { text: 'Nombre', bold: true, fillColor: '#eeeeee', alignment: 'center', fontSize: 10 },
+                      { text: 'RFC', bold: true, fillColor: '#eeeeee', alignment: 'center', fontSize: 10 },
+                      { text: 'CT', bold: true, fillColor: '#eeeeee', alignment: 'center' , fontSize: 10},
+                      { text: 'Cargo', bold: true, fillColor: '#eeeeee', alignment: 'center', fontSize: 10 },
+                      { text: 'Nivel', bold: true, fillColor: '#eeeeee', alignment: 'center', fontSize: 10 },
+                      { text: 'Oficio', bold: true, fillColor: '#eeeeee', alignment: 'center', fontSize: 10 }
+                    ],
+                    ...data.usuarios.map((item: any) => [
+                      { text: item.nombre, alignment: 'center',  fontSize: 9  },
+                      { text: item.RFC, alignment: 'center',  fontSize: 9  },
+                      { text: item.CT, alignment: 'center',  fontSize: 9  },
+                      { text: item.cargo, alignment: 'center',  fontSize: 9  },
+                      { text: item.nivel, alignment: 'center',  fontSize: 9  },
+                      { text: item.oficio, alignment: 'center',  fontSize: 9  }
+                    ])
+                  ]
+                },
+                margin: [0, 10, 0, 20],
+              }
+            ];
+
+            // **Añadir los oficios individuales en páginas separadas**
+            for (const reportes of data.reportes) {
+              const claves = reportes.claves || [];
+              const licencias = reportes.licencias || [];
+
+              documentContent.push({ text: '', pageBreak: 'before' }); // Salto de página
+              documentContent.push(
                 {
-                  image: imageBase64,
-                  alignment: 'right',
-                  width: 140,
-                  height: 40,
-                  margin: [0, 0, 0, 10]
+                  columns: [
+                    {
+                      image: imageBase64,
+                      alignment: 'right',
+                      width: 180,
+                      height: 50,
+                    },
+                    {
+                      text: `Pachuca HGO. ${data.impresion}.\nOficio Num: ${reportes.oficio}.`,
+                      alignment: 'right',
+                      style: 'header'
+                    }
+                  ]
                 },
                 {
-                  text: `Reporte de Descuentos`,
-                  alignment: 'center',
-                  margin: [0, 0, 0, 20],
-                  style: 'header'
+                  text: '\n M.T.I Alberto Noble Gómez\nDirector de Atención y Aclaración de Nómina\nPresente:',
+                  style: 'subheader',
+                  margin: [0, 20, 0, 5]
                 },
-
                 {
-                  text: `Fecha de Generación: ${today}\nPeriodo: ${result.value.periodo}`,
-                  alignment: 'left',
-                  margin: [0, 0, 0, 20],
-                  style: 'subheader'
+                  text: `Con fundamento en el Artículo 111, de la Ley Federal de los Trabajadores al Servicio del Estado y Artículo 52, Fracción I del Reglamento de las Condiciones Generales de Trabajo del personal de la Secretaría del ramo, por este conducto solicito a Usted, gire instrucciones a quien corresponda a efecto de que la (el) C. ${reportes.nombre.trim()} R.F.C. ${reportes.rfc} fecha de ingreso ${reportes.fecha_ingreso}, quien labora en el CT con clave(s) presupuestal(es) siguientes:`,
+                  margin: [0, 20, 0, 20],
+                  alignment: 'justify',
+                  fontSize: 12
                 },
                 {
                   table: {
                     headerRows: 1,
-                    widths: ['*', 'auto', 'auto', 'auto', '*', 'auto'],
+                    widths: ['*', '*'],
                     body: [
-                      [
-                        { text: 'Nombre', bold: true, fillColor: '#eeeeee', alignment: 'center' },
-                        { text: 'RFC', bold: true, fillColor: '#eeeeee', alignment: 'center' },
-                        { text: 'CT', bold: true, fillColor: '#eeeeee', alignment: 'center' },
-                        { text: 'Cargo', bold: true, fillColor: '#eeeeee', alignment: 'center' },
-                        { text: 'Nivel', bold: true, fillColor: '#eeeeee', alignment: 'center' },
-                        { text: 'Oficio', bold: true, fillColor: '#eeeeee', alignment: 'center' }
-                      ],
-                      ...data.map((item: {
-                        oficio: any; CT: any; cargo: any; nombre: any; nivel: any; RFC: any;
-                      }) => [
-                          { text: item.nombre, alignment: 'center', style: 'textT' },
-                          { text: item.RFC, alignment: 'center', style: 'textT' },
-                          { text: item.CT, alignment: 'center', style: 'textT' },
-                          { text: item.cargo, alignment: 'center', style: 'textT' },
-                          { text: item.nivel, alignment: 'center', style: 'textT' },
-                          { text: item.oficio, alignment: 'center', style: 'textT' },
-                        ])
+                      // Agregar una fila de cabecera si 'claves' no está vacío
+                      [{ text: 'PLAZA', alignment: 'center', bold: true, fillColor: '#eeeeee' }, { text: 'CT', alignment: 'center', bold: true, fillColor: '#eeeeee' }],
+                      ...claves.map((clave: { PLAZA: any; CT: any; }) => [
+                        { text: clave.PLAZA, alignment: 'center', bold: true, style: 'textT' },
+                        { text: clave.CT, alignment: 'center', bold: true, style: 'textT' }
+                      ])
                     ]
                   },
                   margin: [0, 10, 0, 20]
-                }
-              ],
-              styles: {
-                textT: {
-                  fontSize: 10
                 },
-                subheader: {
-                  fontSize: 12,
+                {
+                  text: 'Reintegre al Estado el sueldo no devengado, de conformidad con la(s) licencia(s) médica(s) que se mencionan a continuación:',
+                  margin: [0, 10, 0, 10],
+                  alignment: 'justify',
+                  fontSize: 12
+                },
+                {
+                  table: {
+                    headerRows: 1,
+                    widths: ['auto', 'auto', '*', '*', 'auto'],
+                    body: [
+                      // Cabeceras de la tabla
+                      [
+                        { text: 'Folio', bold: true, fillColor: '#eeeeee', alignment: 'center' },
+                        { text: 'Días', bold: true, fillColor: '#eeeeee', alignment: 'center' },
+                        { text: 'Periodo de la Licencia', bold: true, fillColor: '#eeeeee', alignment: 'center' },
+                        { text: 'Observaciones', bold: true, fillColor: '#eeeeee', alignment: 'center' },
+                        { text: 'A partir de', bold: true, fillColor: '#eeeeee', alignment: 'center' }
+                      ],
+                      // Agregar filas si 'licencias' no está vacío
+                      ...licencias.map((licencia: { foliolic: any; total_dias: any; desde: any; hasta: any; observaciones: any; apartir: any; }) => [
+                        { text: licencia.foliolic, alignment: 'center', fontSize: 9 },
+                        { text: licencia.total_dias, alignment: 'center', fontSize: 9 },
+                        { text: `${licencia.desde} - ${licencia.hasta}`, alignment: 'center', fontSize: 9 },
+                        { text: licencia.observaciones, alignment: 'center', fontSize: 9 },
+                        { text: licencia.apartir || '---', alignment: 'center', fontSize: 9 }
+                      ])
+                    ]
+                  },
+                  margin: [0, 10, 0, 30]
+                },
+                {
+                  text: 'Atentamente',
+                  margin: [0, 20, 0, 30],
+                  alignment: 'center'
+                },
+                {
+                  text: ' M.A.T.I. José Jayli Callejas Barrera\nDirector de Nómina y Control de Plazas',
+                  alignment: 'center',
                   bold: true
                 },
-                header: {
-                  fontSize: 20,
-                  bold: true
+                {
+                  text: 'Ccp-Minotauro\nAOC/JJCB/GPC/jga',
+                  alignment: 'Left',
+                  bold: true,
+                  fontSize: 6
                 }
-              }
-            };
+
+              );
+            }
+
             Swal.close();
-            pdfMake.createPdf(documentDefinition).open();
-          },
-          error: () => {
-            Swal.fire("Error", "Hubo un problema al generar el reporte", "error");
+            pdfMake.createPdf({ content: documentContent }).open();
           }
         });
       }
     });
   }
+
 
 
 

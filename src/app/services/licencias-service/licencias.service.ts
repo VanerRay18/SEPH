@@ -123,8 +123,6 @@ export class LicenciasService {
 
   patchLicenciasOficio(data: any, userId: string, srl_emp:string): Observable<ApiResponse> { //Crea nuevos oficios
     let headers = new HttpHeaders({'userId':userId,'srl_emp':srl_emp})
-    console.log("-------------------------")
-    console.log(data)
     return this.http.patch<ApiResponse>(`${environment.baseService}${'/licMedicas/oficios'}`,data,
       {headers}
     );
@@ -158,9 +156,8 @@ export class LicenciasService {
     );
   }
 
-  getReporte(desde: any, hasta: any): Observable<ApiResponse> {//Trae el anexo 5
-    let headers = new HttpHeaders({'desde': desde, 'hasta': hasta})
-    console.log(desde,hasta)
+  getReporte(desde: any, hasta: any, tipo: any): Observable<ApiResponse> {//Trae el anexo 5
+    let headers = new HttpHeaders({'desde': desde, 'hasta': hasta, 'tipo': tipo})
     return this.http.get<ApiResponse>(`${environment.baseService}${'/licMedicas/reporte'}`,
       {headers}
     );
