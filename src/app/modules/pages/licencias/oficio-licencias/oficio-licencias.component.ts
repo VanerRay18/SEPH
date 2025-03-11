@@ -191,10 +191,11 @@ export class OficioLicenciasComponent {
         <label for="hasta">Hasta:</label>
         <input type="date" id="hasta" class="swal2-input"><br><br>
         <label for="tipo">Tipo:</label>
-        <select id="tipo" class="swal2-input">
-          <option value="1">Medio sueldo</option>
-          <option value="2">Sin sueldo</option>
+          <select id="tipo" class="swal2-input" style="flex: 4; padding: 8px; border-radius: 5px; border: 1px solid #ccc; background-color: #fff; font-size: 16px; cursor: pointer;">
+          <option value="1" style="cursor: default;">Medio sueldo</option>
+            <option value="2" style="cursor: default;">Sin sueldo</option>
         </select>
+               
       `,
       showCancelButton: true,
       confirmButtonText: "Buscar",
