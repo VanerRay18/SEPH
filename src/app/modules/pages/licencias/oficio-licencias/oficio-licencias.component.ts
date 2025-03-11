@@ -321,8 +321,8 @@ export class OficioLicenciasComponent {
                       // Agregar una fila de cabecera si 'claves' no está vacío
                       [{ text: 'PLAZA', alignment: 'center', bold: true, fillColor: '#eeeeee' }, { text: 'CT', alignment: 'center', bold: true, fillColor: '#eeeeee' }],
                       ...claves.map((clave: { PLAZA: any; CT: any; }) => [
-                        { text: clave.PLAZA, alignment: 'center', bold: true, style: 'textT' },
-                        { text: clave.CT, alignment: 'center', bold: true, style: 'textT' }
+                        { text: clave.PLAZA, alignment: 'center', bold: true, fontSize: 9 },
+                        { text: clave.CT, alignment: 'center', bold: true, fontSize: 9 }
                       ])
                     ]
                   },
