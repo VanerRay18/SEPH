@@ -8,6 +8,7 @@ import { Oficio } from 'src/app/shared/interfaces/utils';
 import { OficioPdf } from 'src/app/shared/interfaces/utils';
 import { style } from '@angular/animations';
 import Swal from 'sweetalert2';
+import { HttpErrorResponse } from '@angular/common/http';
 @Component({
   selector: 'app-oficio-licencias',
   templateUrl: './oficio-licencias.component.html',
@@ -195,7 +196,7 @@ export class OficioLicenciasComponent {
           <option value="1" style="cursor: default;">Medio sueldo</option>
             <option value="2" style="cursor: default;">Sin sueldo</option>
         </select>
-               
+
       `,
       showCancelButton: true,
       confirmButtonText: "Buscar",
@@ -228,6 +229,7 @@ export class OficioLicenciasComponent {
 
         this.LicenciasService.getReporte(result.value.desde, result.value.hasta, result.value.tipo).subscribe({
           next: async (response) => {
+
             const data = response.data || [];
             const imageBase64 = await this.ImageToBaseService.convertImageToBase64('assets/IHE_LOGO.png');
 
@@ -382,6 +384,18 @@ export class OficioLicenciasComponent {
 
             Swal.close();
             pdfMake.createPdf({ content: documentContent }).open();
+          },
+          error: (error: HttpErrorResponse) => {
+            console.error('ERROR', error);
+
+            // Extrae el mensaje de error del backend
+            const errorMessage = error.error?.message || 'Ocurrió un error inesperado';
+
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: errorMessage,
+            });
           }
         });
       }
