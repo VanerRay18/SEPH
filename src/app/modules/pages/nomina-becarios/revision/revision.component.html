@@ -4,7 +4,7 @@
   </div>
   <div class="card d-flex mt-3">
     <div class="row">
-      <div class="col-auto col-lg-9  ">
+      <div class="col-auto col-lg-8  ">
         <div class="progress">
           <div class="step active"><a
               href="pages/NominaBecarios/Nominas-Calcular"
@@ -22,6 +22,13 @@
           *ngIf="this.agregar">Descargar Anexos</button>
         <button type="submit" class="btn  btn-sm" (click)="generateReport()"
           *ngIf="this.autorizar">Descargar Reporte</button>
+      </div>
+
+      <div class="col-auto col-lg-1 ">
+        <button type="submit" class="btn  btn-sm" (click)="sentNomina()"
+          *ngIf="this.agregar"><i class="fa-solid fa-paper-plane"></i></button>
+        <button type="submit" class="btn  btn-sm" (click)="ReciboNomina()"
+          *ngIf="this.agregar"><i class="fa-solid fa-file-lines"></i></button>
       </div>
 
       <div class="col-auto col-lg-12" *ngIf="this.autorizar">

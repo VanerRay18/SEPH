@@ -214,4 +214,18 @@ downloadZip(): Observable<HttpResponse<Blob>> {
   });
 }
 
+getPDFEnvioN(nominaId: any): Observable<ApiResponse> {//Trae el anexo 5
+  let headers = new HttpHeaders({'nominaId': nominaId})
+  return this.http.get<ApiResponse>(`${environment.baseService}${'/nomina/envioNomina'}`,
+    {headers}
+  );
+}
+
+getPDFReciboN(nominaId: any): Observable<ApiResponse> {//Trae el anexo 5
+  let headers = new HttpHeaders({'nominaId': nominaId})
+  return this.http.get<ApiResponse>(`${environment.baseService}${'/nomina/reciboNomina'}`,
+    {headers}
+  );
+}
+
 }

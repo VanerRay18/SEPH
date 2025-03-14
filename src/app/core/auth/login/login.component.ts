@@ -13,7 +13,7 @@ import { BusquedaserlService } from 'src/app/services/busquedaserl.service';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  isLoading = false; 
+  isLoading = false;
   loginForm: FormGroup;
   username: string = '';
   password: string = '';
@@ -90,7 +90,7 @@ export class LoginComponent implements OnInit {
 
 // Verifica la expiración del token
 checkTokenExpiration() {
-  const tokenExpiration = localStorage.getItem('tokenExpiration');
+  const tokenExpiration = localStorage.getItem('token');
   if (tokenExpiration) {
     const now = new Date().getTime();
 

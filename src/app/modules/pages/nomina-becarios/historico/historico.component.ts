@@ -613,5 +613,296 @@ export class HistoricoComponent {
     });
   }
 
+    sentNomina(nominaId: any): void {
+      this.NominaBecService.getPDFEnvioN(nominaId).subscribe(async response => {
+        const data = response.data;
+
+        // Convertir la imagen a base64
+        const imageBase64 = await this.ImageToBaseService.convertImageToBase64('assets/IHE_LOGO.png');
+
+        const documentDefinition: any = {
+          pageSize: 'A4', // Puedes cambiar 'A4' por 'LETTER' si deseas tamaño carta
+          pageMargins: [40, 40, 40, 40], // Márgenes opcionales (izq, arriba, der, abajo)
+          content: [
+            {
+              image: imageBase64,
+              alignment: 'right',
+              width: 150,
+              height: 40,
+            },
+            {
+              text: `Dirección General de Recursos Humanos\n Dirección de Nómina y Control de Plazas`,
+              alignment: 'left',
+              style: 'subheader'
+            },
+            {
+              text: `${data.folio}\n Asunto: Envio de nomina "sustitutos de becario".`,
+              alignment: 'right',
+              style: 'subheader'
+            },
+            {
+              text: '\n M.T.I Alberto Noble Gómez\nDirector de Atención y Aclaración de Nómina\nPRESENTE:',
+              style: 'header',
+              alignment: 'left',
+              margin: [0, 20, 0, 5]
+            },
+            {
+              text: `${data.fecha}`,
+              alignment: 'left',
+            },
+            {
+              text: `Anexo al presente me permito enviar nuevamente en forma digital el archivo “Resumen-Entrega-${data.quincena}-${data.ano}, que contiene la información correspondiente a la nómina ordinaria y extraordinaria de Sustitutos de Becario de la quincena ${data.quincena} del ejercicio ${data.ano}, con la finalidad de que sean validados por el área a su digno cargo.`,
+              margin: [0, 10, 0, 10],
+              alignment: 'justify',
+              fontSize: 12
+            },
+            {
+              text: `Mencionando que dichos anexos contienen la siguiente información:\n 1. ${data.plazas} plazas con pago a ${data.becarios} personas.\n 2. Importes:`,
+              margin: [0, 10, 0, 10],
+              alignment: 'justify',
+              fontSize: 12
+            },
+            {
+              columns: [
+                { width: '*', text: '' },
+                {
+                  table: {
+                    headerRows: 1,
+                    widths: ['auto', '*'],
+                    body: [
+                      [
+                        { text: 'CONCEPTO', bold: true, fontSize: 11, color: '#000000', fillColor: '#cac9c9', alignment: 'center' },
+                        { text: 'IMPORTE', bold: true, fontSize: 11, color: '#000000', fillColor: '#cac9c9', alignment: 'center' }
+                      ],
+                      [
+                        { text: 'Percepciones', fontSize: 9, alignment: 'center' },
+                        { text: data.percepciones, fontSize: 9, alignment: 'right' }
+                      ],
+                      [
+                        { text: 'Deducciones', fontSize: 9, alignment: 'center' },
+                        { text: data.deducciones, fontSize: 9, alignment: 'right' }
+                      ],
+                      [
+                        { text: 'Líquido', fontSize: 9, alignment: 'center' },
+                        { text: data.liquido, fontSize: 9, alignment: 'right' }
+                      ]
+                    ]
+                  },
+                  margin: [0, 10, 0, 10],
+                  alignment: 'center'
+                },
+                { width: '*', text: '' }
+              ]
+            },
+            {
+              text: 'De igual manera me permito informarle que en esta quincena se operaron movimientos (por plaza) de la siguiente manera:',
+              margin: [0, 10, 0, 10],
+              alignment: 'justify',
+              fontSize: 12
+            },
+            {
+              columns: [
+                { width: 55, text: '' },
+                {
+                  table: {
+                    headerRows: 1,
+                    widths: ['auto', '*'],
+                    body: [
+                      [
+                        { text: 'TIPO', bold: true, fontSize: 11, color: '#000000', fillColor: '#cac9c9', alignment: 'center' },
+                        { text: 'CANTIDAD', bold: true, fontSize: 11, color: '#000000', fillColor: '#cac9c9', alignment: 'center' }
+                      ],
+                      [
+                        { text: 'Altas', fontSize: 9, alignment: 'center' },
+                        { text: data.altas, fontSize: 9, alignment: 'center' }
+                      ],
+                      [
+                        { text: 'Bajas', fontSize: 9, alignment: 'center' },
+                        { text: data.bajas, fontSize: 9, alignment: 'center' }
+                      ]
+                    ]
+                  },
+                  margin: [0, 10, 0, 10],
+                  alignment: 'center'
+                },
+                { width: 55, text: '' }
+              ]
+            },
+            {
+              text: 'Sin más por el momento, me es grato enviarle un cordial saludo.',
+              margin: [0, 10, 0, 10],
+              alignment: 'justify',
+              fontSize: 12
+            },
+            {
+              text: 'ATENTAMENTE',
+              margin: [0, 40, 0, 30],
+              alignment: 'center',
+              bold: true
+            },
+            {
+              text: ' M.A.T.I. José Jayli Callejas Barrera\nDirector de Nómina y Control de Plazas',
+              alignment: 'center',
+              bold: true,
+              margin: [0, 0, 0, 10]
+            },
+            {
+              text: 'Ccp. Adolfo Ozumbilla Castillo. - Director General de recursos Humanos. PARA SU CONOCIMMIENTO.\n Arcivo.\n ard*',
+              alignment: 'Left',
+              bold: true,
+              fontSize: 6
+            },
+            {
+              text: 'Blvd.Felipe Angeles s/n, Col.Venta Prieta  Pachuca de Soto, HGO. C.P. 42080     Tel 771-717-3524  www.hgo.sep.gob.x',
+              fontSize: 8,
+              alignment: 'right',
+              margin: [0, 0, 0, 0], // margen superior para separar del contenido anterior
+              absolutePosition: { x: 410, y: 760 }, // Ajusta 'y' según la altura de la página
+            }
+          ],
+          styles: {
+            header: {
+              fontSize: 14,
+              bold: true
+            }
+            , textT: {
+              fontSize: 10
+            },
+            subheader: {
+              fontSize: 12,
+              bold: true
+            },
+            tableHeader: {
+              bold: true,
+              fontSize: 12,
+              fillColor: '#621132',
+              color: 'white'
+            }
+          }
+        };
+        // Generar y descargar el PDF
+        pdfMake.createPdf(documentDefinition).open();
+      });
+    }
+
+    ReciboNomina(nominaId: any): void {
+      this.NominaBecService.getPDFReciboN(nominaId).subscribe(async response => {
+        const data = response.data;
+
+        // Convertir la imagen a base64
+        const imageBase64 = await this.ImageToBaseService.convertImageToBase64('assets/IHE_LOGO.png');
+
+        const documentDefinition: any = {
+          pageSize: 'A4', // Puedes cambiar 'A4' por 'LETTER' si deseas tamaño carta
+          pageMargins: [40, 40, 40, 40], // Márgenes opcionales (izq, arriba, der, abajo)
+          content: [
+            {
+              image: imageBase64,
+              alignment: 'right',
+              width: 150,
+              height: 40,
+            },
+            {
+              text: `Coordinación General de Administracion y Finanzas\n Dirección General de Recursos Financieros`,
+              alignment: 'left',
+              style: 'subheader',
+              margin: [0, 10, 0, 5]
+            },
+            {
+              text: `${data.fecha}`,
+              alignment: 'right',
+              margin: [0, 10, 0, 5]
+            },
+            {
+              text: `Oficio Numero ${data.folio}`,
+              alignment: 'right',
+              style: 'subheader',
+              margin: [0, 10, 0, 5]
+            },
+            {
+              text: 'M.A.T.I. José Jayli Callejas Barrera\nDirector de Nómina y Control de Plazas\nPresente',
+              style: 'header',
+              alignment: 'left',
+              margin: [0, 20, 0, 20]
+            },
+            {
+              text: [
+                'En respuesta a su Oficio DNyCP/0048/2025, le informo que en relación a la validación realizada al archivo magnético denominado ',
+                { text: `“Resumen-Entrega-${data.quincena}-${data.ano}”`, bold: true },
+                ' que contiene información concerniente a la prenómina de la ',
+                { text: `Qna ${data.quincena}/${data.ano}`, bold: true },
+                ' para el personal ',
+                { text: '“SUSTITUTO DE BECARIO”', bold: true },
+                ', a continuación me permito hacer las siguientes precisiones:'
+              ],
+              margin: [0, 10, 0, 10],
+              alignment: 'justify',
+              fontSize: 12
+            },
+            {
+              text: `1. En relación al número total de plazas (${data.plazas}) y personas (${data.becarios}), hay coincidencia.`,
+              margin: [0, 10, 0, 10],
+              alignment: 'justify',
+              fontSize: 12
+            },
+            {
+              text: '2. En cuanto a las cifras totales de las columnas Percepciones, Deducciones, Neto, le informo que hay coincidencia.',
+              margin: [0, 10, 0, 10],
+              alignment: 'justify',
+              fontSize: 12
+            },
+            {
+              text: 'Sin más por el momento, quedo de usted',
+              margin: [0, 30, 0, 10],
+              alignment: 'justify',
+              fontSize: 12
+            },
+            {
+              text: 'Atentamente',
+              margin: [0, 40, 0, 30],
+              alignment: 'center',
+              bold: true
+            },
+            {
+              text: 'M.T.I Alberto Noble Gómez\nDirector de Atención y Aclaración de Nómina',
+              alignment: 'center',
+              bold: true,
+              margin: [0, 40, 0, 20]
+            },
+            {
+              text: 'Ccp. Flor de Maria Vargas Silva - Subdirectora de Revisión y Validación de Prenominas\n Arcivo.\n ANG/fmvs',
+              alignment: 'left',
+              bold: true,
+              fontSize: 8,
+              absolutePosition: { x: 50, y: 760 } // Ajusta 'y' según la altura de la página
+            }
+          ],
+          styles: {
+            header: {
+              fontSize: 14,
+              bold: true
+            }
+            , textT: {
+              fontSize: 10
+            },
+            subheader: {
+              fontSize: 12,
+              bold: true
+            },
+            tableHeader: {
+              bold: true,
+              fontSize: 12,
+              fillColor: '#621132',
+              color: 'white'
+            }
+          }
+        };
+        // Generar y descargar el PDF
+        pdfMake.createPdf(documentDefinition).open();
+      });
+    }
+
+
+
 
 }
