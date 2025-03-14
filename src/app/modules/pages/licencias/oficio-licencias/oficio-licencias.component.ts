@@ -299,7 +299,7 @@ export class OficioLicenciasComponent {
                       height: 50,
                     },
                     {
-                      text: `Pachuca HGO. ${data.impresion}.\nOficio Num: ${reportes.oficio}.`,
+                      text: `Pachuca Hgo. ${reportes.impresion}.\nOficio Num: ${reportes.oficio}.`,
                       alignment: 'right',
                       style: 'header'
                     }
