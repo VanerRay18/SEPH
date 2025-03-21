@@ -259,7 +259,7 @@ export class OficioLicenciasComponent {
               {
                 table: {
                   headerRows: 1,
-                  widths: ['auto', 'auto', 'auto', 'auto', 'auto', 'auto'],
+                  widths: ['auto', 'auto', 'auto', 'auto', 'auto', 'auto','auto'],
                   body: [
                     [
                       { text: 'Nombre', bold: true, fillColor: '#eeeeee', alignment: 'center', fontSize: 10 },
@@ -267,7 +267,9 @@ export class OficioLicenciasComponent {
                       { text: 'CT', bold: true, fillColor: '#eeeeee', alignment: 'center' , fontSize: 10},
                       { text: 'Cargo', bold: true, fillColor: '#eeeeee', alignment: 'center', fontSize: 10 },
                       { text: 'Nivel', bold: true, fillColor: '#eeeeee', alignment: 'center', fontSize: 10 },
-                      { text: 'Oficio', bold: true, fillColor: '#eeeeee', alignment: 'center', fontSize: 10 }
+                      { text: 'Oficio', bold: true, fillColor: '#eeeeee', alignment: 'center', fontSize: 10 },
+                      { text: 'Días', bold: true, fillColor: '#eeeeee', alignment: 'center', fontSize: 10 } 
+                    
                     ],
                     ...data.usuarios.map((item: any) => [
                       { text: item.nombre, alignment: 'center',  fontSize: 9  },
@@ -275,8 +277,9 @@ export class OficioLicenciasComponent {
                       { text: item.CT, alignment: 'center',  fontSize: 9  },
                       { text: item.cargo, alignment: 'center',  fontSize: 9  },
                       { text: item.nivel, alignment: 'center',  fontSize: 9  },
-                      { text: item.oficio, alignment: 'center',  fontSize: 9  }
-                    ])
+                      { text: item.oficio, alignment: 'center',  fontSize: 9  },
+                      { text: item.totalDays, alignment: 'center',  fontSize: 9  }
+                      ])
                   ]
                 },
                 margin: [0, 10, 0, 20],
