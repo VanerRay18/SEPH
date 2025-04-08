@@ -311,8 +311,9 @@ export class IngresoLicenciasComponent implements OnInit {
           <div><strong>Formato:</strong> ${licencia.formato === 0 ? 'Físico' : 'Email'}</div>
         </div>
       `,
+      showConfirmButton:this.modificar,
       showCancelButton: true,
-      showDenyButton: true,
+      showDenyButton: this.eliminar,
       confirmButtonText: "Editar",
       denyButtonText: "Eliminar",
       cancelButtonText: "Cerrar",
