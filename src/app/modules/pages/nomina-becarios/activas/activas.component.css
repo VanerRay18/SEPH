@@ -74,3 +74,32 @@ h5{
 .button:hover {
   background-color: #550029;
 }
+
+
+.boton {
+  padding: 10px 20px;
+  background-color: #ffffff;
+  color: #621132;
+  border-color: #621132;
+  font-weight: bold;
+  height: 38px;
+  border-radius: 15px;
+  margin: 7px;
+  transition: background-color 0.3s, color 0.3s;
+  display: flex; /* Activa flexbox */
+  justify-content: center; /* Centra el contenido horizontalmente */
+  align-items: center; /* Centra el contenido verticalmente */
+}
+
+.boton:hover {
+  background-color: #621132; /* Fondo marrón en hover */
+  color: #ffffff; /* Texto blanco en hover */
+  border-color: #621132; /* Borde marrón en hover */
+}
+
+.boton:active {
+  background-color: #3d0b1e; /* Fondo más oscuro para active */
+  color: #ffffff; /* Texto blanco en active */
+  border-color: #3d0b1e; /* Borde oscuro en active */
+  outline: none; /* Sin borde adicional */
+}

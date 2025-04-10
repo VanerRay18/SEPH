@@ -4,7 +4,12 @@
   </div>
   <div class="card d-flex mt-3">
     <br>
-    <h3>Activo</h3>
+    <div class="col-auto d-flex align-items-center justify-content-between w-100">
+      <h3 class="mb-0 ms-3">Activo</h3>
+      <div class="justify-content-end">
+        <button class="btn boton ms-4 mt-2" (click)="opcionsNomina()" *ngIf="this.agregar">Opciones de nomina</button>
+      </div>
+    </div>
     <hr>
     <div class="card nomina m-3">
       <div class="row m-3">

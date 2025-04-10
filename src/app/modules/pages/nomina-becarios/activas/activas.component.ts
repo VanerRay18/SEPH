@@ -22,6 +22,7 @@ export class ActivasComponent {
   agregar: boolean = false;
   modificar: boolean = false;
   autorizar: boolean = false;
+  files: File[] = [];
 
 
   constructor(
@@ -60,53 +61,53 @@ export class ActivasComponent {
 
   startNomina(): void {
     let status = this.data?.status;
-switch (status) {
-  case 0:
-    Swal.fire({
-      title: 'Confirmar',
-      html: `¿Está seguro de que desea iniciar la nomina con ${this.data?.becarios} becarios?<br><br>`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Sí, Iniciar',
-      cancelButtonText: 'No, cancelar'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // El usuario confirmó, proceder a enviar los datos
+    switch (status) {
+      case 0:
+        Swal.fire({
+          title: 'Confirmar',
+          html: `¿Está seguro de que desea iniciar la nomina con ${this.data?.becarios} becarios?<br><br>`,
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Sí, Iniciar',
+          cancelButtonText: 'No, cancelar'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // El usuario confirmó, proceder a enviar los datos
 
             this.router.navigate(['/pages/NominaBecarios/Nominas-Calcular']);
 
-      }
-    });
-    break;
+          }
+        });
+        break;
 
-    case 1:
-      this.router.navigate(['/pages/NominaBecarios/Nominas-Calcular']);
-    break;
+      case 1:
+        this.router.navigate(['/pages/NominaBecarios/Nominas-Calcular']);
+        break;
 
-    case 2:
-      this.router.navigate(['/pages/NominaBecarios/Nominas-Pagar']);
-    break;
+      case 2:
+        this.router.navigate(['/pages/NominaBecarios/Nominas-Pagar']);
+        break;
 
-    case 3:
-      this.router.navigate(['/pages/NominaBecarios/Nominas-Revision']);
-    break;
+      case 3:
+        this.router.navigate(['/pages/NominaBecarios/Nominas-Revision']);
+        break;
 
-    case 4:
-      this.router.navigate(['/pages/NominaBecarios/Nominas-Enviar']);
-    break;
+      case 4:
+        this.router.navigate(['/pages/NominaBecarios/Nominas-Enviar']);
+        break;
 
-    case 5:
-      Swal.fire({
-        title: 'Error',
-        text:`Esta nomina ya ha sido terminada y enviada `,
-        icon: 'error',
-        confirmButtonText: 'Aceptar'
-      });
-    break;
+      case 5:
+        Swal.fire({
+          title: 'Error',
+          text: `Esta nomina ya ha sido terminada y enviada `,
+          icon: 'error',
+          confirmButtonText: 'Aceptar'
+        });
+        break;
 
-  default:
-    break;
-}
+      default:
+        break;
+    }
 
 
   }
@@ -176,10 +177,10 @@ switch (status) {
             // Encabezados con subcolumnas
             const headersRow1 = worksheet.addRow([
               "No comprobante", "RFC", "CURP", "NOMBRE(S)", "APELLIDO P", "APELLIDO M",
-              "FECHA INICIO", "FECHA TERMINO", "CLAVE PLAZA","DEDUCCIONES", "", "PERCEPCIONES", "", "NETO","CATEGORIA"
+              "FECHA INICIO", "FECHA TERMINO", "CLAVE PLAZA", "DEDUCCIONES", "", "PERCEPCIONES", "", "NETO", "CATEGORIA"
             ]);
             const headersRow2 = worksheet.addRow([
-              "", "", "", "", "", "", "", "", "","CPTO", "IMPORTE", "CPTO", "IMPORTE", "",""
+              "", "", "", "", "", "", "", "", "", "CPTO", "IMPORTE", "CPTO", "IMPORTE", "", ""
             ]);
 
             worksheet.mergeCells('J5:K5'); // Fusionar "DEDUCCIONES"
@@ -199,7 +200,7 @@ switch (status) {
               const row = worksheet.addRow([
                 item.NO_COMPROBANTE, item.RFC, item.CURP, item.NOMBRE, item.PRIMER_APELLIDO,
                 item.SEGUNDO_APELLIDO, item.FECHA_INICIO, item.FECHA_TERMINO, item.CLAVE_PLAZA,
-                item.uno, item.DEDUCCIONES, item.cuatro, item.PERCEPCIONES, item.NETO,item.CATEGORIA
+                item.uno, item.DEDUCCIONES, item.cuatro, item.PERCEPCIONES, item.NETO, item.CATEGORIA
               ]);
 
               row.eachCell((cell, colNumber) => {
@@ -227,91 +228,238 @@ switch (status) {
     });
   }
 
-   private saveAsExcelFile(buffer: any, fileName: string): void {
-      const data: Blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' });
-      saveAs(data, `${fileName}.xlsx`);
-    }
+  private saveAsExcelFile(buffer: any, fileName: string): void {
+    const data: Blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' });
+    saveAs(data, `${fileName}.xlsx`);
+  }
 
 
-     generateFUUPS(): Promise<Blob> {
-        return new Promise((resolve, reject) => {
-          this.NominaBecService.downloadZip().subscribe({
-            next: (response) => {
-              const blob = response.body; // Recibir directamente el archivo ZIP
+  generateFUUPS(): Promise<Blob> {
+    return new Promise((resolve, reject) => {
+      this.NominaBecService.downloadZip().subscribe({
+        next: (response) => {
+          const blob = response.body; // Recibir directamente el archivo ZIP
 
-              if (!blob) {
-                reject('El archivo ZIP no se recibió correctamente.');
-                return;
-              }
-
-              // Obtener el nombre del archivo desde el header Content-Disposition
-              const contentDisposition = response.headers.get('Content-Disposition');
-              let filename = 'fupps.zip'; // Nombre por defecto
-
-              if (contentDisposition) {
-                const matches = contentDisposition.match(/filename="(.+)"/);
-                if (matches && matches.length > 1) {
-                  filename = matches[1]; // Extraer el nombre real
-                  console.log("JJSJSJSJS : " + filename)
-                }
-              }
-
-              // Crear un enlace invisible para descargar el archivo
-              const url = window.URL.createObjectURL(blob);
-              const a = document.createElement('a');
-              a.href = url;
-              a.download = filename;
-              document.body.appendChild(a);
-              a.click();
-              document.body.removeChild(a);
-              window.URL.revokeObjectURL(url);
-
-              resolve(blob); // ✅ Retornar el Blob correctamente
-            },
-            error: (err) => {
-              reject(err);
-            }
-          });
-        });
-      }
-
-
-
-
-      // La función addFUUPS debe manejar la agregación correctamente:
-      async addFUUPS(): Promise<void> {
-        Swal.fire({
-          title: 'Generando FUUPS...',
-          text: 'Por favor espera, estamos generando el archivo...',
-          icon: 'info',
-          showConfirmButton: false,
-          allowOutsideClick: false,
-          didOpen: () => {
-            Swal.showLoading();
+          if (!blob) {
+            reject('El archivo ZIP no se recibió correctamente.');
+            return;
           }
-        });
 
-        try {
-          const zipBlob = await this.generateFUUPS(); // Espera la descarga del ZIP
+          // Obtener el nombre del archivo desde el header Content-Disposition
+          const contentDisposition = response.headers.get('Content-Disposition');
+          let filename = 'fupps.zip'; // Nombre por defecto
 
-          // Obtener el nombre real desde `this.data2?.quincena`
-          const zipFileName = `fups_${this.data?.quincena}.zip`;
+          if (contentDisposition) {
+            const matches = contentDisposition.match(/filename="(.+)"/);
+            if (matches && matches.length > 1) {
+              filename = matches[1]; // Extraer el nombre real
+              console.log("JJSJSJSJS : " + filename)
+            }
+          }
 
-          // Crear el archivo ZIP con el nombre correcto
-          this.zipFiles = new File([zipBlob], zipFileName, { type: 'application/zip' });
+          // Crear un enlace invisible para descargar el archivo
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          window.URL.revokeObjectURL(url);
 
-          Swal.fire({
-            title: 'Éxito',
-            text: 'El archivo FUUPS se ha generado correctamente.',
-            icon: 'success',
-            confirmButtonText: 'OK'
-          });
+          resolve(blob); // ✅ Retornar el Blob correctamente
+        },
+        error: (err) => {
+          reject(err);
+        }
+      });
+    });
+  }
 
-        } catch (error) {
-          // console.error('Error al agregar el archivo FUUPS:', error);
-          Swal.fire('Error', 'No se pudo generar el archivo FUUPS', 'error');
+
+
+
+  // La función addFUUPS debe manejar la agregación correctamente:
+  async addFUUPS(): Promise<void> {
+    Swal.fire({
+      title: 'Generando FUUPS...',
+      text: 'Por favor espera, estamos generando el archivo...',
+      icon: 'info',
+      showConfirmButton: false,
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+
+    try {
+      const zipBlob = await this.generateFUUPS(); // Espera la descarga del ZIP
+
+      // Obtener el nombre real desde `this.data2?.quincena`
+      const zipFileName = `fups_${this.data?.quincena}.zip`;
+
+      // Crear el archivo ZIP con el nombre correcto
+      this.zipFiles = new File([zipBlob], zipFileName, { type: 'application/zip' });
+
+      Swal.fire({
+        title: 'Éxito',
+        text: 'El archivo FUUPS se ha generado correctamente.',
+        icon: 'success',
+        confirmButtonText: 'OK'
+      });
+
+    } catch (error) {
+      // console.error('Error al agregar el archivo FUUPS:', error);
+      Swal.fire('Error', 'No se pudo generar el archivo FUUPS', 'error');
+    }
+  }
+
+  opcionsNomina() {
+    Swal.fire({
+      title: '¿Qué accion deseas hacer?',
+      html: `
+                  <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                      <input type="radio" id="skip" name="opcions" value="skip" style="margin-right: 5px;">
+                      <label for="skip">No procesar esta nomina</label>
+                  </div>
+                  <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                      <input type="radio" id="special" name="opcions" value="special" style="margin-right: 5px;">
+                      <label for="special">Procesar una nomina especial</label>
+                  </div>
+              `,
+      showCancelButton: true,
+      confirmButtonText: 'Confirmar',
+      cancelButtonText: 'Cancelar',
+      customClass: {
+        popup: 'small-swal',
+        title: 'small-swal-title'
+      },
+      width: '450px',
+      padding: '1em',
+      preConfirm: () => {
+        const selectedValue = (document.querySelector('input[name="opcions"]:checked') as HTMLInputElement)?.value;
+        if (!selectedValue) {
+          Swal.showValidationMessage('Por favor, seleccione una opción');
+          return false;
+        }
+        return selectedValue;
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const opcionSeleccionada = result.value;
+
+        switch (opcionSeleccionada) {
+          case 'skip':
+            Swal.fire({
+              title: 'Confirmar',
+              html: `¿Está seguro de no procesar esta nomina?<br><br>`,
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonText: 'Sí, guardar',
+              cancelButtonText: 'No, cancelar'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                // Mostrar spinner de carga
+                Swal.fire({
+                  title: 'Cargando...',
+                  html: 'Por favor, espere mientras se realiza esta acción.',
+                  didOpen: () => {
+                    Swal.showLoading();
+                  },
+                  allowOutsideClick: false,
+                  showConfirmButton: false
+                });
+                // El usuario confirmó, proceder a enviar los datos
+                this.NominaBecService.skipnomina().subscribe(
+                  response => {
+                    this.fetchData();
+                    Swal.fire({
+                      title: 'Operacion exitosa',
+                      text: 'La nomina no a sido procesada',
+                      icon: 'success',
+                      confirmButtonText: 'Aceptar'
+                    });
+                  },
+                  error => {
+                    Swal.fire({
+                      title: 'Error',
+                      text: error.error.message,
+                      icon: 'error',
+                      confirmButtonText: 'Aceptar'
+                    });
+                  }
+                );
+
+              }
+            });
+            break;
+          case 'special':
+            Swal.fire({
+              title: 'Subir archivo de TXT',
+              html: `
+                      <div class="custom-file-container">
+                         <label for="fileInput" class="custom-file-label">Seleccionar archivo</label>
+                         <input
+                           type="file"
+                           id="fileInput"
+                           class="swal2-input custom-file-input"
+                           accept=".txt"
+                           aria-label="Selecciona un archivo de texto"
+                           onchange="handleFileSelect(event)"
+                               />
+                       </div>
+                    `,
+              confirmButtonText: 'Procesar',
+              showCancelButton: true,
+              width:700,
+              preConfirm: () => {
+                const fileInput: any = document.getElementById('fileInput');
+                const file = fileInput?.files[0];
+
+                const files: File[] = [];
+                if (file) {
+                  files.push(file); // Archivo normal
+                }
+
+                Swal.fire({
+                  title: 'Cargando...',
+                  html: 'Por favor, espere mientras se realiza esta acción.',
+                  didOpen: () => {
+                    Swal.showLoading();
+                  },
+                  allowOutsideClick: false,
+                  showConfirmButton: false
+                });
+
+                this.NominaBecService.SpecialNomina(files).subscribe({
+                  next: (response) => {
+
+                    new Promise<void>((resolve, reject) => {
+                      resolve();
+                    }).then(() => {
+                      Swal.close();
+                      this.router.navigate(['/pages/NominaBecarios/Nominas-Calcular']);
+                    }).catch(error => {
+
+                      Swal.fire('Error', 'Hubo un problema al procesar el archivo', 'error');
+                    });
+                  },
+                  error: () => {
+                    'Error al subir el archivo';
+                  }
+                });
+
+              }
+            }).then(result => {
+              if (result.isConfirmed) {
+
+              }
+            });
+            break;
         }
       }
+    });
+  }
 }
 
 

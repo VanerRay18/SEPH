@@ -228,4 +228,16 @@ getPDFReciboN(nominaId: any): Observable<ApiResponse> {//Trae el anexo 5
   );
 }
 
+SpecialNomina( files: File[]): Observable<ApiResponse> {
+  const formData = new FormData();
+  files.forEach((file) => formData.append(`file`, file, file.name));
+  return this.http.post<ApiResponse>(`${environment.baseService}/nomina/specialNomina`, formData);
+}
+
+skipnomina(): Observable<ApiResponse> {//Salta la nomina actual
+  return this.http.post<ApiResponse>(`${environment.baseService}${'/nomina/saltarNomina'}`,null);
+}
+
+
+
 }
