@@ -589,7 +589,7 @@ export class EnviarComponent {
 
   generateFUUPS(): Promise<Blob> {
     return new Promise((resolve, reject) => {
-      this.NominaBecService.downloadZip().subscribe({
+      this.NominaBecService.downloadZip(this.nominaId).subscribe({
         next: (response) => {
           const blob = response.body; // Recibir directamente el archivo ZIP
 

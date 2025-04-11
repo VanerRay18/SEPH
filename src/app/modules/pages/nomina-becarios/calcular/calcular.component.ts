@@ -27,6 +27,7 @@ export class CalcularComponent {
   isButtonDisabled: boolean = false;
   isButtonDisabled2: boolean = false;
   isLoading = true;
+  nominaSpecial: any;
   resumen: Resumen = {
     clabes: 0,
     plazas: 0,
@@ -68,7 +69,6 @@ export class CalcularComponent {
 
     this.NominaBecService.getNomina().subscribe((response: ApiResponse) => {
       this.data2 = response.data;
-
     },
       (error) => {
         console.error('Error al obtener los datos:', error);

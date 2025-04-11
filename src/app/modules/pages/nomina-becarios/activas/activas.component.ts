@@ -17,7 +17,7 @@ export class ActivasComponent {
   searchTerm: string = '';
   data: NominaA | null = null;
   zipFiles: File | null = null; // Nuevo arreglo para los archivos ZIP
-
+  nominaId: any;
   eliminar: boolean = false;
   agregar: boolean = false;
   modificar: boolean = false;
@@ -33,7 +33,8 @@ export class ActivasComponent {
     // Registrar las fuentes necesarias
   }
 
-  ngOnInit(): void {
+  async ngOnInit():  Promise<void>  {
+    this.nominaId = await this.loadNominaId();
     this.fetchData();
     this.PermisosUserService.getPermisosSpring(this.PermisosUserService.getPermisos().NominasB).subscribe((response: ApiResponse) => {
       this.eliminar = response.data.eliminar
@@ -42,6 +43,12 @@ export class ActivasComponent {
       this.autorizar = response.data.autorizar
     });
     // console.log(this.data?.status)
+  }
+
+
+  async loadNominaId() {
+    const nominaId = await this.NominaBecService.getNominaId();
+    return nominaId
   }
 
   fetchData() {
@@ -236,7 +243,7 @@ export class ActivasComponent {
 
   generateFUUPS(): Promise<Blob> {
     return new Promise((resolve, reject) => {
-      this.NominaBecService.downloadZip().subscribe({
+      this.NominaBecService.downloadZip(this.nominaId).subscribe({
         next: (response) => {
           const blob = response.body; // Recibir directamente el archivo ZIP
 
@@ -438,7 +445,7 @@ export class ActivasComponent {
                       resolve();
                     }).then(() => {
                       Swal.close();
-                      this.router.navigate(['/pages/NominaBecarios/Nominas-Calcular']);
+                      this.router.navigate(['/pages/NominaBecarios/Nominas-Pagar']);
                     }).catch(error => {
 
                       Swal.fire('Error', 'Hubo un problema al procesar el archivo', 'error');

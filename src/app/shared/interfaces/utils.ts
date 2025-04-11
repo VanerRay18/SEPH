@@ -54,7 +54,8 @@ export interface NominaA {
   importeTotal: any,
   becarios: any,
   quincena: any,
-  status: any
+  status: any,
+  special: any
 }
 
 export interface NominaH {

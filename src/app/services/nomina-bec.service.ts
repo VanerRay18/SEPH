@@ -207,12 +207,16 @@ export class NominaBecService {
   }
 
 
-downloadZip(): Observable<HttpResponse<Blob>> {
-  return this.http.get(`${environment.baseService}/nomina/descargar-zip`, {
-    responseType: 'blob',  // Recibir la respuesta como un Blob
-    observe: 'response'     // Obtener headers en la respuesta
-  });
-}
+  downloadZip(nominaId: any): Observable<HttpResponse<Blob>> {
+    const headers = new HttpHeaders({ 'nominaId': nominaId });
+  
+    return this.http.get(`${environment.baseService}/nomina/descargar-zip`, {
+      headers: headers,
+      responseType: 'blob',
+      observe: 'response'
+    });
+  }
+  
 
 getPDFEnvioN(nominaId: any): Observable<ApiResponse> {//Trae el anexo 5
   let headers = new HttpHeaders({'nominaId': nominaId})

@@ -86,3 +86,7 @@ button:active {
   border-color: #3d0b1e; /* Borde oscuro en active */
   outline: none; /* Sin borde adicional */
 }
+
+.button:disabled {
+  background-color: #7e787b;
+}

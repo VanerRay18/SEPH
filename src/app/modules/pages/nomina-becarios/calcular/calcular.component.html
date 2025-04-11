@@ -43,7 +43,7 @@
         <label for="User">&nbsp;&nbsp;<i class="fa-solid fa-magnifying-glass"></i>  Buscar</label>
       </div>
       <div class="col-auto col-lg-7 d-flex justify-content-end mt-auto">
-        <button type="submit" class="btnE  btn-sm" (click)="generateAnexos()">PreAnexos 5 y 6</button>
+        <button type="submit" class="btn  btn-sm" (click)="generateAnexos()"  [disabled]="data2?.special == 1">PreAnexos 5 y 6</button>
       </div>
       <div class="col-auto col-lg-12 mt-4 justify-content-center align-items-center ">
         <app-tables
