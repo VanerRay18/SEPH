@@ -152,7 +152,7 @@ export class ActivasComponent {
   generateReporte(): Promise<void> {
     return new Promise((resolve, reject) => {
       const quincena = this.data?.quincena;
-      this.NominaBecService.getReportes(this.data?.id).subscribe({
+      this.NominaBecService.getReportes(this.nominaId).subscribe({
         next: async response => {
           if (response && response.data && Array.isArray(response.data)) {
             const sortedData = response.data.sort((b, a) =>

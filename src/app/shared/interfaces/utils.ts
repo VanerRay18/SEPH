@@ -66,7 +66,9 @@ export interface NominaH {
   becarios: any,
   quincena: any,
   status: any,
-  fecha: any
+  fecha: any,
+  special: any,
+  calculada: any
 }
 
 
