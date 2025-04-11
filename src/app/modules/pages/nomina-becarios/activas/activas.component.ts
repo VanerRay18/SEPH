@@ -444,17 +444,19 @@ export class ActivasComponent {
                       Swal.fire('Error', 'Hubo un problema al procesar el archivo', 'error');
                     });
                   },
-                  error: () => {
-                    'Error al subir el archivo';
+                  error: (error) => {
+                    Swal.fire({
+                      title: 'Error',
+                      text: error.error.message,
+                      icon: 'error',
+                      confirmButtonText: 'Aceptar'
+                    });
                   }
-                });
+                }
+              );
 
               }
-            }).then(result => {
-              if (result.isConfirmed) {
-
-              }
-            });
+            })
             break;
         }
       }
