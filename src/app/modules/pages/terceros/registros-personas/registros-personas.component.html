@@ -1,1 +1,47 @@
-<p>registros-personas works!</p>
+<div class="cont col-auto row  mt-4 ms-4">
+  <div class="titulos ">
+    <h1>Registros</h1>
+  </div>
+  <div class=" d-flex mt-3">
+    <div class="col-auto col-lg-12">
+      <ul class="nav nav-tabs d-flex flex-row flex-wrap" role="tablist">
+        <li class="nav-item" *ngFor="let tab of tabs">
+          <a class="nav-link"
+            [class.active]="tab.id === activeTab"
+            (click)="setActiveTab(tab.id)">
+            <i [class]="tab.icon"></i>
+            {{ tab.title }}
+          </a>
+        </li>
+      </ul>
+
+      <div class="tab-content" role="tabpanel">
+        <ng-container *ngIf="activeTab === 'Personas'">
+          <div class="card2">
+            <div class="card-person" *ngFor="let persona of personas" (click)="mostrarDetalle(persona)" style="cursor: pointer;">
+              <h3>{{ persona.nombre }}</h3>
+              <div class="barra">
+                <div
+                  class="progreso"
+                  [style.width.%]="(persona.usado / persona.liquido) * 100"
+                  [style.background]="(persona.usado / persona.liquido) > 0.7 ? 'red' :(persona.usado / persona.liquido) > 0.4 ? 'orange' : 'green'">
+                </div>
+              </div>
+              <div class="datos">
+                <span>Usado<br><strong>{{ persona.usado }}</strong></span>
+                <span>Liquido<br><strong>{{ persona.liquido }}</strong></span>
+                <span>Restante<br><strong>{{ restante(persona)
+                    }}</strong></span>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="activeTab === 'Terceros' ">
+        <app-registros-terceros></app-registros-terceros>
+        </ng-container>
+
+      </div>
+    </div>
+  </div>
+</div>

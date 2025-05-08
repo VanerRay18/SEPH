@@ -1,1 +1,15 @@
-<p>registros-terceros works!</p>
+<div class="card2">
+  <div class="card-person" *ngFor="let persona of personas" (click)="mostrarDetalleTercero(persona.nombre)" style="cursor: pointer;">
+    <h3>{{ persona.nombre }}</h3>
+    <div class="barra">
+      <div
+        class="progreso"
+        [style.width.%]="(persona.usado / persona.liquido) * 100"
+        [style.background]="'#621132'">
+      </div>
+    </div>
+    <div class="datos">
+      <span><strong>Personas registradas: {{ persona.usado }}</strong></span>
+    </div>
+  </div>
+</div>

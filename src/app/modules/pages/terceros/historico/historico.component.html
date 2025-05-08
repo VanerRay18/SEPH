@@ -1,1 +1,89 @@
-<p>historico works!</p>
+<div class="cont col-auto row  mt-4 ms-4">
+  <div class="titulos ">
+    <h1>Historico</h1>
+  </div>
+  <div class="card d-flex mt-3">
+    <div class="row">
+
+      <div class="col-auto col-lg-12 mt-4">
+
+        <!-- Mostrar el dropdown con los años -->
+        <select class="yearNomina" aria-label="Seleccione el año"
+          (change)="onYearChange($event)">
+          <option *ngFor="let year of years" [value]="year">
+            {{ year }}
+          </option>
+        </select>
+
+      </div>
+      <div class="col-auto col-lg-12 m-4"
+        *ngFor="let monthKey of objectKeys(groupedByMonth)">
+        <div *ngIf="monthKey.startsWith(selectedYear.toString())">
+          <div class="card nominas">
+            <!-- Card existente con detalles de la nómina -->
+            <div class="card-title mt-3 ms-3">
+              <h3>{{ monthNumberToName(monthKey.split('-')[1]) }} {{
+                monthKey.split('-')[0] }}</h3> <!-- Mostrar mes y año -->
+            </div>
+            <div class="card-body">
+              <div class="accordion" id="accordionExample">
+                <div class="accordion-item"
+                  *ngFor="let historial of groupedByMonth[monthKey]; let i = index">
+                  <h2 class="accordion-header">
+                    <button class="accordion-button" type="button" *ngIf="historial.calculada == 1"
+                      data-bs-toggle="collapse"
+                      [attr.data-bs-target]="'#collapse-' + monthKey + '-' + i"
+                      [attr.aria-controls]="'collapse-' + monthKey + '-' + i">
+                      Terceros
+                      {{ historial.quincena
+                      }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Quincena
+                      pagada: {{ historial.quincena
+                      }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      Becarios: {{ historial.becarios
+                      }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      Total: {{ historial.total }}
+                    </button >
+
+                    <button class="accordion-button" type="button" *ngIf="historial.calculada == 0"
+                    data-bs-toggle="collapse"
+                    [attr.data-bs-target]="'#collapse-' + monthKey + '-' + i"
+                    [attr.aria-controls]="'collapse-' + monthKey + '-' + i">
+                    Terceros
+                    {{ historial.quincena}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Nomina no calculada
+                  </button >
+                  </h2>
+                  <div [attr.id]="'collapse-' + monthKey + '-' + i"
+                    class="accordion-collapse collapse"
+                    [attr.data-bs-parent]="'#accordion-' + monthKey">
+                    <div class="accordion-body" *ngIf="historial.calculada == 1">
+                      <button
+                        (click)="generatePdfNomina(historial.id)">Descargar PDF
+                        de nomina &nbsp;<i
+                          class="fa-solid fa-file-pdf"></i></button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button
+                        (click)="generateAnexos5(historial.id)">Descargar Anexo
+                        5 &nbsp;<i
+                          class="fa-solid fa-file-arrow-down"></i></button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button
+                        (click)="generateExcelAnexo6(historial.id)">Descargar
+                        Anexo 6 &nbsp;<i
+                          class="fa-solid fa-file-arrow-down"></i></button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      <button type="submit" class="btn  btn-sm"
+                        (click)="sentNomina(historial.id)"><i
+                          class="fa-solid fa-paper-plane"></i></button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      <button type="submit" class="btn  btn-sm"
+                        (click)="ReciboNomina(historial.id)"><i
+                          class="fa-solid fa-file-lines"></i></button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      <button class="button ms-4 mt-2"
+                        (click)="generateReport(historial.id)">Descargar
+                        reporte</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

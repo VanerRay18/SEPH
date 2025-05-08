@@ -154,6 +154,7 @@ export class ActivasComponent {
       const quincena = this.data?.quincena;
       this.NominaBecService.getReportes(this.nominaId).subscribe({
         next: async response => {
+          console.log(response.data)
           if (response && response.data && Array.isArray(response.data)) {
             const sortedData = response.data.sort((b, a) =>
               Number(b.NO_COMPROBANTE) - Number(a.NO_COMPROBANTE)
@@ -184,10 +185,10 @@ export class ActivasComponent {
             // Encabezados con subcolumnas
             const headersRow1 = worksheet.addRow([
               "No comprobante", "RFC", "CURP", "NOMBRE(S)", "APELLIDO P", "APELLIDO M",
-              "FECHA INICIO", "FECHA TERMINO", "CLAVE PLAZA", "DEDUCCIONES", "", "PERCEPCIONES", "", "NETO", "CATEGORIA"
+              "FECHA INICIO", "FECHA TERMINO", "CLAVE PLAZA", "DEDUCCIONES", "", "PERCEPCIONES", "", "NETO", "CATEGORIA","TIPO","HORAS"
             ]);
             const headersRow2 = worksheet.addRow([
-              "", "", "", "", "", "", "", "", "", "CPTO", "IMPORTE", "CPTO", "IMPORTE", "", ""
+              "", "", "", "", "", "", "", "", "", "CPTO", "IMPORTE", "CPTO", "IMPORTE", "", "", "", ""
             ]);
 
             worksheet.mergeCells('J5:K5'); // Fusionar "DEDUCCIONES"
@@ -207,7 +208,7 @@ export class ActivasComponent {
               const row = worksheet.addRow([
                 item.NO_COMPROBANTE, item.RFC, item.CURP, item.NOMBRE, item.PRIMER_APELLIDO,
                 item.SEGUNDO_APELLIDO, item.FECHA_INICIO, item.FECHA_TERMINO, item.CLAVE_PLAZA,
-                item.uno, item.DEDUCCIONES, item.cuatro, item.PERCEPCIONES, item.NETO, item.CATEGORIA
+                item.uno, item.DEDUCCIONES, item.cuatro, item.PERCEPCIONES, item.NETO, item.CATEGORIA, item.TIPO, item.HORAS
               ]);
 
               row.eachCell((cell, colNumber) => {

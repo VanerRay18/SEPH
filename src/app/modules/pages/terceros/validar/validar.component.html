@@ -1,1 +1,53 @@
-<p>validar works!</p>
+<div class="cont col-auto row  mt-4 ms-4">
+  <div class="titulos ">
+    <h1>Validar</h1>
+  </div>
+  <div class="card d-flex mt-3">
+    <div class="row">
+      <div class="col-auto col-lg-8  ">
+        <div class="progress">
+          <div class="step active " *ngIf="crearlayout === 1"><strong>Crear Layout</strong></div>
+          <div class="step active"><strong>Validar</strong></div>
+          <div class="step"><strong>Reporte de validacion</strong></div>
+          <div class="step"><strong>Finalizado</strong></div>
+        </div>
+      </div>
+
+
+      <div class="form-floating col-auto col-lg-4 m-3 row">
+        <input type="text" class=" buscar form-control" id="busqueda"
+          placeholder="Buscar"
+          [(ngModel)]="searchTerm" name="busqueda">
+        <label for="User">&nbsp;&nbsp;<i class="fa-solid fa-magnifying-glass"></i>  Buscar</label>
+      </div>
+      <div class="col-auto col-lg-4 mt-4">
+        <h5>Total de registros: 64</h5>
+      </div>
+      <div class="col-auto col-lg-3 d-flex justify-content-end mt-auto">
+        <button type="submit" class="btn  btn-sm" (click)="generateAnexos()" *ngIf="crearlayout === 0">Cargar layout</button>
+        <button type="submit" class="btn  btn-sm" (click)="generateAnexos()"  *ngIf="crearlayout === 1">Descargar layout</button>
+      </div>
+      <div class="col-auto col-lg-12 mt-4 justify-content-center align-items-center ">
+        <app-tables
+          [headers]="headers"
+          [data]="data"
+          [displayedColums]="displayedColumns"
+          [searchTerm]="searchTerm"
+          [maxHeight]="'630px'"
+          [itemsPerPage]="10"
+          [showActionsEdit]=false
+          [showActionsDeleted]=false
+          [showActionsPdf]=false
+          [showActiveCheckbox]=false
+          [showDetailsColumn]=false
+          [isLoading]="isLoading"
+          >
+        </app-tables>
+      </div>
+      <div class="boton-container col-auto col-lg-12 m-3 " >
+        <button type="submit" class="btn  btn-sm" (click)="saveNomina()" [disabled]="data2?.status >= 2">Validar</button>
+        <button type="submit" class="btn  btn-sm" (click)=" continueNomina()" [disabled]="data2?.status == 1">Continuar</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,3 +1,4 @@
+import { TercerosModule } from './modules/pages/terceros/terceros.module';
 import { Component, NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LayoutComponent } from './modules/layout/layout.component';
@@ -13,6 +14,7 @@ import { ModulesCRUDComponent } from './modules/pages/administration/modules-cru
 import { EndopointCRUDComponent } from './modules/pages/administration/endopoint-crud/endopoint-crud.component';
 import { TestComponent } from './modules/pages/extras/test/test.component';
 import { NominaBecariosModule } from './modules/pages/nomina-becarios/nomina-becarios.module';
+
 
 
 const routes: Routes = [
@@ -60,6 +62,13 @@ const routes: Routes = [
         loadChildren:() =>
           import('./modules/pages/nomina-becarios/nomina-becarios.module').then(
             (m) => m.NominaBecariosModule
+          ),
+      },
+      {
+        path:'Terceros',
+        loadChildren:() =>
+          import('./modules/pages/terceros/terceros.module').then(
+            (m) => m.TercerosModule
           ),
       }
     ],

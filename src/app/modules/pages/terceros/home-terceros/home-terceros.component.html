@@ -1,1 +1,62 @@
-<p>home-terceros works!</p>
+<div class="container">
+  <div class="grid-layout">
+
+    <!-- Título -->
+    <div class="titulos">
+      <h1>¡Hola, Administrador!</h1>
+    </div>
+
+    <!-- Siguiente Nómina -->
+    <div class="card nomina">
+      <div class="card-title">
+        <h5>Descuentos de Terceros</h5>
+      </div>
+      <div class="card-body" style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+        <p>Ver progreso en descuentos de los terceros</p>
+        <button class="btn-iniciar" (click)="startNomina()" *ngIf="this.agregar">&nbsp;&nbsp;&nbsp;&nbsp;IR&nbsp;&nbsp;&nbsp;&nbsp;</button>
+      </div>
+    </div>
+
+    <!-- Histórico -->
+    <div class="card historico">
+      <div class="card-title">
+        <h5>Histórico</h5>
+      </div>
+      <div class="card-body">
+        <p>Tus últimos movimientos &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa-solid fa-chevron-right" onclick="window.location.href='/pages/NominaBecarios/Nominas-Historico';" style="cursor: pointer;"></i></p>
+        <p>Movimientos del año pasado &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa-solid fa-chevron-right" onclick="window.location.href='/pages/NominaBecarios/Nominas-Historico';" style="cursor: pointer;"></i></p>
+      </div>
+    </div>
+
+    <!-- Becarios Registrados -->
+    <div class="card becarios ">
+      <div class="card-title">
+        <h5>REGISTROS</h5>
+      </div>
+      <div class="card-body bectext text-center justify-content-center mt-5">
+        <h3>{{ data?.becarios}} Registros</h3>
+        <br>
+        <button class="btn-ver" onclick="window.location.href='/pages/NominaBecarios/Becarios';" style="cursor: pointer;">VER REGISTROS</button>
+      </div>
+    </div>
+<!-- Alertas -->
+<div class="card alertas">
+  <div class="card-title">
+    <h5>ALERTAS</h5>
+  </div>
+  <div class="card-body">
+    <div *ngFor="let noti of notifications" class="alert">
+      <i class="{{noti.icon}} iconNoti"></i>
+      <div class="alert-content">
+        <p class="alert-title"><strong>{{ noti.title }}</strong></p>
+        <p class="alert-text">{{ noti.message }}</p>
+        <p class="alert-time">{{ noti.timeAgo }}</p>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  </div>
+</div>

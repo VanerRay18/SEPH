@@ -9,6 +9,9 @@ import { LayoutsTerminadosComponent } from './layouts-terminados/layouts-termina
 import { RegistrosTercerosComponent } from './registros-terceros/registros-terceros.component';
 import { RegistrosPersonasComponent } from './registros-personas/registros-personas.component';
 import { HistoricoComponent } from './historico/historico.component';
+import { TercerosRoutingModule } from './terceros-routing.module';
+import { SharedModule } from 'src/app/shared/shared.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 
@@ -25,7 +28,11 @@ import { HistoricoComponent } from './historico/historico.component';
     HistoricoComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    TercerosRoutingModule,
+    SharedModule,
+    ReactiveFormsModule,
+    FormsModule
   ]
 })
 export class TercerosModule { }

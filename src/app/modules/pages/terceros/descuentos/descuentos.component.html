@@ -1,1 +1,95 @@
-<p>descuentos works!</p>
+<div class="cont col-auto row  mt-4 ms-4">
+  <div class="titulos ">
+    <h1>Descuentos de terceros</h1>
+  </div>
+  <div class="card d-flex mt-3">
+    <br>
+    <div class="col-auto d-flex align-items-center justify-content-between w-100">
+      <h3 class="mb-0 ms-3">Institucionales</h3>
+      <div class="justify-content-end">
+        <button class="btn boton ms-4 mt-2" (click)="opcionsNomina()" *ngIf="this.agregar">CARGAR LAYOUTS</button>
+      </div>
+    </div>
+    <hr>
+    <div class="card nomina m-3">
+      <div class="row m-3">
+        <div class="col-auto col-lg-6">
+          <h4>ISSSTE</h4>
+          <p>Quincena: {{ data?.quincena || 0 }}</p>
+        </div>
+        <div class="col-auto col-lg-6">
+          <div class="summary row">
+            <div class="col-auto">
+              <p><strong>Registros</strong></p>
+              <p>{{ data?.becarios || 0 }}</p>
+            </div>
+            <div class="col-auto">
+              <p><strong>Rechazados</strong></p>
+              <p>{{ data?.importeTotal | number:'1.2-2'  }}</p>
+            </div>
+            <div class="col-auto">
+              <p><strong>Aceptados</strong></p>
+              <p>{{ data?.retentionTotal | number:'1.2-2'  }}</p>
+            </div>
+          </div>
+        </div>
+        <hr>
+        <div class="col-auto col-lg-9">
+          <div class="progress">
+            <div [ngClass]="{'step': true, 'active': data?.status >= 1}" *ngIf="crearlayout === 1"><strong>1 - Crear layout</strong></div>
+            <div [ngClass]="{'step': true, 'active': data?.status >= 2}"><strong>1 - Revision de layout</strong></div>
+            <div [ngClass]="{'step': true, 'active': data?.status >= 3}"><strong>2 - Correciones</strong></div>
+            <div [ngClass]="{'step': true, 'active': data?.status >= 4}"><strong>3 - Finalizado</strong></div>
+          </div>
+        </div>
+        <div class="col-auto col-lg-3">
+          <button class="button ms-4 mt-2" (click)="startNomina()" *ngIf="this.agregar">CONTINUAR</button>
+        </div>
+      </div>
+    </div>
+    <br>
+    <div class="col-auto d-flex align-items-center justify-content-between w-100">
+      <h3 class="mb-0 ms-3">No institucionales</h3>
+      <div class="justify-content-end">
+        <button class="btn boton ms-4 mt-2" (click)="opcionsNomina()" *ngIf="this.agregar">CARGAR LAYOUTS</button>
+      </div>
+    </div>
+    <hr>
+    <div class="card nomina m-3">
+      <div class="row m-3">
+        <div class="col-auto col-lg-6">
+          <h4>FAMSA</h4>
+          <p>Quincena: {{ data?.quincena || 0 }}</p>
+        </div>
+        <div class="col-auto col-lg-6">
+          <div class="summary row">
+            <div class="col-auto">
+              <p><strong>Registros</strong></p>
+              <p>{{ data?.becarios || 0 }}</p>
+            </div>
+            <div class="col-auto">
+              <p><strong>Rechazados</strong></p>
+              <p>{{ data?.importeTotal | number:'1.2-2'  }}</p>
+            </div>
+            <div class="col-auto">
+              <p><strong>Aceptados</strong></p>
+              <p>{{ data?.retentionTotal | number:'1.2-2'  }}</p>
+            </div>
+          </div>
+        </div>
+        <hr>
+        <div class="col-auto col-lg-9">
+          <div class="progress">
+            <div [ngClass]="{'step': true, 'active': data?.status >= 1}" *ngIf="crearlayout === 1"><strong>1 - Crear layout</strong></div>
+            <div [ngClass]="{'step': true, 'active': data?.status >= 2}"><strong>1 - Revision de layout</strong></div>
+            <div [ngClass]="{'step': true, 'active': data?.status >= 3}"><strong>2 - Correciones</strong></div>
+            <div [ngClass]="{'step': true, 'active': data?.status >= 4}"><strong>3 - Finalizado</strong></div>
+          </div>
+        </div>
+        <div class="col-auto col-lg-3">
+          <button class="button ms-4 mt-2" (click)="startNomina()" *ngIf="this.agregar">CONTINUAR</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

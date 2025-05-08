@@ -269,4 +269,15 @@ export interface historico {
   }>;
 }
 
+export interface Persona {
+  nombre: string;
+  usado: number;
+  liquido: number;
+  restante: number;
+}
+
+export interface Terceros {
+  nombre: string;
+  registros: number;
+}
 

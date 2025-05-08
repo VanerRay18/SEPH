@@ -22,6 +22,8 @@ import { AdminRoutingModule } from './modules/pages/administration/admin-routing
 import { AdministrationModule } from './modules/pages/administration/administration.module';
 import { NominabecaRoutingModule } from './modules/pages/nomina-becarios/nominabeca-routing.module';
 import { NominaBecariosModule } from './modules/pages/nomina-becarios/nomina-becarios.module';
+import { TercerosRoutingModule } from './modules/pages/terceros/terceros-routing.module';
+import { TercerosModule } from './modules/pages/terceros/terceros.module';
 
 @NgModule({
   declarations: [
@@ -39,12 +41,14 @@ import { NominaBecariosModule } from './modules/pages/nomina-becarios/nomina-bec
     HttpClientModule,
     LicenciasRoutingModule,
     HomeRoutingModule,
+    TercerosRoutingModule,
+    TercerosModule,
     ExtrasRoutingModule,
     LayoutModule,
     NominabecaRoutingModule,
     NominaBecariosModule,
     ReactiveFormsModule,
-      AdminRoutingModule
+    AdminRoutingModule
   ],
   providers: [
     {
