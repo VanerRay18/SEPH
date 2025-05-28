@@ -74,7 +74,7 @@ export class IngresoLicenciasComponent implements OnInit {
     this.arrayUserRecibido = event;
 
     const card = this.arrayUserRecibido.mostrar;
-    console.log(this.arrayUserRecibido)
+    // console.log(this.arrayUserRecibido)
     this.showCard = card
     if (card == true) {
       this.buscar(this.arrayUserRecibido.srl_emp);
@@ -714,78 +714,124 @@ export class IngresoLicenciasComponent implements OnInit {
   }
 
   submitOficios() {
-
     let licenciasid: any[] = [];
 
-    // Llamar al servicio para obtener las licencias nuevamente usando srl_emp
     this.LicenciasService.getLicencias(this.srl_emp).subscribe((response: ApiResponse) => {
-      // Verifica si la propiedad licencias existe en la respuesta y si tiene elementos
       if (response.data && response.data.licencias && response.data.licencias.length > 0) {
-        // Verifica si alguna licencia tiene las observaciones "SIN SUELDO" o "MEDIO SUELDO"
-        const canSendToOficio = response.data.licencias.some((item: LicMedica) =>
-          item.observaciones === 2 || item.observaciones === 1
+        // Filtrar licencias nuevas
+        const nuevasLicencias = response.data.licencias.filter((item: LicMedica) => item.nueva === "1");
+
+        // Validar si hay al menos una licencia con observaciones válidas
+        const hayLicenciasValidas = nuevasLicencias.some((item: LicMedica) =>
+          [1, 2].includes(+item.observaciones)
         );
 
-        if (!canSendToOficio) {
+        if (!hayLicenciasValidas) {
           Swal.fire({
             title: 'No se puede enviar a oficio',
-            text: 'La licencia debe tener la observación "SIN SUELDO" o "MEDIO SUELDO" para poder enviar a oficio.',
+            text: 'Debe haber al menos una licencia nueva con observación "SIN SUELDO", "MEDIO SUELDO" o "SUELDO ÍNTEGRO".',
             icon: 'error',
             confirmButtonText: 'Entendido',
             confirmButtonColor: '#dc3545'
           });
-          return; // Detener la ejecución si no cumple la condición
+          return;
         }
 
-        // Si cumple la condición, continuar con el procesamiento de los IDs
-        response.data.licencias.forEach((item: LicMedica) => {
-          if (item.nueva === "1") {
-            const licenciasid2 = {
-              licenciaId: item.id,
-              apartir: item.apartir == "" ? "--" : item.apartir,
-              observaciones: item.observaciones
-            };
-            licenciasid.push(licenciasid2);
-          }
-        });
+        // Validación extra: verificar si ya se enviaron licencias sin sueldo previamente
+        const licenciasSinSueldoEnviadas = response.data.licencias.some((item: LicMedica) =>
+          item.nueva !== "1" && +item.observaciones === 2
+        );
+        // Verificar si ya se enviaron licencias medio sueldo/sueldo íntegro
+        const licenciasMedioSueldoEnviadas = response.data.licencias.some((item: LicMedica) =>
+          item.nueva !== "1" && ([0, 1].includes(+item.observaciones))
+        );
 
-
-
-
-        const userId = localStorage.getItem('userId')!; // Asegúrate de obtener el userId correcto
+        // Pedir al usuario qué tipo de licencias quiere enviar
         Swal.fire({
-          title: '¿Está seguro de crear el oficio?',
-          icon: 'warning',
+          title: 'Selecciona el tipo de licencia a enviar a oficio:',
+          input: 'radio',
+          inputOptions: {
+            '01': 'Medio sueldo / Sueldo íntegro',
+            '2': 'Sin sueldo'
+          },
+          inputValidator: (value) => {
+            if (!value) return 'Debes seleccionar una opción.';
+            return null;
+          },
+          confirmButtonText: 'Continuar',
           showCancelButton: true,
-          confirmButtonText: 'Sí, estoy seguro',
           cancelButtonText: 'Cancelar',
-          iconColor: '#dc3545',
-          confirmButtonColor: '#dc3545'
+          confirmButtonColor: '#dc3545',
+          icon: 'question'
         }).then((result) => {
           if (result.isConfirmed) {
-            // Llama al servicio para crear un oficio
-            this.LicenciasService.patchLicenciasOficio(licenciasid, userId, this.srl_emp).subscribe(
-              (response: { data: { oficio: string } }) => { // Asegúrate de definir el tipo de respuesta
-                //   console.log(response.data)
-                const oficioId = response.data.oficio; // Accede al 'oficio' dentro de 'data'
+            const seleccion = result.value;
 
+            // Validación para forzar primero enviar medio sueldo antes de sin sueldo
+            if (seleccion === '2' && !licenciasMedioSueldoEnviadas) {
+              Swal.fire({
+                title: 'No permitido',
+                text: 'Primero debe enviar licencias de Medio sueldo / Sueldo íntegro antes de enviar licencias Sin sueldo.',
+                icon: 'error',
+                confirmButtonText: 'Entendido',
+                confirmButtonColor: '#dc3545'
+              });
+              return;
+            }
 
-                if (oficioId) {
-                  this.buscar(this.srl_emp);
-                  this.onPdf(oficioId); // Llama a onPdf con el oficio
-                }
-              },
-              error => {
-                Swal.fire(
-                  'Error',
-                  error.error.message,
-                  'error'
+            let observacionesPermitidas: number[] = [];
+            if (seleccion === '01') {
+              observacionesPermitidas = [0, 1]; // Medio sueldo y sueldo íntegro
+            } else if (seleccion === '2') {
+              observacionesPermitidas = [2]; // Sin sueldo
+            }
+
+            licenciasid = nuevasLicencias
+              .filter((item: LicMedica) => observacionesPermitidas.includes(+item.observaciones))
+              .map((item: LicMedica) => ({
+                licenciaId: item.id,
+                apartir: item.apartir === "" ? "--" : item.apartir,
+                observaciones: item.observaciones
+              }));
+
+            if (licenciasid.length === 0) {
+              Swal.fire({
+                title: 'Sin licencias válidas',
+                text: 'No se encontraron licencias nuevas con las observaciones seleccionadas.',
+                icon: 'info',
+                confirmButtonText: 'Entendido',
+                confirmButtonColor: '#dc3545'
+              });
+              return;
+            }
+
+            const userId = localStorage.getItem('userId')!;
+            Swal.fire({
+              title: '¿Está seguro de crear el oficio?',
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonText: 'Sí, estoy seguro',
+              cancelButtonText: 'Cancelar',
+              iconColor: '#dc3545',
+              confirmButtonColor: '#dc3545'
+            }).then((res) => {
+              if (res.isConfirmed) {
+                this.LicenciasService.patchLicenciasOficio(licenciasid, userId, this.srl_emp).subscribe(
+                  (res: { data: { oficio: { id: number } } }) => {
+                    const oficioId = res.data.oficio.id;
+                    if (oficioId) {
+                      this.buscar(this.srl_emp);
+                      this.onPdf(oficioId);
+                    }
+                  },
+                  error => {
+                    Swal.fire('Error', error.error.message, 'error');
+                  }
                 );
               }
-            );
+            });
           }
         });
-
       } else {
         Swal.fire({
           title: 'Error',
@@ -800,7 +846,9 @@ export class IngresoLicenciasComponent implements OnInit {
 
 
 
+
   onPdf(oficioId: any) {
+    console.log('Generando PDF para el oficio con ID:', oficioId);
     //   console.log(oficioId);
     this.LicenciasService.getLicenciasOficioPdf(oficioId).subscribe(async response => {
       const data = response.data;
@@ -903,6 +951,7 @@ export class IngresoLicenciasComponent implements OnInit {
 
       // Generar y descargar el PDF
       pdfMake.createPdf(documentDefinition).open();
+
     });
   }
 
