@@ -10,7 +10,7 @@ export class TablesComponent implements OnChanges{
 // Input para las cabeceras de la tabla
 @Input() headers: string []= [];
 // Input para los datos a mostrar
-@Input() data: any[]=[];
+@Input() data: any[] = [];
  // Input para las columnas que se deben mostrar
 @Input() displayedColums: string []=[];
 
@@ -77,13 +77,19 @@ async loadNominaId() {
 
 
 ngOnChanges(changes: SimpleChanges): void {
-
-      this.updatePagination();
-
+  if (changes['data'] && this.data) {
+    // console.log('Datos recibidos en tabla:', this.data);
+    this.updatePagination();
+  }
 }
 
 
 private updatePagination(): void {
+  if (!Array.isArray(this.data)) {
+    this.paginatedData = [];
+    this.totalPages = 0;
+    return;
+  }
   const start = (this.currentPage - 1) * this.itemsPerPage;
   const end = start + this.itemsPerPage;
   this.paginatedData = this.data.slice(start, end);

@@ -268,8 +268,8 @@ export class OficioLicenciasComponent {
                       { text: 'Cargo', bold: true, fillColor: '#eeeeee', alignment: 'center', fontSize: 10 },
                       { text: 'Nivel', bold: true, fillColor: '#eeeeee', alignment: 'center', fontSize: 10 },
                       { text: 'Oficio', bold: true, fillColor: '#eeeeee', alignment: 'center', fontSize: 10 },
-                      { text: 'Días', bold: true, fillColor: '#eeeeee', alignment: 'center', fontSize: 10 } 
-                    
+                      { text: 'Días', bold: true, fillColor: '#eeeeee', alignment: 'center', fontSize: 10 }
+
                     ],
                     ...data.usuarios.map((item: any) => [
                       { text: item.nombre, alignment: 'center',  fontSize: 9  },
