@@ -34,6 +34,10 @@
               <h5 class="ms-2 mt-2">Ingresar una nueva licencia médica</h5>
             </div>
             <div class="col-auto">
+              <button type="button" (click)="getQr()"
+                class="botones btn"><i class="fa-solid fa-qrcode"></i></button>
+            </div>
+            <div class="col-auto">
               <button type="button" (click)="historicopdf()"
                 class="botones btn"><i
                   class="fa-solid fa-folder"></i></button>
@@ -60,7 +64,7 @@
                 <i class="fa-solid fa-arrows-rotate"></i></button>
             </div>
             <div class="col-auto">
-              <h5>{{ currentDate }} &nbsp;&nbsp; Fecha de ingreso: {{
+              <h5>{{ currentDate }} &nbsp;&nbsp; Ingreso: {{
                 this.arrayUserRecibido.fecha_ingreso }}</h5>
             </div>
           </div>

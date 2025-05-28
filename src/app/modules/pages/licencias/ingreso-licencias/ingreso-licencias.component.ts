@@ -25,6 +25,7 @@ export class IngresoLicenciasComponent implements OnInit {
   headers = ['No. de Licencia', 'Desde', 'Hasta', 'Días', 'Fecha de captura', 'Fecha de formato fisico', 'No. de oficio'];
   displayedColumns = ['folio', 'desde', 'hasta', 'rango_fechas', 'fechaCaptura', 'fechaFisica', 'oficio'];
   data = [];
+  dataQR: any;
   showCard: any = false;
   table: any = true;
   srl_emp: any;
@@ -74,7 +75,6 @@ export class IngresoLicenciasComponent implements OnInit {
     this.arrayUserRecibido = event;
 
     const card = this.arrayUserRecibido.mostrar;
-    console.log(this.arrayUserRecibido)
     this.showCard = card
     if (card == true) {
       this.buscar(this.arrayUserRecibido.srl_emp);
@@ -82,6 +82,88 @@ export class IngresoLicenciasComponent implements OnInit {
       this.verificarLicencias();
     }
 
+  }
+   getQr() {
+    Swal.fire({
+      title: "Escanee el código QR de la licencia médica",
+      input: "text",
+      inputAttributes: {
+        autocapitalize: "off"
+      },
+      showCancelButton: true,
+      confirmButtonText: "Buscar"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.LicenciasService.searchByQR(result.value).subscribe({
+          next: (response) => {
+            if (response.success === true) {
+              this.dataQR = response.data;
+
+              this.insertarLic.patchValue({
+                folio: this.dataQR.serie || '',
+                fecha_inicio: this.dataQR.inicio_licencia || '',
+                fecha_termino: this.dataQR.fin_licencia || '',
+                formato: '0'
+              });
+                const nombreCompleto = this.arrayUserRecibido.nombre?.toUpperCase() || '';
+
+                const inicialNombre = this.dataQR.nombre_oculto?.[0]?.toUpperCase() || '';
+                const inicialPaterno = this.dataQR.apellido_paterno_oculto?.[0]?.toUpperCase() || '';
+                const inicialMaterno = this.dataQR.apellido_materno_oculto?.[0]?.toUpperCase() || '';
+                
+                const inicialesNombreCompleto = nombreCompleto
+                  .split(" ")
+                  .map((word: string) => word[0])
+                  .join(" ");
+                
+                const coincideIniciales =
+                  inicialesNombreCompleto.includes(inicialNombre) &&
+                  inicialesNombreCompleto.includes(inicialPaterno) &&
+                  inicialesNombreCompleto.includes(inicialMaterno);
+                
+                Swal.fire({
+                  title: 'Licencia médica autorizada',
+                  html: `
+                    <table style="width:100%; text-align:left; font-size:14px">
+                      ${!coincideIniciales
+                        ? `<tr><td colspan="2" style="color:red; font-weight:bold; text-align:center">⚠️ Advertencia: las iniciales del nombre no coinciden</td></tr>`
+                        : ''}
+                      <tr><th>Serie:</th><td>${this.dataQR.serie}</td></tr>
+                      <tr><th>CURP o RFC:</th><td>${this.dataQR.curp_o_rfc}</td></tr>
+                      <tr><th>Nombre:</th><td>${this.dataQR.nombre_oculto}</td></tr>
+                      <tr><th>Apellido paterno:</th><td>${this.dataQR.apellido_paterno_oculto}</td></tr>
+                      <tr><th>Apellido materno:</th><td>${this.dataQR.apellido_materno_oculto}</td></tr>
+                      <tr><th>ID Motivo LM:</th><td>${this.dataQR.id_motivo_lm}</td></tr>
+                      <tr><th>Registro licencia:</th><td>${this.dataQR.registro_licencia}</td></tr>
+                      <tr><th>Inicio licencia:</th><td>${this.dataQR.inicio_licencia}</td></tr>
+                      <tr><th>Fin licencia:</th><td>${this.dataQR.fin_licencia}</td></tr>
+                      <tr><th>Días otorgados:</th><td>${this.dataQR.dias_otorgados_numero}</td></tr>
+                    </table>
+                  `,
+                  icon: 'success',
+                  confirmButtonText: 'Aceptar',
+                  width: '600px'
+                });
+            } else {
+              Swal.fire({
+                title: 'Licencia no autorizada',
+                text: response.message || 'No se pudo validar la licencia médica.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+              });
+            }
+          },
+          error: (err) => {
+            Swal.fire({
+              title: 'Error al buscar licencia médica',
+              text: err?.error?.message || 'Ocurrió un error inesperado.',
+              icon: 'error',
+              confirmButtonText: 'OK'
+            });
+          }
+        });
+      }
+    });
   }
 
   HOLA() {
@@ -94,6 +176,7 @@ export class IngresoLicenciasComponent implements OnInit {
     this.insertarLic.get('fecha_inicio')?.valueChanges.subscribe(() => this.calcularDias());
     this.insertarLic.get('fecha_termino')?.valueChanges.subscribe(() => this.calcularDias());
   }
+
   calcularDias() {
     const fechaInicio = new Date(this.insertarLic.get('fecha_inicio')?.value);
     const fechaTermino = new Date(this.insertarLic.get('fecha_termino')?.value);
@@ -125,7 +208,6 @@ export class IngresoLicenciasComponent implements OnInit {
     this.srl_emp = srl_emp;
     this.Total_lic = 0;
     this.currentDate = this.getCurrentDate(this.fecha_ingreso).date; // Usa `getCurrentDate` para formatear la fecha
-    // console.log(this.srl_emp)
     this.LicenciasService.getLicencias(srl_emp).subscribe((response: ApiResponse) => {
       this.table = true;
 
@@ -637,7 +719,6 @@ export class IngresoLicenciasComponent implements OnInit {
       // Verifica si la propiedad licencias existe en la respuesta y si tiene elementos
 
       if (response.data && response.data.licencias && response.data.licencias.length > 0) {
-        console.log(response.data)// Verifica si alguna licencia tiene las observaciones "SIN SUELDO" o "MEDIO SUELDO"
         const canSendToOficio = response.data.licencias.some((item: LicMedica) =>
 
           (item.observaciones === 2 || item.observaciones === 1) && item.color === "black");
@@ -662,7 +743,6 @@ export class IngresoLicenciasComponent implements OnInit {
               observaciones: item.observaciones
             };
             licenciasid.push(licenciasid2);
-            console.log(licenciasid2)
           }
         });
 
@@ -1434,6 +1514,9 @@ export class IngresoLicenciasComponent implements OnInit {
       });
   }
 
+
+ 
+  
 
 
 }

@@ -34,6 +34,13 @@ export class LicenciasService {
     );
   }
 
+  searchByQR(url: string): Observable<ApiResponse> {//buscar un licencia en general
+    let headers = new HttpHeaders({'url': url})
+    return this.http.get<ApiResponse>(`${environment.baseService}${'/licMedicas/qr'}`,
+      {headers}
+    );
+  }
+
   softdeletedByOfo(folio: string, userId: string): Observable<ApiResponse> {//Eliminar un licencia en general
     let headers = new HttpHeaders({'folio': folio, 'userId':userId})
     return this.http.patch<ApiResponse>(`${environment.baseService}${'/softdeletedByOficio'}`,null,
