@@ -111,17 +111,17 @@ export class IngresoLicenciasComponent implements OnInit {
                 const inicialNombre = this.dataQR.nombre_oculto?.[0]?.toUpperCase() || '';
                 const inicialPaterno = this.dataQR.apellido_paterno_oculto?.[0]?.toUpperCase() || '';
                 const inicialMaterno = this.dataQR.apellido_materno_oculto?.[0]?.toUpperCase() || '';
-                
+
                 const inicialesNombreCompleto = nombreCompleto
                   .split(" ")
                   .map((word: string) => word[0])
                   .join(" ");
-                
+
                 const coincideIniciales =
                   inicialesNombreCompleto.includes(inicialNombre) &&
                   inicialesNombreCompleto.includes(inicialPaterno) &&
                   inicialesNombreCompleto.includes(inicialMaterno);
-                
+
                 Swal.fire({
                   title: 'Licencia médica autorizada',
                   html: `
@@ -718,99 +718,17 @@ export class IngresoLicenciasComponent implements OnInit {
     // Llamar al servicio para obtener las licencias nuevamente usando srl_emp
     this.LicenciasService.getHistoricoAnte(this.srl_emp).subscribe((response: ApiResponse) => {
       // Verifica si la propiedad licencias existe en la respuesta y si tiene elementos
-
       if (response.data && response.data.licencias && response.data.licencias.length > 0) {
-        const canSendToOficio = response.data.licencias.some((item: LicMedica) =>
-
-          (item.observaciones === 2 || item.observaciones === 1) && item.color === "black");
-
-
-        if (!canSendToOficio) {
-          Swal.fire({
-            title: 'No se puede enviar a oficio',
-            text: 'La licencia debe tener la observación "SIN SUELDO" o "MEDIO SUELDO" para poder enviar a oficio.',
-            icon: 'error',
-            confirmButtonText: 'Entendido',
-            confirmButtonColor: '#dc3545'
-          });
-          return; // Detener la ejecución si no cumple la condición
-        }
-        // Si cumple la condición, continuar con el procesamiento de los IDs
-        response.data.licencias.forEach((item: LicMedica) => {
-          if (item.nueva === "1") {
-            const licenciasid2 = {
-              licenciaId: item.id,
-              apartir: item.apartir == "" ? "--" : item.apartir,
-              observaciones: item.observaciones
-            };
-            licenciasid.push(licenciasid2);
-          }
-        });
-
-
-
-        const userId = localStorage.getItem('userId')!; // Asegúrate de obtener el userId correcto
-        Swal.fire({
-          title: '¿Está seguro de crear el oficio?',
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonText: 'Sí, estoy seguro',
-          cancelButtonText: 'Cancelar',
-          iconColor: '#dc3545',
-          confirmButtonColor: '#dc3545'
-        }).then((result) => {
-          if (result.isConfirmed) {
-            // Llama al servicio para crear un oficio
-            this.LicenciasService.patchLicenciasOficio(licenciasid, userId, this.srl_emp).subscribe(
-              (response: { data: { oficio: string } }) => { // Asegúrate de definir el tipo de respuesta
-                const oficioId = response.data.oficio; // Accede al 'oficio' dentro de 'data'
-
-                if (oficioId) {
-                  this.buscar(this.srl_emp);
-                  this.onPdf(oficioId); // Llama a onPdf con el oficio
-                  this.verificarLicencias();
-                }
-              },
-              error => {
-                Swal.fire(
-                  'Error',
-                  error.error.message,
-                  'error'
-                );
-              }
-            );
-          }
-        });
-
-      } else {
-        Swal.fire({
-          title: 'Error',
-          text: 'No se encontraron licencias válidas para el usuario.',
-          icon: 'error',
-          confirmButtonText: 'Entendido',
-          confirmButtonColor: '#dc3545'
-        });
-      }
-    });
-  }
-
-  submitOficios() {
-    let licenciasid: any[] = [];
-
-    this.LicenciasService.getLicencias(this.srl_emp).subscribe((response: ApiResponse) => {
-      if (response.data && response.data.licencias && response.data.licencias.length > 0) {
-        // Filtrar licencias nuevas
         const nuevasLicencias = response.data.licencias.filter((item: LicMedica) => item.nueva === "1");
 
-        // Validar si hay al menos una licencia con observaciones válidas
         const hayLicenciasValidas = nuevasLicencias.some((item: LicMedica) =>
-          [1, 2].includes(+item.observaciones)
+          [0, 1, 2].includes(+item.observaciones)
         );
 
         if (!hayLicenciasValidas) {
           Swal.fire({
             title: 'No se puede enviar a oficio',
-            text: 'Debe haber al menos una licencia nueva con observación "SIN SUELDO", "MEDIO SUELDO" o "SUELDO ÍNTEGRO".',
+            text: 'Debe haber al menos una licencia nueva con observación válida: "SIN SUELDO", "MEDIO SUELDO" o "SUELDO ÍNTEGRO".',
             icon: 'error',
             confirmButtonText: 'Entendido',
             confirmButtonColor: '#dc3545'
@@ -818,22 +736,17 @@ export class IngresoLicenciasComponent implements OnInit {
           return;
         }
 
-        // Validación extra: verificar si ya se enviaron licencias sin sueldo previamente
-        const licenciasSinSueldoEnviadas = response.data.licencias.some((item: LicMedica) =>
-          item.nueva !== "1" && +item.observaciones === 2
-        );
-        // Verificar si ya se enviaron licencias medio sueldo/sueldo íntegro
         const licenciasMedioSueldoEnviadas = response.data.licencias.some((item: LicMedica) =>
-          item.nueva !== "1" && ([0, 1].includes(+item.observaciones))
+          item.nueva !== "1" && [0, 1].includes(+item.observaciones)
         );
 
-        // Pedir al usuario qué tipo de licencias quiere enviar
         Swal.fire({
           title: 'Selecciona el tipo de licencia a enviar a oficio:',
           input: 'radio',
           inputOptions: {
-            '01': 'Medio sueldo / Sueldo íntegro',
-            '2': 'Sin sueldo'
+            '01': 'Medio sueldo',
+            '2': 'Sin sueldo',
+            'todos': 'Ambos'
           },
           inputValidator: (value) => {
             if (!value) return 'Debes seleccionar una opción.';
@@ -848,7 +761,7 @@ export class IngresoLicenciasComponent implements OnInit {
           if (result.isConfirmed) {
             const seleccion = result.value;
 
-            // Validación para forzar primero enviar medio sueldo antes de sin sueldo
+            // Validación: no permitir enviar solo "sin sueldo" si no se han enviado antes las otras
             if (seleccion === '2' && !licenciasMedioSueldoEnviadas) {
               Swal.fire({
                 title: 'No permitido',
@@ -862,9 +775,11 @@ export class IngresoLicenciasComponent implements OnInit {
 
             let observacionesPermitidas: number[] = [];
             if (seleccion === '01') {
-              observacionesPermitidas = [0, 1]; // Medio sueldo y sueldo íntegro
+              observacionesPermitidas = [0, 1];
             } else if (seleccion === '2') {
-              observacionesPermitidas = [2]; // Sin sueldo
+              observacionesPermitidas = [2];
+            } else if (seleccion === 'todos') {
+              observacionesPermitidas = [0, 1, 2];
             }
 
             licenciasid = nuevasLicencias
@@ -924,6 +839,133 @@ export class IngresoLicenciasComponent implements OnInit {
       }
     });
   }
+
+  submitOficios() {
+    let licenciasid: any[] = [];
+
+    this.LicenciasService.getLicencias(this.srl_emp).subscribe((response: ApiResponse) => {
+      if (response.data && response.data.licencias && response.data.licencias.length > 0) {
+        const nuevasLicencias = response.data.licencias.filter((item: LicMedica) => item.nueva === "1");
+
+        const hayLicenciasValidas = nuevasLicencias.some((item: LicMedica) =>
+          [0, 1, 2].includes(+item.observaciones)
+        );
+
+        if (!hayLicenciasValidas) {
+          Swal.fire({
+            title: 'No se puede enviar a oficio',
+            text: 'Debe haber al menos una licencia nueva con observación válida: "SIN SUELDO", "MEDIO SUELDO" o "SUELDO ÍNTEGRO".',
+            icon: 'error',
+            confirmButtonText: 'Entendido',
+            confirmButtonColor: '#dc3545'
+          });
+          return;
+        }
+
+        const licenciasMedioSueldoEnviadas = response.data.licencias.some((item: LicMedica) =>
+          item.nueva !== "1" && [0, 1].includes(+item.observaciones)
+        );
+
+        Swal.fire({
+          title: 'Selecciona el tipo de licencia a enviar a oficio:',
+          input: 'radio',
+          inputOptions: {
+            '01': 'Medio sueldo',
+            '2': 'Sin sueldo',
+            'todos': 'Ambos'
+          },
+          inputValidator: (value) => {
+            if (!value) return 'Debes seleccionar una opción.';
+            return null;
+          },
+          confirmButtonText: 'Continuar',
+          showCancelButton: true,
+          cancelButtonText: 'Cancelar',
+          confirmButtonColor: '#dc3545',
+          icon: 'question'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            const seleccion = result.value;
+
+            // Validación: no permitir enviar solo "sin sueldo" si no se han enviado antes las otras
+            if (seleccion === '2' && !licenciasMedioSueldoEnviadas) {
+              Swal.fire({
+                title: 'No permitido',
+                text: 'Primero debe enviar licencias de Medio sueldo / Sueldo íntegro antes de enviar licencias Sin sueldo.',
+                icon: 'error',
+                confirmButtonText: 'Entendido',
+                confirmButtonColor: '#dc3545'
+              });
+              return;
+            }
+
+            let observacionesPermitidas: number[] = [];
+            if (seleccion === '01') {
+              observacionesPermitidas = [0, 1];
+            } else if (seleccion === '2') {
+              observacionesPermitidas = [2];
+            } else if (seleccion === 'todos') {
+              observacionesPermitidas = [0, 1, 2];
+            }
+
+            licenciasid = nuevasLicencias
+              .filter((item: LicMedica) => observacionesPermitidas.includes(+item.observaciones))
+              .map((item: LicMedica) => ({
+                licenciaId: item.id,
+                apartir: item.apartir === "" ? "--" : item.apartir,
+                observaciones: item.observaciones
+              }));
+
+            if (licenciasid.length === 0) {
+              Swal.fire({
+                title: 'Sin licencias válidas',
+                text: 'No se encontraron licencias nuevas con las observaciones seleccionadas.',
+                icon: 'info',
+                confirmButtonText: 'Entendido',
+                confirmButtonColor: '#dc3545'
+              });
+              return;
+            }
+
+            const userId = localStorage.getItem('userId')!;
+            Swal.fire({
+              title: '¿Está seguro de crear el oficio?',
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonText: 'Sí, estoy seguro',
+              cancelButtonText: 'Cancelar',
+              iconColor: '#dc3545',
+              confirmButtonColor: '#dc3545'
+            }).then((res) => {
+              if (res.isConfirmed) {
+                this.LicenciasService.patchLicenciasOficio(licenciasid, userId, this.srl_emp).subscribe(
+                  (res: { data: { oficio: { id: number } } }) => {
+                    const oficioId = res.data.oficio.id;
+                    if (oficioId) {
+                      this.buscar(this.srl_emp);
+                      this.onPdf(oficioId);
+                    }
+                  },
+                  error => {
+                    Swal.fire('Error', error.error.message, 'error');
+                  }
+                );
+              }
+            });
+          }
+        });
+      } else {
+        Swal.fire({
+          title: 'Error',
+          text: 'No se encontraron licencias válidas para el usuario.',
+          icon: 'error',
+          confirmButtonText: 'Entendido',
+          confirmButtonColor: '#dc3545'
+        });
+      }
+    });
+  }
+
 
 
 
@@ -1565,8 +1607,8 @@ export class IngresoLicenciasComponent implements OnInit {
   }
 
 
- 
-  
+
+
 
 
 }
