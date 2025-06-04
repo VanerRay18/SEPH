@@ -63,16 +63,7 @@ totalPages: number = 1;
   }
 
 
-async ngOnInit(): Promise<void> {
-  this.nominaId = await this.loadNominaId();
-  // console.log('ID de la nómina (desde ngOnInit):', this.nominaId);
-}
 
-async loadNominaId() {
-  const nominaId = await this.NominaBecService.getNominaId();
-  // console.log('ID de la nómina:', nominaId);
-  return nominaId
-}
 
 
 

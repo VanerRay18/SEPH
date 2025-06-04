@@ -180,7 +180,6 @@ export class NominaBecService {
 
   DeleteEmails(idEmail: any): Observable<ApiResponse> {//Trae el anexo 5
     let headers = new HttpHeaders({'idEmail': idEmail})
-    console.log(idEmail)
     return this.http.patch<ApiResponse>(`${environment.baseService}${'/email/softdelete'}`,null,
       {headers}
     );
@@ -209,14 +208,14 @@ export class NominaBecService {
 
   downloadZip(nominaId: any): Observable<HttpResponse<Blob>> {
     const headers = new HttpHeaders({ 'nominaId': nominaId });
-  
+
     return this.http.get(`${environment.baseService}/nomina/descargar-zip`, {
       headers: headers,
       responseType: 'blob',
       observe: 'response'
     });
   }
-  
+
 
 getPDFEnvioN(nominaId: any): Observable<ApiResponse> {//Trae el anexo 5
   let headers = new HttpHeaders({'nominaId': nominaId})
