@@ -50,6 +50,7 @@ export class IngresoAccidentesComponent {
       this.modificar = response.data.editar
       this.agregar = response.data.agregar
     });
+    
     // this.modificar = this.PermisosUserService.getPermisos().Licencias.editar;
     // this.eliminar = this.PermisosUserService.getPermisos().Licencias.editar;
     // this.agregar = this.PermisosUserService.getPermisos().Licencias.editar;
@@ -57,6 +58,8 @@ export class IngresoAccidentesComponent {
     this.BusquedaserlService.srlEmp$.subscribe(value => {
       if (value.mostrar == true) {
         this.srl_emp = value.srl_emp;
+     
+        console.log(this.srl_emp)
         this.buscar(this.srl_emp);
         this.buscar2(this.srl_emp);
       }
@@ -437,6 +440,7 @@ export class IngresoAccidentesComponent {
       }).then((result) => {
         if (result.isConfirmed) {
           // El usuario confirmó, proceder a enviar los datos
+          console.log(data)
           this.LicenciasService.addLicencia(data, userId, this.srl_emp).subscribe(
             response => {
               this.buscar(this.srl_emp)

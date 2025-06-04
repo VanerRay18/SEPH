@@ -24,7 +24,7 @@ h5 {
   background-color: #ffffff;
   border-top: none;
   border-radius: 0 20px 20px 20px; /* Redondea solo las esquinas especificadas */
-  width: 100%;
+  width: 110%;
 
   padding: 15px; /* Agregado para un mejor espaciado interno */
 }

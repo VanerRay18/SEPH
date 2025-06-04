@@ -51,6 +51,8 @@ export class LicenciasService {
 
   addLicencia(data:any, userId: string, srl_emp:any): Observable<ApiResponse> { //agregar una nueva licencia
     let headers = new HttpHeaders({'srl_emp': srl_emp, 'userId':userId})
+    console.log('srl_emp: '+ srl_emp + ' userId: '+userId)
+    console.log(data)
     return this.http.post<ApiResponse>(`${environment.baseService}${'/licMedicas'}`,data,
       {headers}
     );
@@ -63,7 +65,7 @@ export class LicenciasService {
     );
   }
 
-  updateLic(data: any, licenciaId: string, userId: string, rfc: any): Observable<ApiResponse> { //editar una licencia
+  updateLic(data: any, licenciaId: string, userId: string, rfc: any): Observable<ApiResponse> {
     let headers = new HttpHeaders({'licenciaId': licenciaId, 'userId':userId, 'rfc':rfc})
     return this.http.patch<ApiResponse>(`${environment.baseService}${'/licMedicas'}`,data,
       {headers}
