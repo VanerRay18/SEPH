@@ -27,6 +27,8 @@ export class IngresoAccidentesComponent {
   eliminar: boolean = false;
   agregar: boolean = false;
   modificar: boolean = false;
+  arrayUserRecibido: any;
+  showCard: any = false;
 
 
   tabs = [
@@ -50,21 +52,37 @@ export class IngresoAccidentesComponent {
       this.modificar = response.data.editar
       this.agregar = response.data.agregar
     });
-    
+
     // this.modificar = this.PermisosUserService.getPermisos().Licencias.editar;
     // this.eliminar = this.PermisosUserService.getPermisos().Licencias.editar;
     // this.agregar = this.PermisosUserService.getPermisos().Licencias.editar;
 
+
     this.BusquedaserlService.srlEmp$.subscribe(value => {
       if (value.mostrar == true) {
         this.srl_emp = value.srl_emp;
-     
+
         console.log(this.srl_emp)
         this.buscar(this.srl_emp);
         this.buscar2(this.srl_emp);
       }
     });
     this.HOLA();
+  }
+  recibirArrayUser(event: any) {
+    this.arrayUserRecibido = event;
+
+    const card = this.arrayUserRecibido.mostrar;
+    // console.log(this.arrayUserRecibido)
+    this.showCard = card
+    if (card == true) {
+      this.srl_emp = this.arrayUserRecibido.srl_emp;
+
+      console.log(this.srl_emp)
+      this.buscar(this.srl_emp);
+      this.buscar2(this.srl_emp);
+    }
+
   }
 
   buscar(srl_emp: any) {
