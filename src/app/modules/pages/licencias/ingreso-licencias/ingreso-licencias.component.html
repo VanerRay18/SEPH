@@ -157,7 +157,7 @@
       </ng-container>
 
       <ng-container *ngIf="activeTab === 'accidentes'">
-        <ingreso-accidentes></ingreso-accidentes>
+        <ingreso-accidentes  [arrayUserAccidente]="arrayUserRecibido"> </ingreso-accidentes>
       </ng-container>
 
       <ng-container *ngIf="activeTab === 'acuerdos'">
