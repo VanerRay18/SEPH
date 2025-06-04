@@ -104,6 +104,7 @@ export class LicenciasService {
 
   getAccidentes(srl_emp: any): Observable<ApiResponse> {//Historial actual de accidentes de trabajo
     let headers = new HttpHeaders({'srl_emp': srl_emp})
+    console.log('/licMedicas/accidentes: '+srl_emp)
     return this.http.get<ApiResponse>(`${environment.baseService}${'/licMedicas/accidentes'}`,
       {headers}
     );

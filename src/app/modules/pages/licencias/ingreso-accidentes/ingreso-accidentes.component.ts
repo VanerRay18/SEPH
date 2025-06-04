@@ -29,6 +29,7 @@ export class IngresoAccidentesComponent {
   modificar: boolean = false;
   arrayUserRecibido: any;
   showCard: any = false;
+  @Input() arrayUserAccidente: any;
 
 
   tabs = [
@@ -47,26 +48,17 @@ export class IngresoAccidentesComponent {
     //this.fetchData(); // Si tienes un endpoint real, descomenta esto
   }
   ngOnInit() {
+    //this.srl_emp = this.arrayUserAccidente.srl_emp;
     this.PermisosUserService.getPermisosSpring(this.PermisosUserService.getPermisos().Licencias).subscribe((response: ApiResponse) => {
       this.eliminar = response.data.eliminar
       this.modificar = response.data.editar
       this.agregar = response.data.agregar
     });
-
+    this.recibirArrayUser(this.arrayUserAccidente);
     // this.modificar = this.PermisosUserService.getPermisos().Licencias.editar;
     // this.eliminar = this.PermisosUserService.getPermisos().Licencias.editar;
     // this.agregar = this.PermisosUserService.getPermisos().Licencias.editar;
 
-
-    this.BusquedaserlService.srlEmp$.subscribe(value => {
-      if (value.mostrar == true) {
-        this.srl_emp = value.srl_emp;
-
-        console.log(this.srl_emp)
-        this.buscar(this.srl_emp);
-        this.buscar2(this.srl_emp);
-      }
-    });
     this.HOLA();
   }
   recibirArrayUser(event: any) {
@@ -77,8 +69,6 @@ export class IngresoAccidentesComponent {
     this.showCard = card
     if (card == true) {
       this.srl_emp = this.arrayUserRecibido.srl_emp;
-
-      console.log(this.srl_emp)
       this.buscar(this.srl_emp);
       this.buscar2(this.srl_emp);
     }
