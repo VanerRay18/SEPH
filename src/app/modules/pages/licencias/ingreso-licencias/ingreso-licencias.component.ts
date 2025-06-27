@@ -420,95 +420,103 @@ HOLA() {
 
 
 onEdit2(data: any) {
- Swal.fire({
-  title: 'Editar Registro',
-  html: `
-    <div style="display: flex; flex-direction: column; text-align: left;">
-      <label style="margin-left:33px;" for="rfc">RFC:</label>
-      <input id="rfc" class="swal2-input" value="${data.rfc || ''}" style="padding: 0px; font-size: 16px;">
-    </div>
-
-    <div style="display: flex; flex-direction: column; text-align: left;">
-      <label style="margin-left:33px;" for="folio">Folio</label>
-      <input id="folioId" class="swal2-input" value="${data.folio || ''}" style="padding: 0px; font-size: 16px;">
-    </div>
-
-    <div style="display: flex; flex-direction: column; text-align: left;">
-      <label style="margin-left:33px;" for="fecha_inicio">Fecha Inicio</label>
-      <input id="fecha_inicioId" type="date" class="swal2-input" value="${data.desde || ''}" style="padding: 0px; font-size: 16px;">
-    </div>
-
-    <div style="display: flex; flex-direction: column; text-align: left;">
-      <label style="margin-left:33px;" for="fecha_termino">Fecha Término</label>
-      <input id="fecha_terminoId" type="date" class="swal2-input" value="${data.hasta || ''}" style="padding: 0px; font-size: 16px;">
-    </div>
-
-    <div style="display: flex; flex-direction: column; text-align: left;">
-      <label style="margin-left:33px;" for="fecha_captura">Fecha Captura</label>
-      <input id="fecha_capturaId" type="date" class="swal2-input" value="${data.fechaCaptura || ''}" style="padding: 0px; font-size: 16px;">
-    </div>
-
-    <div style="display: flex; flex-direction: column; text-align: left;">
-      <label style="margin-left:33px;">Oficio</label>
-      <div style="display: flex; align-items: center; gap: 5px; margin-left:33px;">
-        <input id="num_oficio" maxlength="7" class="swal2-input" style="width: 100px; padding: 0px; font-size: 16px;" placeholder="1234567" value="${data.num_oficio || ''}">
-        <span>/</span>
-        <input id="anio_oficio" maxlength="4" class="swal2-input" style="width: 80px; padding: 0px; font-size: 16px;" placeholder="2025" value="${data.anio_oficio || ''}">
+  console.log(data);
+  Swal.fire({
+    title: 'Editar Registro',
+    html: `
+      <div style="display: flex; flex-direction: column; text-align: left;">
+        <label style="margin-left:33px;" for="rfc">RFC:</label>
+        <input id="rfc" class="swal2-input" value="${data.rfc || ''}" style="padding: 0px; font-size: 16px;">
       </div>
-    </div>
 
-    <div style="display: flex; flex-direction: column; text-align: left;">
-      <label style="margin-left:33px;">Formato</label>
-      <div style="display: flex; align-items: center; margin-top: 10px; margin-left:33px;">
-        <input class="form-check-input" type="radio" name="formato2" id="formatoFisico2" value="0" ${data.formato === 0 ? 'checked' : ''} style="margin-right: 5px;">
-        <label class="form-check-label" for="formatoFisico2">Físico</label>
+      <div style="display: flex; flex-direction: column; text-align: left;">
+        <label style="margin-left:33px;" for="folio">Folio</label>
+        <input id="folioId" class="swal2-input" value="${data.folio || ''}" style="padding: 0px; font-size: 16px;">
       </div>
-      <div style="display: flex; align-items: center; margin-top: 10px; margin-left:33px;">
-        <input class="form-check-input" type="radio" name="formato2" id="formatoEmail2" value="1" ${data.formato === 1 ? 'checked' : ''} style="margin-right: 5px;">
-        <label class="form-check-label" for="formatoEmail2">Email</label>
-      </div>
-    </div>
-  `,
-  showCancelButton: true,
-  confirmButtonText: 'Guardar',
-  cancelButtonText: 'Cancelar',
-  focusConfirm: false,
-  preConfirm: () => {
-    const rfcInput = document.getElementById('rfc') as HTMLInputElement;
-    const folioInput = document.getElementById('folioId') as HTMLInputElement;
-    const fechaInicioInput = document.getElementById('fecha_inicioId') as HTMLInputElement;
-    const fechaTerminoInput = document.getElementById('fecha_terminoId') as HTMLInputElement;
-    const fechaCapturaInput = document.getElementById('fecha_capturaId') as HTMLInputElement;
-    const numOficioInput = document.getElementById('num_oficio') as HTMLInputElement;
-    const anioOficioInput = document.getElementById('anio_oficio') as HTMLInputElement;
-    const formatoInput = document.querySelector('input[name="formato2"]:checked') as HTMLInputElement;
 
-    if (!rfcInput || !folioInput || !fechaInicioInput || !fechaTerminoInput || !formatoInput || !fechaCapturaInput || !numOficioInput || !anioOficioInput) {
-      Swal.showValidationMessage('Todos los campos deben estar correctamente cargados');
-      return false;
+      <div style="display: flex; flex-direction: column; text-align: left;">
+        <label style="margin-left:33px;" for="fecha_inicio">Fecha Inicio</label>
+        <input id="fecha_inicioId" type="date" class="swal2-input" value="${data.desde || ''}" style="padding: 0px; font-size: 16px;">
+      </div>
+
+      <div style="display: flex; flex-direction: column; text-align: left;">
+        <label style="margin-left:33px;" for="fecha_termino">Fecha Término</label>
+        <input id="fecha_terminoId" type="date" class="swal2-input" value="${data.hasta || ''}" style="padding: 0px; font-size: 16px;">
+      </div>
+
+      <div style="display: flex; flex-direction: column; text-align: left;">
+        <label style="margin-left:33px;" for="fecha_captura">Fecha Captura</label>
+        <input id="fecha_capturaId" type="date" class="swal2-input" value="${data.fechaCaptura || ''}" style="padding: 0px; font-size: 16px;">
+      </div>
+
+      <div style="display: flex; flex-direction: column; text-align: left;">
+        <label style="margin-left:33px;">Oficio</label>
+        <div style="display: flex; align-items: center; gap: 5px; margin-left:33px;">
+          <input id="num_oficio" maxlength="7" class="swal2-input" style="width: 100px; padding: 0px; font-size: 16px;" placeholder="1234567" value="${data.num_oficio || ''}">
+          <span>/</span>
+          <input id="anio_oficio" maxlength="4" class="swal2-input" style="width: 80px; padding: 0px; font-size: 16px;" placeholder="2025" value="${data.anio_oficio || ''}">
+        </div>
+      </div>
+
+      <!-- Grupo de Descuento -->
+      <div style="display: flex; flex-direction: column; text-align: left;">
+        <label style="margin-left:33px;">Descuento</label>
+        <div style="display: flex; align-items: center; margin-top: 10px; margin-left:33px;">
+          <input class="form-check-input" type="radio" name="descuento2" id="medioSueldo" value="1" ${data.descuento === 1 ? 'checked' : ''} style="margin-right: 5px;">
+          <label class="form-check-label" for="medioSueldo">MEDIO SUELDO</label>
+        </div>
+        <div style="display: flex; align-items: center; margin-top: 10px; margin-left:33px;">
+          <input class="form-check-input" type="radio" name="descuento2" id="sinSueldo" value="2" ${data.descuento === 2 ? 'checked' : ''} style="margin-right: 5px;">
+          <label class="form-check-label" for="sinSueldo">SIN SUELDO</label>
+        </div>
+      </div>
+
+      <!-- Grupo de Formato -->
+      <div style="display: flex; flex-direction: column; text-align: left;">
+        <label style="margin-left:33px;">Formato</label>
+        <div style="display: flex; align-items: center; margin-top: 10px; margin-left:33px;">
+          <input class="form-check-input" type="radio" name="formato2" id="formatoFisico" value="0" ${data.formato === 0 ? 'checked' : ''} style="margin-right: 5px;">
+          <label class="form-check-label" for="formatoFisico">FÍSICO</label>
+        </div>
+        <div style="display: flex; align-items: center; margin-top: 10px; margin-left:33px;">
+          <input class="form-check-input" type="radio" name="formato2" id="formatoEmail" value="1" ${data.formato === 1 ? 'checked' : ''} style="margin-right: 5px;">
+          <label class="form-check-label" for="formatoEmail">EMAIL</label>
+        </div>
+      </div>
+    `,
+    focusConfirm: false,
+    showCancelButton: true,
+    confirmButtonText: 'Guardar',
+    preConfirm: () => {
+      const rfc = (document.getElementById('rfc') as HTMLInputElement)?.value.trim();
+      const folio = (document.getElementById('folioId') as HTMLInputElement)?.value.trim();
+      const fecha_inicio = (document.getElementById('fecha_inicioId') as HTMLInputElement)?.value;
+      const fecha_termino = (document.getElementById('fecha_terminoId') as HTMLInputElement)?.value;
+      const fecha_captura = (document.getElementById('fecha_capturaId') as HTMLInputElement)?.value;
+      const numero_oficio = (document.getElementById('num_oficio') as HTMLInputElement)?.value.trim();
+      const anio = (document.getElementById('anio_oficio') as HTMLInputElement)?.value.trim();
+      const formatoInput = document.querySelector('input[name="formato2"]:checked') as HTMLInputElement;
+      const tipo_descuento = document.querySelector('input[name="descuento2"]:checked') as HTMLInputElement;
+
+      if (!rfc || !folio || !fecha_inicio || !fecha_termino || !fecha_captura) {
+        Swal.showValidationMessage('Todos los campos deben estar correctamente cargados');
+        return false;
+      }
+      return {
+        rfc,
+        folio,
+        fecha_inicio: fecha_inicio + 'T00:00:00',
+        fecha_termino: fecha_termino + 'T00:00:00',
+        fecha_captura: fecha_captura + 'T00:00:00',
+        numero_oficio,
+        anio,
+        formato: parseInt(formatoInput.value),
+        tipo_descuento: !tipo_descuento ?"":parseInt(tipo_descuento.value) ,
+        accidente: 0
+
+      };
     }
-
-    const rfc = rfcInput.value.trim();
-    const folio = folioInput.value.trim();
-    const fecha_inicio = fechaInicioInput.value ? fechaInicioInput.value + 'T00:00:00' : '';
-    const fecha_termino = fechaTerminoInput.value ? fechaTerminoInput.value + 'T00:00:00' : '';
-    const fecha_captura = fechaCapturaInput.value ? fechaCapturaInput.value + 'T00:00:00' : '';
-    const numero_oficio = numOficioInput.value.trim();
-    const anio = anioOficioInput.value.trim();
-    const formato = parseInt(formatoInput.value);
-    const accidente = 0;
-
-    if (!rfc || !folio || !fecha_inicio || !fecha_termino || !fecha_captura) {
-      Swal.showValidationMessage('Todos los campos son obligatorios');
-      return false;
-    }
-
-    return {
-      rfc, folio, fecha_inicio, fecha_termino, fecha_captura,
-      numero_oficio, anio, formato, accidente
-    };
-  }
-}).then(result => {
+  }).then(result => {
   if (result.isConfirmed) {
     const dataEditada = result.value;
     console.log('guardar');
@@ -516,8 +524,8 @@ onEdit2(data: any) {
     this.guardarCambios2(dataEditada, data.id, dataEditada.rfc);
   }
 });
-
 }
+
 
 
   guardarCambios2(data: any, licenciaId: any, rfc: any) {
