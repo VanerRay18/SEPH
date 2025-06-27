@@ -1,13 +1,9 @@
+import { TercerosService } from './../../../../services/terceros.service';
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { ApiResponse } from 'src/app/models/ApiResponse';
-import { NominaBecService } from 'src/app/services/nomina-bec.service';
-import { NominaA, Resumen } from 'src/app/shared/interfaces/utils';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
-import { Anexo06 } from 'src/app/shared/interfaces/utils';
-import * as XLSX from 'xlsx';
-import { saveAs } from 'file-saver';
-import { Anexo05 } from 'src/app/shared/interfaces/utils';
+import { FileTransferService } from 'src/app/services/file-transfer.service';
 
 @Component({
   selector: 'app-validar',
@@ -16,46 +12,43 @@ import { Anexo05 } from 'src/app/shared/interfaces/utils';
 })
 export class ValidarComponent {
   searchTerm: string = '';
-  headers = ['RFC', 'Nombre', 'Num. Doc.', 'Tipo', 'Importe', 'Concepto desc.','Quincena desde'];
-  displayedColumns = ['nombre', 'curp', 'importTotal', 'retentionTotal', 'liquidTotal','concepto','quin_desde'];
-  data = [];
-  nominaId: any;
+  headers = ['Ramo','Pagaduria','RFC', 'Nombre','Tipo', 'Plazo','Periodo', 'Concepto desc.', 'Importe','Num. Doc.', 'Quincena aplicacion', 'Fecha de documento','Tipo de registro'];
+  displayedColumns = ['ramo','pagaduria','RFC', 'nombre', 'tipo_orden', 'plazo', 'periodo','concepto', 'importe','num_doc','quincena_aplicacion','fecha_documento', 'tipo_registro'];
+  data = [] ;
   crearlayout:any;
-  status = localStorage.getItem('status')!;
-  data2: NominaA | null = null;
-  isButtonDisabled: boolean = false;
-  isButtonDisabled2: boolean = false;
-  isLoading = true;
-  nominaSpecial: any;
-  resumen: Resumen = {
-    clabes: 0,
-    plazas: 0,
-    deducciones: '',
-    personas: 0,
-    percepciones: '',
-    liquido: ''
-  };
-
+  isLoading = false;
+  terceroId: any;
+  selectedFile: File | null = null;
+  info: any;
+  added: any;
+  ilimitado: any;
 
   constructor(
     private router: Router,
-    private NominaBecService: NominaBecService,
-    private cdr: ChangeDetectorRef
+    private TercerosService: TercerosService,
+    private cdr: ChangeDetectorRef,
+    private fileTransferService: FileTransferService,
   ) {
     // Registrar las fuentes necesarias
   }
   async ngOnInit(): Promise<void> {
-    this.nominaId = await this.loadNominaId();
+    // this.nominaId = await this.loadNominaId();
+
+    this.fileTransferService.currentIdTercero$.subscribe((id) => {
+      this.terceroId = id;
+      // console.log('ID recibido:', this.terceroId);
+      // Aquí puedes llamar a un servicio o usar el ID como necesites
+    });
+
     this.fetchData();
-    this.isLoading = true;
-    this.crearlayout = 0 ;
+    this.isLoading = false;
   }
 
 
-  async loadNominaId() {
-    const nominaId = await this.NominaBecService.getNominaId();
-    return nominaId
-  }
+  // async loadNominaId() {
+  //   const nominaId = await this.NominaBecService.getNominaId();
+  //   return nominaId
+  // }
 
   onContinueNomina() {
     this.continueNomina();  // Primero ejecuta la lógica de continuar la nómina
@@ -64,102 +57,79 @@ export class ValidarComponent {
   }
 
   fetchData() {
+  this.data;
+  this.TercerosService.getInformationById(this.terceroId).subscribe((response: ApiResponse) => {
+    this.info = response.data;
+    this.ilimitado = response.data.ilimitado;
+    this.added = response.data.added;
 
-    this.NominaBecService.getNomina().subscribe((response: ApiResponse) => {
-      this.data2 = response.data;
-    },
-      (error) => {
-        console.error('Error al obtener los datos:', error);
-      });
+    if(this.added === true){
+      this.crearlayout = 1;
+    } else {
+      this.crearlayout = 0;
+    }
 
-    this.NominaBecService.getInformationCalculation(this.nominaId).subscribe((response: ApiResponse) => {
-      this.data = response.data; // Aquí concatenas las fechas
-      this.isLoading = this.data.length === 0;
-    },
-      (error) => {
-        console.error('Error al obtener los datos:', error);
-      });
-
-    this.NominaBecService.getResumeExel(this.nominaId).subscribe((response: ApiResponse) => {
-      this.resumen = response.data; // Aquí concatenas las fechas
-
-    },
-      (error) => {
-        console.error('Error al obtener los datos:', error);
-      });
+//  console.log('Información recibida:', this.info);
+  },
+    (error) => {
+      // console.error('Error al obtener los datos:', error);
+      console.error('Ocurrio un error', error);
+    });
 
   }
 
-
-  saveNomina(): void {
-
-      Swal.fire({
-        title: 'Confirmar',
-        html: `¿Está seguro de que los calculos de la nomina estan correctos?<br><br>`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Sí, guardar',
-        cancelButtonText: 'No, cancelar'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          // Mostrar spinner de carga
-          Swal.fire({
-            title: 'Guardando la nomina...',
-            html: 'Por favor, espere mientras se guarda la nomina.',
-            didOpen: () => {
-              Swal.showLoading();
-            },
-            allowOutsideClick: false,
-            showConfirmButton: false
-          });
-          // El usuario confirmó, proceder a enviar los datos
-          this.NominaBecService.saveNomina(this.data).subscribe(
-            response => {
-              this.fetchData();
-              Swal.fire({
-                title: 'Nomina Guardada',
-                text: 'Se guardo la Nomina correctamente',
-                icon: 'success',
-                confirmButtonText: 'Aceptar'
-              });
-            },
-            error => {
-              Swal.fire({
-                title: 'Error',
-                text: error.error.message,
-                icon: 'error',
-                confirmButtonText: 'Aceptar'
-              });
-            }
-          );
-
-        }
-      });
-
-  }
 
   continueNomina(): void {
     this.router.navigate(['/pages/Terceros/Reporte-Validacion']);
     this.fetchData();
   }
 
-  async generateAnexos(): Promise<void> {
-    Swal.fire({
-      title: 'Generando los Anexos..',
-      html: 'Por favor, espere mientras se genera el Excel de los anexos.',
-      didOpen: () => {
-        Swal.showLoading();
-      },
-      allowOutsideClick: false,
-      showConfirmButton: false
-    });
-
-    try {
-
-    } catch (error) {
-
-    }
+  // Evento cuando el usuario selecciona el archivo
+onFileSelected(event: Event): void {
+  const input = event.target as HTMLInputElement;
+  if (input.files && input.files.length > 0) {
+    this.selectedFile = input.files[0];
+    this.sentLayout(); // Envía el archivo después de seleccionarlo
   }
+}
+
+async sentLayout(): Promise<void> {
+  if (!this.selectedFile) return;
+
+  this.fileTransferService.setFile(this.selectedFile);
+
+  Swal.fire({
+    title: 'Procesando los layouts',
+    html: 'Por favor, espere mientras se procesan los layouts.',
+    didOpen: () => {
+      Swal.showLoading();
+    },
+    allowOutsideClick: false,
+    showConfirmButton: false
+  });
+
+  const file = this.selectedFile;
+
+  try {
+    this.TercerosService.SentLayout(file).subscribe({
+      next: (response: ApiResponse) => {
+        this.data = response.data;
+        // console.log(this.data)
+        Swal.close();
+        Swal.fire('Éxito', 'Archivo enviado correctamente.', 'success');
+        this.selectedFile = null; // Limpiar para el próximo uso
+      },
+      error: (error: any) => {
+        console.error('Error al enviar el archivo:', error);
+        Swal.fire('Error', 'No se pudo enviar el archivo.', 'error');
+      }
+    });
+  } catch (error) {
+    console.error('Error inesperado:', error);
+    Swal.fire('Error', 'Ha ocurrido un error inesperado.', 'error');
+  }
+}
+
 
   // Función para convertir a número, manejando cadenas vacías o no válidas
 

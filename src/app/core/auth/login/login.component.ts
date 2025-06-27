@@ -52,7 +52,8 @@ export class LoginComponent implements OnInit {
     this.authService.authLogg(data).subscribe(
         (response) => {
             const token = response.headers.get('Authorization');
-            const tokenExpiration = new Date().getTime() + (2 * 60 * 60 * 1000) + (58 * 60 * 1000); // 2 horas y 58 minutos
+            // const tokenExpiration = new Date().getTime() + (2 * 60 * 60 * 1000) + (58 * 60 * 1000); // 2 horas y 58 minutos
+            const tokenExpiration = new Date().getTime() + (5000);
             const rolId = response.body.data.roles;
             const userId = response.body.data.userId;
             const path = response.body.data.config.principal;
@@ -90,6 +91,7 @@ export class LoginComponent implements OnInit {
 
 // Verifica la expiración del token
 checkTokenExpiration() {
+  console.log('hola')
   const tokenExpiration = localStorage.getItem('token');
   if (tokenExpiration) {
     const now = new Date().getTime();
@@ -105,11 +107,13 @@ checkTokenExpiration() {
 
 // Limpia el localStorage y redirige al login
 logout() {
+  console.log('hola')
   localStorage.removeItem('token');
   localStorage.removeItem('tokenExpiration');
   localStorage.removeItem('rolId');
   this.busqueda.clearSrlEmp();
-  this.router.navigate(['/login']); // Redirige al login
+  this.router.navigate(['login']); // Redirige al login
+
 }
 
 }

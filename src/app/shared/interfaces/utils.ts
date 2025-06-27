@@ -196,9 +196,34 @@ export interface Resumen {
   liquido:any
 }
 
+export interface Movs {
+  altas: any,
+  bajas:any,
+  modificaciones:any,
+  total: any
+}
 
+export interface Info {
+  accepted: any,
+  records: any,
+  rejected: any,
+  sinLiquido: any,
+  status: any,
+  terceroId: any,
+  quincena: any,
+  users: any;
+}
 
-
+export interface RegistroTabla {
+  rfc: string;
+  nombre: string;
+  documento: string;
+  tipo: string;
+  importe: string;
+  concepto: string;
+  desde: string;
+  srl_emp: string;
+}
 
 
 // export interface clave{

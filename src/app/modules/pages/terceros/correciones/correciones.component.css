@@ -1,0 +1,99 @@
+h1{
+  font-weight: bold;
+}
+
+h5{
+  color: rgb(122, 122, 122);
+}
+
+.row{
+  margin: 0;
+}
+
+.card{
+  background-color: #ffffff;
+  border-radius: 10px;
+  width: 98%;
+
+}
+
+.progress {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 0;
+  height: 25px;
+  background-color: #ffffff;
+}
+
+.step {
+  width: 20%;
+  text-align: center;
+  padding: 5px;
+  border-radius: 10px;
+  background-color: #e0e0e0;
+}
+
+.step.active {
+  background-color: #660033;
+  color: white;
+}
+
+.summary {
+  display: flex;
+  justify-content: space-between;
+  background-color: #f2f2f2;
+  padding: 10px;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+.summary div {
+  text-align: center;
+}
+
+.summary div p {
+  margin: 5px 0;
+}
+
+.boton-container {
+  display: flex; /* Activa flexbox */
+  justify-content: center; /* Centra el contenido horizontalmente */
+  align-items: center; /* Centra el contenido verticalmente */
+
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #ffffff;
+  color: #621132;
+  border-color: #621132;
+  font-weight: bold;
+  height: 38px;
+  border-radius: 15px;
+  margin: 7px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+button:hover {
+  background-color: #621132; /* Fondo marrón en hover */
+  color: #ffffff; /* Texto blanco en hover */
+  border-color: #621132; /* Borde marrón en hover */
+}
+
+button:active {
+  background-color: #3d0b1e; /* Fondo más oscuro para active */
+  color: #ffffff; /* Texto blanco en active */
+  border-color: #3d0b1e; /* Borde oscuro en active */
+  outline: none; /* Sin borde adicional */
+}
+
+.button:disabled {
+  background-color: #7e787b;
+}
+
+
+app-tables {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}

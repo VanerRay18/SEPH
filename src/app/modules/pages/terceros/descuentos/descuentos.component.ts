@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { ApiResponse } from 'src/app/models/ApiResponse';
-import { NominaBecService } from 'src/app/services/nomina-bec.service';
+import { TercerosService } from './../../../../services/terceros.service';
 import { NominaA } from 'src/app/shared/interfaces/utils';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
 import { PermisosUserService } from 'src/app/services/permisos-user.service';
+import { FileTransferService } from 'src/app/services/file-transfer.service';
 import * as ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 
@@ -25,18 +26,28 @@ searchTerm: string = '';
   autorizar: boolean = false;
   files: File[] = [];
   status = 1;
+  users: any;
+  ilimitado: string = 'false';
+  file: File[] = [];
+  layoutCorregido = [];
+  info: any[] = [];
+  institucionales: any[] = [];
+  noInstitucionales: any[] = [];
+  terceroTotalId : any;
 
 
   constructor(
     private router: Router,
-    private NominaBecService: NominaBecService,
-    private PermisosUserService: PermisosUserService
+    private TercerosService: TercerosService,
+    private PermisosUserService: PermisosUserService,
+    private FileTransferService: FileTransferService,
   ) {
     // Registrar las fuentes necesarias
   }
 
   async ngOnInit():  Promise<void>  {
-    this.nominaId = await this.loadNominaId();
+
+    // this.nominaId = await this.loadNominaId();
     this.fetchData();
     this.PermisosUserService.getPermisosSpring(this.PermisosUserService.getPermisos().NominasB).subscribe((response: ApiResponse) => {
       this.eliminar = response.data.eliminar
@@ -47,28 +58,40 @@ searchTerm: string = '';
 
     this.crearlayout = 0 ;
     // console.log(this.data?.status)
+
   }
 
 
-  async loadNominaId() {
-    const nominaId = await this.NominaBecService.getNominaId();
-    return nominaId
-  }
+  // async loadNominaId() {
+  //   const nominaId = await this.NominaBecService.getNominaId();
+  //   return nominaId
+  // }
 
   fetchData() {
-    this.NominaBecService.getNomina().subscribe((response: ApiResponse) => {
-      this.data = response.data;
-    },
+    const userId = localStorage.getItem('userId')!;
+    this.TercerosService.getInformation(userId).subscribe(
+      (response: ApiResponse) => {
+        // console.log('Datos obtenidos:', response.data);
+        this.info = response.data;
+        this.institucionales = this.info.filter(t => t.ilimitado);
+        this.noInstitucionales = this.info.filter(t => !t.ilimitado);
+      },
       (error) => {
-        // console.error('Error al obtener los datos:', error);
-        Swal.fire({
-          icon: 'warning',
-          title: 'No hay nominas para procesar',
-          text: 'La quincena actual ya fue procesada',
-          confirmButtonText: 'Aceptar'
-        });
-      });
+        console.error('Ocurrió un error', error);
+      }
+    );
   }
+
+  verDetalle(id: number, added: boolean): void {
+    this.FileTransferService.setIdTercero(id);
+    console.log('ID del tercero seleccionado:', id);
+    if (added === true) {
+      this.router.navigate(['/pages/Terceros/Crear-Layout']);
+    } else {
+    this.router.navigate(['/pages/Terceros/Validar']);
+    }
+  }
+
 
   startNomina(): void {
     let status = this.status;
@@ -102,153 +125,4 @@ searchTerm: string = '';
 
   }
 
-
-  opcionsNomina() {
-    Swal.fire({
-      title: '¿Qué accion deseas hacer?',
-      html: `
-                  <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                      <input type="radio" id="skip" name="opcions" value="skip" style="margin-right: 5px;">
-                      <label for="skip">No procesar esta nomina</label>
-                  </div>
-                  <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                      <input type="radio" id="special" name="opcions" value="special" style="margin-right: 5px;">
-                      <label for="special">Procesar una nomina especial</label>
-                  </div>
-              `,
-      showCancelButton: true,
-      confirmButtonText: 'Confirmar',
-      cancelButtonText: 'Cancelar',
-      customClass: {
-        popup: 'small-swal',
-        title: 'small-swal-title'
-      },
-      width: '450px',
-      padding: '1em',
-      preConfirm: () => {
-        const selectedValue = (document.querySelector('input[name="opcions"]:checked') as HTMLInputElement)?.value;
-        if (!selectedValue) {
-          Swal.showValidationMessage('Por favor, seleccione una opción');
-          return false;
-        }
-        return selectedValue;
-      }
-    }).then((result) => {
-      if (result.isConfirmed) {
-        const opcionSeleccionada = result.value;
-
-        switch (opcionSeleccionada) {
-          case 'skip':
-            Swal.fire({
-              title: 'Confirmar',
-              html: `¿Está seguro de no procesar esta nomina?<br><br>`,
-              icon: 'warning',
-              showCancelButton: true,
-              confirmButtonText: 'Sí, guardar',
-              cancelButtonText: 'No, cancelar'
-            }).then((result) => {
-              if (result.isConfirmed) {
-                // Mostrar spinner de carga
-                Swal.fire({
-                  title: 'Cargando...',
-                  html: 'Por favor, espere mientras se realiza esta acción.',
-                  didOpen: () => {
-                    Swal.showLoading();
-                  },
-                  allowOutsideClick: false,
-                  showConfirmButton: false
-                });
-                // El usuario confirmó, proceder a enviar los datos
-                this.NominaBecService.skipnomina().subscribe(
-                  response => {
-                    this.fetchData();
-                    Swal.fire({
-                      title: 'Operacion exitosa',
-                      text: 'La nomina no a sido procesada',
-                      icon: 'success',
-                      confirmButtonText: 'Aceptar'
-                    });
-                  },
-                  error => {
-                    Swal.fire({
-                      title: 'Error',
-                      text: error.error.message,
-                      icon: 'error',
-                      confirmButtonText: 'Aceptar'
-                    });
-                  }
-                );
-
-              }
-            });
-            break;
-          case 'special':
-            Swal.fire({
-              title: 'Subir archivo de TXT',
-              html: `
-                      <div class="custom-file-container">
-                         <label for="fileInput" class="custom-file-label">Seleccionar archivo</label>
-                         <input
-                           type="file"
-                           id="fileInput"
-                           class="swal2-input custom-file-input"
-                           accept=".txt"
-                           aria-label="Selecciona un archivo de texto"
-                           onchange="handleFileSelect(event)"
-                               />
-                       </div>
-                    `,
-              confirmButtonText: 'Procesar',
-              showCancelButton: true,
-              width:700,
-              preConfirm: () => {
-                const fileInput: any = document.getElementById('fileInput');
-                const file = fileInput?.files[0];
-
-                const files: File[] = [];
-                if (file) {
-                  files.push(file); // Archivo normal
-                }
-
-                Swal.fire({
-                  title: 'Cargando...',
-                  html: 'Por favor, espere mientras se realiza esta acción.',
-                  didOpen: () => {
-                    Swal.showLoading();
-                  },
-                  allowOutsideClick: false,
-                  showConfirmButton: false
-                });
-
-                this.NominaBecService.SpecialNomina(files).subscribe({
-                  next: (response) => {
-
-                    new Promise<void>((resolve, reject) => {
-                      resolve();
-                    }).then(() => {
-                      Swal.close();
-                      this.router.navigate(['/pages/NominaBecarios/Nominas-Pagar']);
-                    }).catch(error => {
-
-                      Swal.fire('Error', 'Hubo un problema al procesar el archivo', 'error');
-                    });
-                  },
-                  error: (error) => {
-                    Swal.fire({
-                      title: 'Error',
-                      text: error.error.message,
-                      icon: 'error',
-                      confirmButtonText: 'Aceptar'
-                    });
-                  }
-                }
-              );
-
-              }
-            })
-            break;
-        }
-      }
-    });
-  }
 }

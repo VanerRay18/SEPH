@@ -57,12 +57,7 @@ export class HomeTercerosComponent {
   }
 
   fetchData() {
-    this.NominaBecService.getNomina().subscribe((response: ApiResponse) => {
-      this.data = response.data;
-    },
-      (error) => {
-        console.error('Error al obtener los datos:', error);
-      });
+
 
     interval(15000)
       .pipe(
