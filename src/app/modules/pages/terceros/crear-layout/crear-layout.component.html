@@ -1,1 +1,112 @@
-<p>crear-layout works!</p>
+<div class="cont col-auto row  mt-4 ms-4">
+  <div class="titulos ">
+    <h1>Crear Layout</h1>
+  </div>
+  <div class="card d-flex mt-3">
+    <div class="row">
+      <div class="col-auto col-lg-8  ">
+        <div class="progress">
+          <div class="step active " *ngIf="crearlayout === 1"><strong>Crear
+              Layout</strong></div>
+          <div class="step"><strong>Validar</strong></div>
+          <div class="step"><strong>Reporte de validacion</strong></div>
+          <div class="step"><strong>Finalizado</strong></div>
+        </div>
+      </div>
+
+      <div class="col-auto col-lg-8 mt-3">
+        <app-busqueda (arrayUser)="recibirArrayUser($event)"></app-busqueda>
+      </div>
+
+      <form [formGroup]="datosLayout" (ngSubmit)="guardar()" class="form-grid">
+        <div class="form-item">
+          <label>Apellido Materno:</label>
+          <input formControlName="apellido1" type="text" />
+        </div>
+
+        <div class="form-item">
+          <label>Apellido Paterno:</label>
+          <input formControlName="apellido2" type="text" />
+        </div>
+
+        <div class="form-item">
+          <label>Nombre:</label>
+          <input formControlName="nombre" type="text" />
+        </div>
+
+        <div class="form-item">
+          <label>RFC:</label>
+          <input formControlName="rfc" type="text" />
+        </div>
+
+        <div class="form-item">
+          <label>SRL_EMP:</label>
+          <input formControlName="srl_emp" type="text" />
+        </div>
+
+        <div class="form-item">
+          <label>Quincena desde:</label>
+          <input formControlName="quincena" type="text" />
+        </div>
+
+        <div class="form-item radio-group">
+          <label><input type="radio" formControlName="porcentaje" value="5L" /> 1%</label>
+          <label><input type="radio" formControlName="porcentaje" value="6L" /> 2%</label>
+        </div>
+
+        <div class="form-item ">
+          <button type="submit" class="btn  btn-sm">Guardar</button>
+        </div>
+      </form>
+
+
+
+      <div class="form-floating col-auto col-lg-4 m-5 row">
+        <input type="text" class=" buscar form-control" id="busqueda"
+          placeholder="Buscar"
+          [(ngModel)]="searchTerm" name="busqueda">
+        <label for="User">&nbsp;&nbsp;<i
+            class="fa-solid fa-magnifying-glass"></i> Buscar</label>
+      </div>
+      <div class="col-auto col-lg-4 mt-5">
+        <h5>Total de registros: 64</h5>
+      </div>
+      <div class="col-auto col-lg-3 d-flex justify-content-end mt-auto">
+        <input type="file" #fileInput style="display: none"
+          (change)="onFileSelected($event)" />
+        <button type="submit" class="btn  btn-sm" (click)="sentLayout()"
+          *ngIf="crearlayout === 1">Descargar layout</button>
+      </div>
+
+      <div
+        class="col-auto col-lg-12 mt-4 justify-content-center align-items-center"
+        *ngIf="data.length === 0">
+        <h5>No a guardado ningun registro en el layout</h5>
+      </div>
+      <div
+        class="col-auto col-lg-12 mt-4 justify-content-center align-items-center"
+        *ngIf="data.length > 0">
+        <app-tables
+          [headers]="headers"
+          [data]="data"
+          [displayedColums]="displayedColumns"
+          [searchTerm]="searchTerm"
+          [maxHeight]="'630px'"
+          [itemsPerPage]="10"
+          [showActionsEdit]=false
+          [showActionsDeleted]=true
+          (delete)="onDelete($event)"
+          [showActionsPdf]=false
+          [showActiveCheckbox]=false
+          [showDetailsColumn]=false
+          [isLoading]="isLoading">
+        </app-tables>
+      </div>
+      <div class="boton-container col-auto col-lg-12 m-3 ">
+        <button type="submit" class="btn btn-sm" (click)=" saveLayout()">Guardar</button>
+        <button type="submit" class="btn  btn-sm" (click)=" continueNomina()"
+          [disabled]="data.length === 0">Continuar</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -66,10 +66,10 @@ searchTerm: string = '';
 
 
   saveNomina(event:any): void {
-            console.log(this.status, this.nominaId)
+            // console.log(this.status, this.nominaId)
             this.NominaBecService.changeStatus(this.nominaId,this.status).subscribe(
               response => {
-               console.log('Se cambio el status');
+              //  console.log('Se cambio el status');
                this.fetchData();
               },
               error => {
@@ -102,7 +102,7 @@ searchTerm: string = '';
       this.NominaBecService.changeClave(this.clabes).subscribe(
         (response) => {
           this.fetchData();
-          console.log('Respuesta del backend:', response);
+          // console.log('Respuesta del backend:', response);
           Swal.fire({
             title: 'Éxito',
             text: 'Los cambios se han guardado correctamente.',

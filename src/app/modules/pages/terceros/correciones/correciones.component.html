@@ -1,1 +1,163 @@
-<p>correciones works!</p>
+<div class="cont col-auto row  mt-4 ms-4">
+  <div class="titulos ">
+    <h1>Reporte de validacion</h1>
+  </div>
+  <div class="card d-flex mt-3">
+    <div class="row">
+      <div class="col-auto col-lg-8  ">
+        <div class="progress">
+          <div class="step active " *ngIf="crearlayout === 1"><strong>Crear Layout</strong></div>
+          <div class="step active"><strong>Validar</strong></div>
+          <div class="step active"><strong>Reporte de validacion</strong></div>
+          <div class="step"><strong>Finalizado</strong></div>
+        </div>
+      </div>
+
+      <div class="col-auto col-lg-6 mt-4">
+        <h5>A cuenta de MOVs</h5>
+      </div>
+      <div class="col-auto col-lg-5 d-flex justify-content-end mt-auto">
+        <button type="submit" class="btn  btn-sm" (click)="generateAnexos()">Descargar PDF</button>
+      </div>
+      <div class="col-auto col-lg-12">
+        <div *ngIf="isLoading" class="text-center">
+          <p><strong>Cargando datos...</strong></p>
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+          </div>
+        </div>
+
+        <div *ngIf="!isLoading && dataMov" class="summary row">
+          <div class="col-auto">
+            <p><strong>Altas</strong></p>
+            <p>{{ dataMov.altas}}</p>
+          </div>
+          <div class="col-auto">
+            <p><strong>Bajas</strong></p>
+            <p>{{ dataMov.bajas}}</p>
+          </div>
+          <div class="col-auto">
+            <p><strong>Modificaciones</strong></p>
+            <p>{{ dataMov.modificaciones}}</p>
+          </div>
+          <div class="col-auto">
+            <p><strong>Total</strong></p>
+            <p>{{ dataMov.total}}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-auto col-lg-12 mt-4">
+        <h5>Movimientos Rechazados</h5>
+      </div>
+      <div class="col-auto col-lg-12 mt-4 justify-content-center align-items-center ">
+        <div class="accordion" id="accordionExample">
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+               Alta no aplicable por termina de contrato   Total: 20
+              </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse " data-bs-parent="#accordionExample">
+              <div class="accordion-body">
+                <app-tables
+                [headers]="headersAN"
+                [data]="dataAN"
+                [displayedColums]="displayedColumnsAN"
+                [searchTerm]="searchTerm"
+                [maxHeight]="'630px'"
+                [itemsPerPage]="7"
+                [showActionsEdit]=false
+                [showActionsDeleted]=false
+                [showActionsPdf]=false
+                [showActiveCheckbox]=false
+                [showDetailsColumn]=false
+
+                >
+              </app-tables>
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                Liquido Insuficiente  Total:
+              </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+              <div class="accordion-body">
+                <app-tables
+                [headers]="headersLI"
+                [data]="dataLI"
+                [displayedColums]="displayedColumnsLI"
+                [searchTerm]="searchTerm"
+                [maxHeight]="'630px'"
+                [itemsPerPage]="7"
+                [showActionsEdit]=false
+                [showActionsDeleted]=false
+                [showActionsPdf]=false
+                [showActiveCheckbox]=false
+                [showDetailsColumn]=false
+                >
+              </app-tables>              </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                Posible RFC  Total:
+              </button>
+            </h2>
+            <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+              <div class="accordion-body">
+                <app-tables
+                [headers]="headersRFC"
+                [data]="dataRFC"
+                [displayedColums]="displayedColumnsRFC"
+                [searchTerm]="searchTerm"
+                [maxHeight]="'630px'"
+                [itemsPerPage]="7"
+                [showActionsEdit]=false
+                [showActionsDeleted]=false
+                [showActionsPdf]=false
+                [showActiveCheckbox]=false
+                [showDetailsColumn]=true
+                (show)="showDetails($event)"
+                >
+              </app-tables>              </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFor" aria-expanded="false" aria-controls="collapseFor">
+                Trab. no existente en el cpto, baja o modificacion   Total:
+              </button>
+            </h2>
+            <div id="collapseFor" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+              <div class="accordion-body">
+                <app-tables
+                [headers]="headersTN"
+                [data]="dataTN"
+                [displayedColums]="displayedColumnsTN"
+                [searchTerm]="searchTerm"
+                [maxHeight]="'630px'"
+                [itemsPerPage]="7"
+                [showActionsEdit]=false
+                [showActionsDeleted]=false
+                [showActionsPdf]=false
+                [showActiveCheckbox]=false
+                [showDetailsColumn]=false
+                >
+              </app-tables>              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="boton-container col-auto col-lg-12 m-3 " >
+        <button type="submit" class="btn  btn-sm" (click)="correctLayout()" >Corregir</button>
+        <button type="submit" class="btn  btn-sm" (click)=" SaveTercero()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- [disabled]="data2?.status == 2" -->
