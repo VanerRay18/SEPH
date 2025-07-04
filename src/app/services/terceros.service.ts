@@ -44,6 +44,8 @@ export class TercerosService {
 
   validatorFormat(data: any, ilimitado: any): Observable<ApiResponse> {//Corrige el layout
     let headers = new HttpHeaders({ 'ilimitado': ilimitado })
+    console.log(data);
+    console.log(ilimitado);
     return this.http.post<ApiResponse>(`${environment.baseService}${'/servicioPersonal/validatorFormat'}`, data, { headers });
   }
 
