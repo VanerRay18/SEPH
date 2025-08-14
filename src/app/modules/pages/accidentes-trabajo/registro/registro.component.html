@@ -1,0 +1,13 @@
+<div class="login-container">
+  <div class="login-card">
+    <h2>Registro de reporte</h2>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <label>
+        <i class="info-icon">ℹ️</i> Correo institucional:
+        <input type="email" formControlName="correo" />
+      </label>
+      <button type="submit" class="btn-login">Entrar</button>
+    </form>
+    <a class="register-link" href="#">Registro sin correo institucional</a>
+  </div>
+</div>

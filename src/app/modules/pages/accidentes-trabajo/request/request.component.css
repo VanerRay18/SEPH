@@ -1,0 +1,49 @@
+h1{
+  font-weight: bold;
+}
+
+h5{
+  color: rgb(122, 122, 122);
+}
+
+.row{
+  margin: 0;
+}
+
+.card{
+  background-color: #ffffff;
+  border-radius: 10px;
+  width: 98%;
+
+}
+
+.tabs {
+  display: flex;
+  gap: 10px;
+}
+
+.tab {
+  padding: 6px 16px;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.tab.active {
+  border-bottom: 3px solid #7b1634;
+  color: #7b1634;
+}
+
+.buscador {
+  max-width: 200px;
+}
+
+.table thead th {
+  font-weight: 500;
+}
+
+.page-link {
+  cursor: pointer;
+}

@@ -1,0 +1,103 @@
+<div class="cont col-auto row  mt-4 ms-4">
+  <div class="titulos ">
+    <h1>Control de reportes</h1>
+  </div>
+  <div class="card shadow-sm p-4 mb-4">
+
+    <!-- Tabs -->
+  <div class="tabs mt-3 mb-3">
+    <button
+      class="tab"
+      [class.active]="selectedTab === 'solicitudes'"
+      (click)="selectedTab = 'solicitudes'">
+      Solicitudes
+    </button>
+    <button
+      class="tab"
+      [class.active]="selectedTab === 'enat'"
+      (click)="selectedTab = 'enat'">
+      ENAT
+    </button>
+    <button
+      class="tab"
+      [class.active]="selectedTab === 'enet'"
+      (click)="selectedTab = 'enet'">
+      ENET
+    </button>
+    <button
+      class="tab"
+      [class.active]="selectedTab === 'reporte'"
+      (click)="selectedTab = 'reporte'">
+      Reporte general
+    </button>
+  </div>
+
+  <!-- Buscador -->
+  <div class="d-flex align-items-center mb-2">
+    <input
+      type="text"
+      class="form-control buscador me-3"
+      placeholder="Buscar..."
+      [(ngModel)]="searchText"
+      (ngModelChange)="filterData()">
+    <span>Total de registros: {{ filteredData.length }}</span>
+  </div>
+
+  <!-- Tabla -->
+  <div class="table-responsive">
+    <table class="table table-striped align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>Nombre</th>
+          <th>Apellido paterno</th>
+          <th>Apellido materno</th>
+          <th>RFC</th>
+          <th>Fecha</th>
+          <th>Hora</th>
+          <th>Teléfono</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of pagedData">
+          <td>{{ item.nombre }}</td>
+          <td>{{ item.apellidoPaterno }}</td>
+          <td>{{ item.apellidoMaterno }}</td>
+          <td>{{ item.rfc }}</td>
+          <td>{{ item.fecha }}</td>
+          <td>{{ item.hora }}</td>
+          <td>{{ item.telefono }}</td>
+          <td>
+            <button class="btn btn-link text-success p-0 me-2">
+              <i class="bi bi-send-fill"></i>
+            </button>
+            <button class="btn btn-link text-danger p-0">
+              <i class="bi bi-trash-fill"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Paginación -->
+  <nav class="mt-2">
+    <ul class="pagination justify-content-center">
+      <li class="page-item" [class.disabled]="currentPage === 1">
+        <button class="page-link" (click)="changePage(currentPage - 1)">Previous</button>
+      </li>
+      <li
+        class="page-item"
+        *ngFor="let page of totalPagesArray"
+        [class.active]="page === currentPage">
+        <button class="page-link" (click)="changePage(page)">{{ page }}</button>
+      </li>
+      <li class="page-item" [class.disabled]="currentPage === totalPages">
+        <button class="page-link" (click)="changePage(currentPage + 1)">Next</button>
+      </li>
+    </ul>
+  </nav>
+
+  </div>
+
+</div>

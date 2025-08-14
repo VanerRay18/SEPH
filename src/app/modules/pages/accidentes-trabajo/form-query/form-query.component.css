@@ -1,0 +1,41 @@
+h1{
+  font-weight: bold;
+}
+
+h5{
+  color: rgb(122, 122, 122);
+}
+
+.row{
+  margin: 0;
+}
+
+.card{
+  background-color: #ffffff;
+  border-radius: 10px;
+  width: 98%;
+
+}
+
+.container {
+  max-width: 1200px;
+}
+
+label {
+  font-weight: 500;
+}
+
+.card {
+  background: #fff;
+  border-radius: 10px;
+}
+
+.btn-outline-primary {
+  color: #7b1634;
+  border-color: #7b1634;
+}
+
+.btn-outline-primary:hover {
+  background-color: #7b1634;
+  color: white;
+}

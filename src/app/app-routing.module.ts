@@ -1,3 +1,4 @@
+import { AccidentesTrabajoModule } from './modules/pages/accidentes-trabajo/accidentes-trabajo.module';
 import { TercerosModule } from './modules/pages/terceros/terceros.module';
 import { Component, NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
@@ -14,15 +15,21 @@ import { ModulesCRUDComponent } from './modules/pages/administration/modules-cru
 import { EndopointCRUDComponent } from './modules/pages/administration/endopoint-crud/endopoint-crud.component';
 import { TestComponent } from './modules/pages/extras/test/test.component';
 import { NominaBecariosModule } from './modules/pages/nomina-becarios/nomina-becarios.module';
-
+import { FormRecordComponent } from './modules/pages/accidentes-trabajo/form-record/form-record.component';
+import { RegistroComponent } from './modules/pages/accidentes-trabajo/registro/registro.component';
+import { FormQueryComponent } from './modules/pages/accidentes-trabajo/form-query/form-query.component';
+import { RequestComponent } from './modules/pages/accidentes-trabajo/request/request.component';
+import { PruebasComponent } from './modules/pages/extras/pruebas/pruebas.component';
 
 
 const routes: Routes = [
-  {path:'',redirectTo:'/login',pathMatch:'full'},
-  { path: 'Test', component: TestComponent },
-  {path: 'login',
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
+  { path: 'Test', component: PruebasComponent },
+  {
+    path: 'login',
     component: LoginComponent,
   },
+  { path: 'Accidentes-Trabajo', component: RegistroComponent },
   {
     path: 'pages',
     component: LayoutComponent,
@@ -30,50 +37,57 @@ const routes: Routes = [
     children: [
 
       {
-        path:'Licencias',
-        loadChildren:() =>
+        path: 'Licencias',
+        loadChildren: () =>
           import('./modules/pages/licencias/licencias.module').then(
             (m) => m.LicenciasModule
           ),
       },
       {
-        path:'Extras',
-        loadChildren:() =>
+        path: 'Extras',
+        loadChildren: () =>
           import('./modules/pages/extras/extras.module').then(
             (m) => m.ExtrasModule
           ),
       },
       {
-        path:'Inicio',
-        loadChildren:() =>
+        path: 'Inicio',
+        loadChildren: () =>
           import('./modules/pages/home/home.module').then(
             (m) => m.HomeModule
           ),
       },
       {
-        path:'Admin',
-        loadChildren:() =>
+        path: 'Admin',
+        loadChildren: () =>
           import('./modules/pages/administration/administration.module').then(
             (m) => m.AdministrationModule
           ),
       },
       {
-        path:'NominaBecarios',
-        loadChildren:() =>
+        path: 'NominaBecarios',
+        loadChildren: () =>
           import('./modules/pages/nomina-becarios/nomina-becarios.module').then(
             (m) => m.NominaBecariosModule
           ),
       },
       {
-        path:'Terceros',
-        loadChildren:() =>
+        path: 'Terceros',
+        loadChildren: () =>
           import('./modules/pages/terceros/terceros.module').then(
             (m) => m.TercerosModule
           ),
+      },
+      {
+        path: 'AccidentesTrabajo',
+        loadChildren: () =>
+          import('./modules/pages/accidentes-trabajo/accidentes-trabajo.module').then(
+            (m) => m.AccidentesTrabajoModule
+          ),
       }
     ],
-    },
-     {path:'**',redirectTo:'/login',pathMatch:'full'}
+  },
+  { path: '**', redirectTo: '/login', pathMatch: 'full' }
 
 ];
 

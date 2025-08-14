@@ -1,0 +1,65 @@
+body {
+  background-color: #f3f6fa;
+}
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.login-card {
+  background-color: white;
+  padding: 2rem 2.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.login-card h2 {
+  margin-bottom: 1.5rem;
+  color: #65182c; /* color similar al encabezado SEP */
+}
+
+label {
+  display: block;
+  margin-bottom: 1rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.info-icon {
+  margin-right: 4px;
+}
+
+input[type="email"] {
+  width: 100%;
+  padding: 0.4rem;
+  margin-top: 0.2rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.btn-login {
+  background-color: white;
+  color: #65182c;
+  border: 1px solid #65182c;
+  border-radius: 4px;
+  padding: 0.4rem 1.2rem;
+  cursor: pointer;
+  margin-top: 1rem;
+}
+
+.btn-login:hover {
+  background-color: #65182c;
+  color: white;
+}
+
+.register-link {
+  display: block;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #0000ee;
+  text-decoration: underline;
+}
