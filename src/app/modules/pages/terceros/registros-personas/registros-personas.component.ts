@@ -1,4 +1,6 @@
+import { Terceros } from './../../../../shared/interfaces/utils';
 import { Component } from '@angular/core';
+import { PhpTercerosService } from 'src/app/services/php-terceros.service';
 import { Persona } from 'src/app/shared/interfaces/utils';
 import Swal from 'sweetalert2';
 @Component({
@@ -7,41 +9,83 @@ import Swal from 'sweetalert2';
   styleUrls: ['./registros-personas.component.css']
 })
 export class RegistrosPersonasComponent {
+
+
   tabs = [
     { id: 'Personas', title: 'Personas', icon: 'fa-solid fa-person' },
     { id: 'Terceros', title: 'Terceros', icon: 'fa-solid fa-building' }
   ];
-  personas = [
-    { nombre: 'Juan Perez Sanchez', usado: 80, liquido: 100 },
-    { nombre: 'Juan Perez Sanchez', usado: 90, liquido: 100 },
-    { nombre: 'Juan Perez Sanchez', usado: 10, liquido: 100 },
-    { nombre: 'Juan Perez Sanchez', usado: 75, liquido: 100 },
-    { nombre: 'Juan Perez Sanchez', usado: 95, liquido: 100 },
-    { nombre: 'Juan Perez Sanchez', usado: 100, liquido: 100 },
-    { nombre: 'Juan Perez Sanchez', usado: 45, liquido: 100 },
-    { nombre: 'Juan Perez Sanchez', usado: 88, liquido: 100 },
-    { nombre: 'Juan Perez Sanchez', usado: 66, liquido: 100 },
-  ];
-
-
+  // personas = [
+  //   { nombre: 'Juan Perez Sanchez', usado: 80, liquido: 100 },
+  //   { nombre: 'Juan Perez Sanchez', usado: 90, liquido: 100 },
+  //   { nombre: 'Juan Perez Sanchez', usado: 10, liquido: 100 },
+  //   { nombre: 'Juan Perez Sanchez', usado: 75, liquido: 100 },
+  //   { nombre: 'Juan Perez Sanchez', usado: 95, liquido: 100 },
+  //   { nombre: 'Juan Perez Sanchez', usado: 100, liquido: 100 },
+  //   { nombre: 'Juan Perez Sanchez', usado: 45, liquido: 100 },
+  //   { nombre: 'Juan Perez Sanchez', usado: 88, liquido: 100 },
+  //   { nombre: 'Juan Perez Sanchez', usado: 66, liquido: 100 },
+  // ];
+  personas: Persona[] = [];
+  servicio: any;
   activeTab: string = 'Personas';
+  page: number = 0;
+  size: number = 5;
+  total: number = 0;
+  isLoading: boolean = true;
+  terceros: any[] = [];
 
-    constructor(
+  constructor(
+    private phpTercerosService: PhpTercerosService
+  ) {
 
-    ) {
+  }
 
-    }
+  ngOnInit(): void {
+    this.fetchData(this.page, this.size);
+  }
 
-    get restante() {
-      return (persona: any) => persona.liquido - persona.usado;
-    }
+  cambiarPagina(pagina: number) {
+    this.page = pagina;
+    this.fetchData(this.page, this.size);
+  }
+
+  fetchData(page: number, size: number) {
+    this.isLoading = true;
+    this.servicio = 'get_pagos_terceros';
+    this.phpTercerosService.getPeople(this.servicio, page, size).subscribe((response: any) => {
+      if (response && response.data) {
+        console.log('Personas fetched successfully:', response);
+        this.isLoading = false;
+        this.personas = response.data.map((persona: any) => ({
+          nombre: persona.nombre,
+          usado: persona.quincena_deducciones_terceros,
+          liquido: persona.quincena_total_bruto,
+          restante: persona.quincena_restante,
+          tercero: persona.historico_terceros || [] // Asegúrate de que 'tercero' esté definido
+        }));
+         console.log('Personas:', this.personas);
+        this.total = response.total_docentes ; // Asegúrate de que 'total' esté definido
+      } else {
+        this.isLoading = false;
+        console.error('No data found in response');
+      }
+    }, error => {
+      this.isLoading = false;
+      console.error('Error fetching personas:', error);
+    });
+  }
+
+  get restante() {
+    return (persona: any) => persona.liquido - persona.usado;
+  }
 
   setActiveTab(tabId: string) {
     this.activeTab = tabId; // Cambia la pestaña activa
   }
 
   mostrarDetalle(persona: any) {
-    const restante = persona.liquido - persona.usado;
+    const restante = persona.restante;
     const porcentaje = ((persona.usado / persona.liquido) * 100).toFixed(0);
 
     Swal.fire({
@@ -66,7 +110,7 @@ export class RegistrosPersonasComponent {
           <!-- Tabla de terceros -->
           <div style="text-align: left;">
             <p style="margin: 10px 0;"><strong>Terceros a los que está inscrito</strong> &nbsp;&nbsp;&nbsp;&nbsp; <strong style="float: right;">Total: 5</strong></p>
-            ${this.generarTercerosHTML()}
+            ${this.generarTercerosHTML(persona)}
           </div>
         </div>
       `,
@@ -79,33 +123,35 @@ export class RegistrosPersonasComponent {
     });
   }
 
-  generarTercerosHTML(): string {
-    const terceros = [
-      { nombre: 'ISSTE', deuda: 200000, abonado: 40000, quincena: '2Q 05/08', abonos: 1 },
-      { nombre: 'ISSTE', deuda: 200000, abonado: 120000, quincena: '2Q 05/08', abonos: 3 },
-      { nombre: 'ISSTE', deuda: 200000, abonado: 160000, quincena: '2Q 05/08', abonos: 4 },
-      { nombre: 'ISSTE', deuda: 200000, abonado: 60000, quincena: '2Q 05/08', abonos: 1 },
-      { nombre: 'ISSTE', deuda: 200000, abonado: 40000, quincena: '2Q 05/08', abonos: 1 }
-    ];
+  generarTercerosHTML(persona: any): string {
+    console.log('Persona:', persona);
+    const terceros = persona.tercero || [];
+    console.log('Terceros:', terceros);
 
-    return terceros.map(t => {
-      const porcentaje = ((t.abonado / t.deuda) * 100).toFixed(0);
+    return terceros.map((t: {
+      cantidad_pagos_pendientes: any;
+      cantidad_pagos_totales: any;
+      cantidad_pagos_realizados: any;
+      quincena_final: any; total_tercero: number; deuda: number; name: any; quincena: any; cantidad_pagos: { toLocaleString: () => any; quincena_final: any; };
+}) => {
+      const porcentaje = ((t.total_tercero / t.deuda) * 100).toFixed(0);
       const color =
         +porcentaje > 80 ? '#0FA958' :
-        +porcentaje > 50 ? '#FF6C11' : '#DC3E3E';
+          +porcentaje > 50 ? '#FF6C11' : '#DC3E3E';
 
 
       return `
         <div style="margin-bottom: 15px;">
-          <strong>${t.nombre}</strong><br>
-          <small>Quincena de término: ${t.quincena}</small>
+          <strong>${t.name}</strong><br>
+          <small>Quincena de término: ${t.quincena_final}</small>
           <div style="height: 10px; background: #ddd; border-radius: 5px; overflow: hidden; margin: 4px 0;">
             <div style="width: ${porcentaje}%; background: ${color}; height: 100%;"></div>
           </div>
           <div style="font-size: 12px;">
-            Total de la deuda: <strong>$${t.deuda.toLocaleString()}</strong> &nbsp;&nbsp;
-            Abonado: <strong style="color: green;">$${t.abonado.toLocaleString()}</strong> &nbsp;&nbsp;
-            <span style="float: right;">Abonos: ${t.abonos}</span>
+            Total de pagos a realizar: <strong>${t.cantidad_pagos_totales}</strong> &nbsp;&nbsp;
+            Total de pagos pendientes: <strong>${t.cantidad_pagos_pendientes}</strong> &nbsp;&nbsp;
+            Abonado: <strong style="color: green;">$${t.total_tercero}</strong> &nbsp;&nbsp;
+            <span style="float: right;">Abonos: ${t.cantidad_pagos_realizados}</span>
           </div>
         </div>
       `;

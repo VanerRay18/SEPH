@@ -42,12 +42,14 @@ export class TercerosService {
     return this.http.post<ApiResponse>(`${environment.baseService}/servicioPersonal/validator`, formData);
   }
 
-  validatorFormat(data: any, ilimitado: any): Observable<ApiResponse> {//Corrige el layout
-    let headers = new HttpHeaders({ 'ilimitado': ilimitado })
-    console.log(data);
-    console.log(ilimitado);
-    return this.http.post<ApiResponse>(`${environment.baseService}${'/servicioPersonal/validatorFormat'}`, data, { headers });
-  }
+validatorFormat(data: any, ilimitado: boolean): Observable<ApiResponse> {
+  const headers = new HttpHeaders({ 'ilimitado': String(ilimitado) });
+  return this.http.post<ApiResponse>(
+    `${environment.baseService}/servicioPersonal/validatorFormat`,
+    data,
+    { headers }
+  );
+}
 
   createLayout(data: any, terceroId: any): Observable<ApiResponse> {//Corrige el layout
     let headers = new HttpHeaders({ 'terceroId': terceroId })

@@ -8,6 +8,7 @@ import { TablesComponent } from './componentes/tables/tables.component';
 import { FilterPipe } from './filter.pipe';
 import { BusquedaComponent } from './componentes/busqueda/busqueda.component';
 import { FooterComponent } from './header/footer/footer.component';
+import { PaginadorComponent } from './componentes/paginador/paginador.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { FooterComponent } from './header/footer/footer.component';
     TablesComponent,
     FilterPipe,
     BusquedaComponent,
-    FooterComponent
+    FooterComponent,
+    PaginadorComponent
   ],
   imports: [
     CommonModule,
@@ -27,7 +29,8 @@ import { FooterComponent } from './header/footer/footer.component';
     NavComponent,
     BusquedaComponent,
     TablesComponent,
-    FooterComponent
+    FooterComponent,
+    PaginadorComponent
   ]
 })
 export class SharedModule { }

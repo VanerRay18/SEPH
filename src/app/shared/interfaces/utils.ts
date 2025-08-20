@@ -299,6 +299,7 @@ export interface Persona {
   usado: number;
   liquido: number;
   restante: number;
+  terceros: any[]; // Asegúrate de que 'tercero' sea un array
 }
 
 export interface Terceros {

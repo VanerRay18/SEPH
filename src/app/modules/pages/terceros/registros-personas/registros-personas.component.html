@@ -18,7 +18,8 @@
       <div class="tab-content" role="tabpanel">
         <ng-container *ngIf="activeTab === 'Personas'">
           <div class="card2">
-            <div class="card-person" *ngFor="let persona of personas" (click)="mostrarDetalle(persona)" style="cursor: pointer;">
+            <div class="card-person" *ngFor="let persona of personas"
+              (click)="mostrarDetalle(persona)" style="cursor: pointer;">
               <h3>{{ persona.nombre }}</h3>
               <div class="barra">
                 <div
@@ -30,7 +31,7 @@
               <div class="datos">
                 <span>Usado<br><strong>{{ persona.usado }}</strong></span>
                 <span>Liquido<br><strong>{{ persona.liquido }}</strong></span>
-                <span>Restante<br><strong>{{ restante(persona)
+                <span>Restante<br><strong>{{ persona.restante
                     }}</strong></span>
               </div>
             </div>
@@ -38,10 +39,16 @@
         </ng-container>
 
         <ng-container *ngIf="activeTab === 'Terceros' ">
-        <app-registros-terceros></app-registros-terceros>
+          <app-registros-terceros></app-registros-terceros>
         </ng-container>
 
       </div>
     </div>
+    <app-paginador [isLoading]="isLoading" [visible]="true"
+      [message]="'No hay registros que mostrar'"
+      [page]="page" [size]="size" [total]="total"
+      (pageChange)="cambiarPagina($event)">
+    </app-paginador>
+
   </div>
 </div>

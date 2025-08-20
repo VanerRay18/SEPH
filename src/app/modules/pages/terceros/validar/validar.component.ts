@@ -4,6 +4,7 @@ import { ApiResponse } from 'src/app/models/ApiResponse';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
 import { FileTransferService } from 'src/app/services/file-transfer.service';
+import { PhpTercerosService } from 'src/app/services/php-terceros.service';
 
 @Component({
   selector: 'app-validar',
@@ -28,6 +29,7 @@ export class ValidarComponent {
     private TercerosService: TercerosService,
     private cdr: ChangeDetectorRef,
     private fileTransferService: FileTransferService,
+    private php: PhpTercerosService
   ) {
     // Registrar las fuentes necesarias
   }
@@ -69,6 +71,7 @@ export class ValidarComponent {
       this.crearlayout = 0;
     }
 
+
 //  console.log('Información recibida:', this.info);
   },
     (error) => {
@@ -79,8 +82,10 @@ export class ValidarComponent {
   }
 
 
+
   continueNomina(): void {
-    this.router.navigate(['/pages/Terceros/Reporte-Validacion']);
+    this.sentLayoutFormat();
+
     this.fetchData();
   }
 
@@ -114,10 +119,12 @@ async sentLayout(): Promise<void> {
     this.TercerosService.SentLayout(file).subscribe({
       next: (response: ApiResponse) => {
         this.data = response.data;
+
         // console.log(this.data)
         Swal.close();
         Swal.fire('Éxito', 'Archivo enviado correctamente.', 'success');
         this.selectedFile = null; // Limpiar para el próximo uso
+
       },
       error: (error: any) => {
         console.error('Error al enviar el archivo:', error);
@@ -129,6 +136,23 @@ async sentLayout(): Promise<void> {
     Swal.fire('Error', 'Ha ocurrido un error inesperado.', 'error');
   }
 }
+    sentLayoutFormat(): void {
+    if (!this.data) return;
+   const userId = localStorage.getItem('userId') || '';
+   this.php.setDataLayout(this.data, this.terceroId, userId, 'set_layout').subscribe({
+      next: (response: ApiResponse) => {
+        this.data = response.data;
+        console.log(this.data)
+        Swal.close();
+        Swal.fire('Éxito', 'Archivo validado correctamente.', 'success');
+
+      },
+      error: (error: any) => {
+        console.error('Error al enviar:', error);
+      }
+    });
+  }
+
 
 
   // Función para convertir a número, manejando cadenas vacías o no válidas
