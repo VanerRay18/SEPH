@@ -30,7 +30,7 @@ export class RegistrosPersonasComponent {
   servicio: any;
   activeTab: string = 'Personas';
   page: number = 0;
-  size: number = 5;
+  size: number = 14;
   total: number = 0;
   isLoading: boolean = true;
   terceros: any[] = [];
@@ -66,6 +66,7 @@ export class RegistrosPersonasComponent {
         }));
          console.log('Personas:', this.personas);
         this.total = response.total_docentes ; // Asegúrate de que 'total' esté definido
+        console.log('Total de personas:', this.total);
       } else {
         this.isLoading = false;
         console.error('No data found in response');

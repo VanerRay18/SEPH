@@ -83,12 +83,11 @@ searchTerm: string = '';
   }
 
   verDetalle(id: number, added: boolean): void {
-    this.FileTransferService.setIdTercero(id);
-    console.log('ID del tercero seleccionado:', id);
+    // console.log('ID del tercero seleccionado:', id);
     if (added === true) {
-      this.router.navigate(['/pages/Terceros/Crear-Layout']);
+      this.router.navigate(['/pages/Terceros/Crear-Layout/' + id]);
     } else {
-    this.router.navigate(['/pages/Terceros/Validar']);
+    this.router.navigate(['/pages/Terceros/Validar/' + id]);
     }
   }
 

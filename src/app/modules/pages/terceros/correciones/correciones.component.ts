@@ -3,7 +3,7 @@ import { ApiResponse } from 'src/app/models/ApiResponse';
 import { NominaBecService } from 'src/app/services/nomina-bec.service';
 import { Info, Movs, NominaA, Resumen } from 'src/app/shared/interfaces/utils';
 import Swal from 'sweetalert2';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Anexo06 } from 'src/app/shared/interfaces/utils';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
@@ -54,14 +54,15 @@ export class CorrecionesComponent {
     quincena: null,
     users: null,
   };
-  terceroTotalId : any;
+  terceroTotalId: any;
   terceroId: any;
 
   constructor(
     private router: Router,
     private TercerosService: TercerosService,
     private cdr: ChangeDetectorRef,
-    private fileTransferService: FileTransferService
+    private fileTransferService: FileTransferService,
+    private route: ActivatedRoute,
   ) {
     // Registrar las fuentes necesarias
   }
@@ -77,11 +78,12 @@ export class CorrecionesComponent {
     });
 
 
-    this.fileTransferService.currentIdTercero$.subscribe((id) => {
-      this.terceroId = id;
-      console.log('ID recibido:', this.terceroId);
-      // Aquí puedes llamar a un servicio o usar el ID como necesites
-    });
+    // this.fileTransferService.currentIdTercero$.subscribe((id) => {
+
+    //   console.log('ID recibido:', this.terceroId);
+    //   // Aquí puedes llamar a un servicio o usar el ID como necesites
+    // });
+    this.terceroId = this.route.snapshot.paramMap.get('id');
     this.fetchData();
   }
 
@@ -101,7 +103,7 @@ export class CorrecionesComponent {
       this.ilimitado = response.data.ilimitado;
       this.added = response.data.added;
 
-      if(this.added === true){
+      if (this.added === true) {
         this.crearlayout = 1;
       } else {
         this.crearlayout = 0;
@@ -146,14 +148,14 @@ export class CorrecionesComponent {
   showDetails(row: any) {
 
     const posibles = Array.isArray(row.posibles)
-    ? row.posibles
-    : (row.posibles ? [row.posibles] : []);
+      ? row.posibles
+      : (row.posibles ? [row.posibles] : []);
 
-  if (posibles.length === 0) {
-    Swal.fire('Sin datos', 'No se encontraron registros posibles.', 'info');
-    return;
-  }
-  const rfcViejo = row.rfc;
+    if (posibles.length === 0) {
+      Swal.fire('Sin datos', 'No se encontraron registros posibles.', 'info');
+      return;
+    }
+    const rfcViejo = row.rfc;
 
     let tableHtml = `
   <table class="table table-bordered">
@@ -178,37 +180,37 @@ export class CorrecionesComponent {
   </table>
 `;
 
-Swal.fire({
-  title: 'Seleccione el RFC correcto',
-  html: tableHtml,
-  width: '1000px',
-  confirmButtonText: 'Confirmar',
-  confirmButtonColor: '#3085d6',
-  showCancelButton: true,
-  cancelButtonText: 'Cancelar',
-  preConfirm: () => {
-    const selectedRadio: HTMLInputElement | null = document.querySelector('input[name="rfcSeleccionado"]:checked');
-    if (!selectedRadio) {
-      Swal.showValidationMessage('Debe seleccionar un RFC');
-      return;
-    }
-    return {
-      rfcNuevo: selectedRadio.value,
-      rfcViejo: rfcViejo,
-      nombre: selectedRadio.getAttribute('data-nombre'),
-    };
-  }
-}).then(result => {
-  if (result.isConfirmed && result.value) {
-    const seleccionado = result.value;
-    this.users = seleccionado
-    // console.log('Seleccionado:', seleccionado);
+    Swal.fire({
+      title: 'Seleccione el RFC correcto',
+      html: tableHtml,
+      width: '1000px',
+      confirmButtonText: 'Confirmar',
+      confirmButtonColor: '#3085d6',
+      showCancelButton: true,
+      cancelButtonText: 'Cancelar',
+      preConfirm: () => {
+        const selectedRadio: HTMLInputElement | null = document.querySelector('input[name="rfcSeleccionado"]:checked');
+        if (!selectedRadio) {
+          Swal.showValidationMessage('Debe seleccionar un RFC');
+          return;
+        }
+        return {
+          rfcNuevo: selectedRadio.value,
+          rfcViejo: rfcViejo,
+          nombre: selectedRadio.getAttribute('data-nombre'),
+        };
+      }
+    }).then(result => {
+      if (result.isConfirmed && result.value) {
+        const seleccionado = result.value;
+        this.users = seleccionado
+        // console.log('Seleccionado:', seleccionado);
 
-    // Aquí puedes usar el RFC y nombre:
-    // seleccionado.nombre
-    // seleccionado.rfc
-  }
-});
+        // Aquí puedes usar el RFC y nombre:
+        // seleccionado.nombre
+        // seleccionado.rfc
+      }
+    });
 
   }
 
@@ -326,7 +328,7 @@ Swal.fire({
             icon: 'success',
             confirmButtonText: 'Aceptar'
           }).then(() => {
-            this.router.navigate(['/pages/NominaBecarios/Nominas-Activas']);
+            this.router.navigate(['/pages/Terceros/Descuentos']);
           });
 
         } catch (error: any) {

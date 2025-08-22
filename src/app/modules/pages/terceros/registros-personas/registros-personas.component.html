@@ -35,6 +35,11 @@
                     }}</strong></span>
               </div>
             </div>
+            <app-paginador [isLoading]="isLoading" [visible]="true"
+              [message]="'No hay registros que mostrar'"
+              [page]="page" [size]="size" [total]="total"
+              (pageChange)="cambiarPagina($event)">
+            </app-paginador>
           </div>
         </ng-container>
 
@@ -44,11 +49,7 @@
 
       </div>
     </div>
-    <app-paginador [isLoading]="isLoading" [visible]="true"
-      [message]="'No hay registros que mostrar'"
-      [page]="page" [size]="size" [total]="total"
-      (pageChange)="cambiarPagina($event)">
-    </app-paginador>
 
   </div>
+
 </div>

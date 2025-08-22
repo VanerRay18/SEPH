@@ -10,14 +10,14 @@ import { RegistrosPersonasComponent } from './registros-personas/registros-perso
 import { ValidarComponent } from './validar/validar.component';
 
 const routes: Routes = [
-  {path: 'Reporte-Validacion',component: CorrecionesComponent},
-  {path: 'Crear-Layout',component: CrearLayoutComponent},
+  {path: 'Reporte-Validacion/:id',component: CorrecionesComponent},
+  {path: 'Crear-Layout/:id',component: CrearLayoutComponent},
   {path: 'Descuentos',component: DescuentosComponent},
   {path: 'Historico-Terceros',component: HistoricoComponent},
   {path: 'Home-Terceros',component: HomeTercerosComponent},
   {path: 'Revision-Final',component: LayoutsTerminadosComponent},
   {path: 'Registros',component: RegistrosPersonasComponent},
-  {path: 'Validar',component: ValidarComponent},
+  {path: 'Validar/:id',component: ValidarComponent},
 
 ];
 
