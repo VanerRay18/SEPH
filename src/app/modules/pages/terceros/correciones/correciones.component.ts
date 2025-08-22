@@ -10,6 +10,7 @@ import { saveAs } from 'file-saver';
 import { Anexo05 } from 'src/app/shared/interfaces/utils';
 import { FileTransferService } from 'src/app/services/file-transfer.service';
 import { TercerosService } from './../../../../services/terceros.service';
+import { PhpTercerosService } from 'src/app/services/php-terceros.service';
 
 
 @Component({
@@ -63,26 +64,24 @@ export class CorrecionesComponent {
     private cdr: ChangeDetectorRef,
     private fileTransferService: FileTransferService,
     private route: ActivatedRoute,
+    private php: PhpTercerosService
   ) {
     // Registrar las fuentes necesarias
   }
   ngOnInit(): void {
     this.isLoading = true;
-    this.fileTransferService.getFile().subscribe(file => {
-      if (file) {
-        this.file = [file]; // Solo guardas el archivo
-        // console.log('Archivo almacenado para uso posterior:', this.file);
-      } else {
-        console.warn('No se recibió archivo');
-      }
-    });
 
 
-    // this.fileTransferService.currentIdTercero$.subscribe((id) => {
 
-    //   console.log('ID recibido:', this.terceroId);
-    //   // Aquí puedes llamar a un servicio o usar el ID como necesites
+    // this.fileTransferService.getFile().subscribe(file => {
+    //   if (file) {
+    //     this.file = [file]; // Solo guardas el archivo
+    //     // console.log('Archivo almacenado para uso posterior:', this.file);
+    //   } else {
+    //     console.warn('No se recibió archivo');
+    //   }
     // });
+
     this.terceroId = this.route.snapshot.paramMap.get('id');
     this.fetchData();
   }
@@ -90,7 +89,6 @@ export class CorrecionesComponent {
 
 
   fetchData() {
-
 
     this.TercerosService.getInformationById(this.terceroId).subscribe((response: ApiResponse) => {
       this.info = response.data;
@@ -115,12 +113,34 @@ export class CorrecionesComponent {
         console.error('Ocurrio un error', error);
       });
 
+    this.php.getLayoutPHP(this.terceroId, 'get_file').subscribe(text => {
+      const blob = new Blob([text], { type: 'text/csv;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'layout.txt';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    // this.php.getLayoutPHP(this.terceroId, 'get_file').subscribe((response: Blob) => {
+    //   const file = new File([response], 'layout.xlsx', { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+    //   if (file) {
+    //     this.file = [file];
+    //     console.log('Archivo de layout recibido:', file);
+    //   } else {
+    //     console.warn('No se recibió archivo');
+    //   }
+    // });
+
 
     if (!this.users) {
       this.users = ' ';
     }
     if (this.file.length > 0) {
       const archivo = this.file[0];
+      console.log(archivo);
 
       this.TercerosService.validatorLayout(archivo, this.users, this.ilimitado).subscribe({
         next: (response: ApiResponse) => {
