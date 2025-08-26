@@ -147,6 +147,17 @@ export class ValidarComponent {
       allowOutsideClick: false,
       showConfirmButton: false
     });
+
+    this.php.setDataLayout(this.data, this.terceroId, userId, 'set_layout').subscribe({
+      next: (response: ApiResponse) => {
+        // console.log('Datos guardados:', response);
+      },
+      error: (error: any) => {
+        console.error('Error al guardar los datos:', error);
+        Swal.fire('Error', 'No se pudo guardar los datos.', 'error');
+      }
+    });
+
     this.php.setLayoutPHP(this.terceroId, userId, 'set_file', file).subscribe({
       next: (response: ApiResponse) => {
 

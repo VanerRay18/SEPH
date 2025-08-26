@@ -20,21 +20,9 @@ export class PhpTercerosService {
     return this.http.get(`${this.apiUrl}/api_php.php`, { headers });
   }
 
-  setDataLayout(data: any, terceroId: string, userId: string, servicio: string): Observable<any> {
-    let headers = new HttpHeaders({ 'servicio': servicio, 'terceroId': terceroId, 'userId': userId });
-    return this.http.post(`${this.apiUrl}/api_php.php`, data, { headers });
-  }
-
-  getDataLayout(terceroId: string, servicio: string): Observable<any> {//get_layout
-    let headers = new HttpHeaders({ 'terceroId': terceroId, 'servicio': servicio });
+  getStatusTercero(servicio: string, terceroId: string): Observable<any> {
+    let headers = new HttpHeaders({ 'servicio': servicio, 'terceroId': terceroId });
     return this.http.get(`${this.apiUrl}/api_php.php`, { headers });
-  }
-
-  setLayoutPHP(terceroId: string, userId: string, servicio: string, file: File): Observable<any> {
-    const formData = new FormData();
-    formData.append('file', file, file.name);
-    let headers = new HttpHeaders({ 'terceroId': terceroId, 'userId': userId, 'servicio': servicio });
-    return this.http.post(`${this.apiUrl}/api_php.php`, formData, { headers });
   }
 
   getLayoutPHP(terceroId: string, servicio: string): Observable<Blob> {
@@ -47,4 +35,28 @@ export class PhpTercerosService {
       responseType: 'blob' // importante
     });
   }
+
+  getDataLayout(terceroId: string, servicio: string): Observable<any> {//get_layout
+    let headers = new HttpHeaders({ 'terceroId': terceroId, 'servicio': servicio });
+    return this.http.get(`${this.apiUrl}/api_php.php`, { headers });
+  }
+
+  getInfoTercero(userId: string, servicio: string): Observable<any> {
+    let headers = new HttpHeaders({ 'userId': userId, 'servicio': servicio });
+    return this.http.get(`${this.apiUrl}/api_php.php`, { headers });
+  }
+
+  setDataLayout(data: any, terceroId: string, userId: string, servicio: string): Observable<any> {
+    let headers = new HttpHeaders({ 'servicio': servicio, 'terceroId': terceroId, 'userId': userId });
+    return this.http.post(`${this.apiUrl}/api_php.php`, data, { headers });
+  }
+
+  setLayoutPHP(terceroId: string, userId: string, servicio: string, file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file, file.name);
+    let headers = new HttpHeaders({ 'terceroId': terceroId, 'userId': userId, 'servicio': servicio });
+    return this.http.post(`${this.apiUrl}/api_php.php`, formData, { headers });
+  }
+
+
 }

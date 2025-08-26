@@ -39,10 +39,11 @@
 
           <div class="col-auto col-lg-9">
             <div class="progress">
-              <div class="step" *ngIf="tercero.added" [ngClass]="{ 'active': tercero.status >= 1 }"><strong>Crear layout</strong></div>
-              <div class="step" [ngClass]="{ 'active': tercero.status >= 2 }"><strong>Revisión</strong></div>
-              <div class="step" [ngClass]="{ 'active': tercero.status >= 3 }"><strong>Correcciones</strong></div>
-              <div class="step" [ngClass]="{ 'active': tercero.status >= 4 }"><strong>Finalizado</strong></div>
+              <!-- <div class="step" *ngIf="tercero.added" [ngClass]="{ 'active': tercero.status >= 1 }"><strong>Crear layout</strong></div> -->
+               <code>{{ tercero.status }}</code>
+              <div class="step" [ngClass]="{ 'active': tercero.status >= 0 }"><strong>Revisión</strong></div>
+              <div class="step" [ngClass]="{ 'active': tercero.status >= 1 }"><strong>Correcciones</strong></div>
+              <div class="step" [ngClass]="{ 'active': tercero.status >= 2 }"><strong>Finalizado</strong></div>
             </div>
           </div>
 
@@ -87,10 +88,10 @@
 
           <div class="col-auto col-lg-9">
             <div class="progress">
-              <div class="step" *ngIf="tercero.added" [ngClass]="{ 'active': tercero.status >= 1 }"><strong>Crear layout</strong></div>
-              <div class="step" [ngClass]="{ 'active': tercero.status >= 2 }"><strong>Revisión</strong></div>
-              <div class="step" [ngClass]="{ 'active': tercero.status >= 3 }"><strong>Correcciones</strong></div>
-              <div class="step" [ngClass]="{ 'active': tercero.status >= 4 }"><strong>Finalizado</strong></div>
+               <code>{{ tercero.status }}</code>
+              <div class="step" [ngClass]="{ 'active': tercero.status >= 0 }"><strong>Revisión</strong></div>
+              <div class="step" [ngClass]="{ 'active': tercero.status >= 1 }"><strong>Correcciones</strong></div>
+              <div class="step" [ngClass]="{ 'active': tercero.status >= 2 }"><strong>Finalizado</strong></div>
             </div>
           </div>
 

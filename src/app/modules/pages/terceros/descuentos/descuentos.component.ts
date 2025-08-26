@@ -1,3 +1,4 @@
+import { PhpTercerosService } from 'src/app/services/php-terceros.service';
 import { Component } from '@angular/core';
 import { ApiResponse } from 'src/app/models/ApiResponse';
 import { TercerosService } from './../../../../services/terceros.service';
@@ -15,11 +16,11 @@ import { saveAs } from 'file-saver';
   styleUrls: ['./descuentos.component.css']
 })
 export class DescuentosComponent {
-searchTerm: string = '';
+  searchTerm: string = '';
   data: NominaA | null = null;
   zipFiles: File | null = null; // Nuevo arreglo para los archivos ZIP
   nominaId: any;
-  crearlayout:any;
+  crearlayout: any;
   eliminar: boolean = false;
   agregar: boolean = false;
   modificar: boolean = false;
@@ -33,7 +34,7 @@ searchTerm: string = '';
   info: any[] = [];
   institucionales: any[] = [];
   noInstitucionales: any[] = [];
-  terceroTotalId : any;
+  terceroTotalId: any;
 
 
   constructor(
@@ -41,11 +42,12 @@ searchTerm: string = '';
     private TercerosService: TercerosService,
     private PermisosUserService: PermisosUserService,
     private FileTransferService: FileTransferService,
+    private PhpTercerosService: PhpTercerosService
   ) {
     // Registrar las fuentes necesarias
   }
 
-  async ngOnInit():  Promise<void>  {
+  async ngOnInit(): Promise<void> {
 
     // this.nominaId = await this.loadNominaId();
     this.fetchData();
@@ -56,7 +58,7 @@ searchTerm: string = '';
       this.autorizar = response.data.autorizar
     });
 
-    this.crearlayout = 0 ;
+    this.crearlayout = 0;
     // console.log(this.data?.status)
 
   }
@@ -69,9 +71,19 @@ searchTerm: string = '';
 
   fetchData() {
     const userId = localStorage.getItem('userId')!;
+
+    this.PhpTercerosService.getInfoTercero(userId, 'get_info_tercero').subscribe(
+      (response: ApiResponse) => {
+        console.log('Información del tercero:', response.data);
+      },
+      (error) => {
+        console.error('Error al obtener la información del tercero:', error);
+      }
+    );
+
     this.TercerosService.getInformation(userId).subscribe(
       (response: ApiResponse) => {
-        // console.log('Datos obtenidos:', response.data);
+        console.log('Datos obtenidos:', response.data);
         this.info = response.data;
         this.institucionales = this.info.filter(t => t.ilimitado);
         this.noInstitucionales = this.info.filter(t => !t.ilimitado);
@@ -83,31 +95,49 @@ searchTerm: string = '';
   }
 
   verDetalle(id: number, added: boolean): void {
-    // console.log('ID del tercero seleccionado:', id);
-    if (added === true) {
-      this.router.navigate(['/pages/Terceros/Crear-Layout/' + id]);
-    } else {
-    this.router.navigate(['/pages/Terceros/Validar/' + id]);
-    }
+    console.log('ID del tercero seleccionado:', id);
+    console.log('¿Tercero agregado?:', added);
+    this.PhpTercerosService.getStatusTercero('get_status_tercero', id.toString()).subscribe(
+      (response: any) => {
+        console.log(response);
+
+        this.status = response.data.status_tercero;
+
+        if (added === true) {
+          this.router.navigate(['/pages/Terceros/Crear-Layout/' + id]);
+
+        } else {
+          this.limitado(id);
+        }
+      },
+      (error) => {
+        console.error('Error al llamar al servicio:', error);
+        Swal.fire({
+          title: 'Error',
+          text: `No se pudo obtener el estado del tercero. Por favor, inténtalo de nuevo más tarde.`,
+          icon: 'error',
+        });
+
+      }
+    );
   }
 
 
-  startNomina(): void {
+  limitado(id: number): void {
+    console.log('ID del tercero seleccionado:', id);
+    console.log('Status del tercero:', this.status);
     let status = this.status;
     switch (status) {
+
       case 0:
-        this.router.navigate(['/pages/Terceros/Crear-Layout']);
+        this.router.navigate(['/pages/Terceros/Validar/' + id]);
         break;
 
       case 1:
-        this.router.navigate(['/pages/Terceros/Validar']);
+        this.router.navigate(['/pages/Terceros/Reporte-Validacion/' + id]);
         break;
 
       case 2:
-        this.router.navigate(['/pages/Terceros/Reporte-Validacion']);
-        break;
-
-      case 3:
         Swal.fire({
           title: 'Error',
           text: `El tercero ya a sido finalizado`,

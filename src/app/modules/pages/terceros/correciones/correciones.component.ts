@@ -11,7 +11,10 @@ import { Anexo05 } from 'src/app/shared/interfaces/utils';
 import { FileTransferService } from 'src/app/services/file-transfer.service';
 import { TercerosService } from './../../../../services/terceros.service';
 import { PhpTercerosService } from 'src/app/services/php-terceros.service';
-
+import { finalize, map, switchMap, tap } from 'rxjs';
+import { ImageToBaseService } from './../../../../services/image-to-base.service';
+import * as pdfMake from 'pdfmake/build/pdfmake';
+import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 
 @Component({
   selector: 'app-correciones',
@@ -64,24 +67,14 @@ export class CorrecionesComponent {
     private cdr: ChangeDetectorRef,
     private fileTransferService: FileTransferService,
     private route: ActivatedRoute,
-    private php: PhpTercerosService
+    private php: PhpTercerosService,
+    private ImageToBaseService: ImageToBaseService
   ) {
     // Registrar las fuentes necesarias
+    (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
   }
   ngOnInit(): void {
     this.isLoading = true;
-
-
-
-    // this.fileTransferService.getFile().subscribe(file => {
-    //   if (file) {
-    //     this.file = [file]; // Solo guardas el archivo
-    //     // console.log('Archivo almacenado para uso posterior:', this.file);
-    //   } else {
-    //     console.warn('No se recibió archivo');
-    //   }
-    // });
-
     this.terceroId = this.route.snapshot.paramMap.get('id');
     this.fetchData();
   }
@@ -89,79 +82,51 @@ export class CorrecionesComponent {
 
 
   fetchData() {
+    this.isLoading = true;
 
-    this.TercerosService.getInformationById(this.terceroId).subscribe((response: ApiResponse) => {
-      this.info = response.data;
-      console.log(this.info)
-      this.terceroTotalId = response.data.id;
-      console.log(response.data.quincena)
-      this.dataFin.quincena = response.data.quincena;
-      console.log(response.data.terceroId)
-      this.dataFin.terceroId = response.data.terceroId;
-      this.ilimitado = response.data.ilimitado;
-      this.added = response.data.added;
-
-      if (this.added === true) {
-        this.crearlayout = 1;
-      } else {
-        this.crearlayout = 0;
+    this.TercerosService.getInformationById(this.terceroId).pipe(
+      tap((response: ApiResponse) => {
+        this.info = response.data;
+        this.terceroTotalId = response.data.id;
+        this.dataFin.quincena = response.data.quincena;
+        this.dataFin.terceroId = response.data.terceroId;
+        this.ilimitado = response.data.ilimitado;
+        this.added = response.data.added;
+        this.crearlayout = this.added ? 1 : 0;
+        if (!this.users) this.users = ' ';
+      }),
+      // luego pide el layout al PHP
+      switchMap(() =>
+        this.php.getLayoutPHP(this.terceroId, 'get_file')
+      ),
+      // convierte el blob a File (si tu backend de validación lo requiere como File)
+      map((blob: Blob) =>
+        new File([blob], 'layout.txt', { type: 'text/plain' })
+      ),
+      // valida el layout con el servicio de terceros
+      switchMap((archivo: File) => {
+        // Guarda opcionalmente si lo necesitas en la UI
+        this.file = [archivo];
+        return this.TercerosService.validatorLayout(archivo, this.users, this.ilimitado);
+      }),
+      finalize(() => {
+        this.isLoading = false;
+      })
+    ).subscribe({
+      next: (response: ApiResponse) => {
+        this.data = response.data;
+        console.log(this.data);
+        this.dataMov = response.data.resume?.[0];
+        this.dataAN = response.data.actualizaciones;
+        this.dataLI = response.data.sinLiquido;
+        this.dataRFC = response.data.possibleRFC;
+        this.dataTN = response.data.rechazos;
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Error en el flujo:', error);
       }
-
-    },
-      (error) => {
-        // console.error('Error al obtener los datos:', error);
-        console.error('Ocurrio un error', error);
-      });
-
-    this.php.getLayoutPHP(this.terceroId, 'get_file').subscribe(text => {
-      const blob = new Blob([text], { type: 'text/csv;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'layout.txt';
-      a.click();
-      URL.revokeObjectURL(url);
     });
-
-    // this.php.getLayoutPHP(this.terceroId, 'get_file').subscribe((response: Blob) => {
-    //   const file = new File([response], 'layout.xlsx', { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-
-    //   if (file) {
-    //     this.file = [file];
-    //     console.log('Archivo de layout recibido:', file);
-    //   } else {
-    //     console.warn('No se recibió archivo');
-    //   }
-    // });
-
-
-    if (!this.users) {
-      this.users = ' ';
-    }
-    if (this.file.length > 0) {
-      const archivo = this.file[0];
-      console.log(archivo);
-
-      this.TercerosService.validatorLayout(archivo, this.users, this.ilimitado).subscribe({
-        next: (response: ApiResponse) => {
-          this.data = response.data;
-          this.dataMov = response.data.resume[0];
-          this.dataAN = response.data.actualizaciones;
-          this.dataLI = response.data.sinLiquido;
-          this.dataRFC = response.data.possibleRFC;
-          this.dataTN = response.data.rechazos;
-          this.isLoading = false;
-          this.cdr.detectChanges();
-          // this.isLoading = this.dataMov.length === 0;
-        },
-        error: (error) => {
-          console.error('Error al enviar archivo al servicio:', error);
-        }
-      });
-    } else {
-      console.warn('No hay archivos cargados para enviar.');
-    }
-
   }
 
 
@@ -366,21 +331,265 @@ export class CorrecionesComponent {
 
 
 
-  async generateAnexos(): Promise<void> {
+  async onPdfResumen(): Promise<void> {
+    // Mostrar SweetAlert de carga
     Swal.fire({
-      title: 'Generando los Anexos..',
-      html: 'Por favor, espere mientras se genera el Excel de los anexos.',
+      title: 'Generando PDF...',
+      text: 'Por favor espere mientras se procesa el reporte',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      showConfirmButton: false,
       didOpen: () => {
         Swal.showLoading();
-      },
-      allowOutsideClick: false,
-      showConfirmButton: false
+      }
     });
 
     try {
+      // Extraer las secciones del JSON
+      const resume = Array.isArray(this.dataMov) ? this.dataMov : (this.dataMov ? [this.dataMov] : []);
+      const actualizaciones = this.dataAN || [];
+      const sinLiquido = this.dataLI || [];
+      const possibleRFC = this.dataRFC || [];
+      const rechazos = this.dataTN || [];
+
+      // Convertir la imagen a base64 (esto puede tomar tiempo)
+      const imageBase64 = await this.ImageToBaseService.convertImageToBase64('assets/IHE_LOGO.png');
+
+      const documentDefinition: any = {
+        pageSize: 'A4',
+        pageMargins: [40, 40, 40, 40],
+        content: [
+          // Header con logo y título
+          {
+            columns: [
+              {
+                image: imageBase64,
+                alignment: 'left',
+                width: 120,
+                height: 40,
+              },
+              {
+                text: 'VALIDACION DE REGISTROS PARA LA APLICACION EN CONCEPTOS DE DESCUENTO',
+                alignment: 'center',
+                style: 'title',
+                margin: [0, 10, 0, 0]
+              }
+            ]
+          },
+
+          // Información general
+          {
+            text: `Fecha de generación: ${new Date().toLocaleDateString('es-MX')}`,
+            alignment: 'right',
+            margin: [0, 10, 0, 30],
+            fontSize: 10,
+            color: '#666666'
+          },
+
+          // Sección RESUMEN
+          {
+            text: 'A CUENTA DE MOVS',
+            style: 'sectionHeader',
+            margin: [0, 0, 0, 10]
+          },
+          {
+            table: {
+              headerRows: 1,
+              widths: ['*', 'auto', 'auto', 'auto'],
+              body: [
+                [
+                  { text: 'Total', bold: true, fillColor: '#621132', color: 'white', alignment: 'center' },
+                  { text: 'Altas', bold: true, fillColor: '#621132', color: 'white', alignment: 'center' },
+                  { text: 'Bajas', fillColor: '#621132', color: 'white', alignment: 'center' },
+                  { text: 'Modificaciones', bold: true, fillColor: '#621132', color: 'white', alignment: 'center' }
+                ],
+                ...resume.map((item: any) => [
+                  { text: item.total || '0', alignment: 'center', style: 'textT' },
+                  { text: item.altas || '0', alignment: 'center', style: 'textT' },
+                  { text: item.bajas || '0', alignment: 'center', style: 'textT' },
+                  { text: item.modificaciones || '0', alignment: 'center', style: 'textT' }
+                ])
+              ]
+            },
+            margin: [0, 0, 0, 25]
+          },
+
+          // Sección ACTUALIZACIONES (si hay datos)
+          ...(actualizaciones.length > 0 ? [
+            {
+              text: 'Alta no aplicable por termina de contrato',
+              style: 'sectionHeader',
+              margin: [0, 0, 0, 10]
+            },
+            {
+              table: {
+                headerRows: 1,
+                widths: ['auto', '*', '*', '*'],
+                body: [
+                  [
+                    { text: 'Tipo_Orden', bold: true, fillColor: '#eeeeee', color: 'black', alignment: 'center' },
+                    { text: 'RFC', bold: true, fillColor: '#eeeeee', color: 'black', alignment: 'center' },
+                    { text: 'Nombre', bold: true, fillColor: '#eeeeee', color: 'black', alignment: 'center' },
+                    { text: 'Motivo', bold: true, fillColor: '#eeeeee', color: 'black', alignment: 'center' }
+                  ],
+                  ...actualizaciones.map((item: any) => [
+                    { text: item.tipo_orden || '---', alignment: 'center', style: 'textT' },
+                    { text: item.rfc || '---', alignment: 'center', style: 'textT' },
+                    { text: item.nombre || '---', alignment: 'left', style: 'textT' },
+                    { text: item.mensaje || '---', alignment: 'left', style: 'textT' }
+                  ])
+                ]
+              },
+              margin: [0, 0, 0, 25]
+            }
+          ] : []),
+
+          // Sección SIN LÍQUIDO (si hay datos)
+          ...(sinLiquido.length > 0 ? [
+            {
+              text: 'Liquido Insuficiente',
+              style: 'sectionHeader',
+              margin: [0, 0, 0, 10]
+            },
+            {
+              table: {
+                headerRows: 1,
+                widths: ['auto', '*', '*', 'auto', 'auto'],
+                body: [
+                  [
+                    { text: 'Tipo_Orden', bold: true, fillColor: '#eeeeee', color: 'black', alignment: 'center' },
+                    { text: 'RFC', bold: true, fillColor: '#eeeeee', color: 'black', alignment: 'center' },
+                    { text: 'Nombre', bold: true, fillColor: '#eeeeee', color: 'black', alignment: 'center' },
+                    { text: 'Descueto', bold: true, fillColor: '#eeeeee', color: 'black', alignment: 'center' },
+                    { text: 'Liquido', bold: true, fillColor: '#eeeeee', color: 'black', alignment: 'center' }
+                  ],
+                  ...sinLiquido.map((item: any) => [
+                    { text: item.registro || '---', alignment: 'center', style: 'textT' },
+                    { text: item.rfc || '---', alignment: 'center', style: 'textT' },
+                    { text: item.nombre || '---', alignment: 'left', style: 'textT' },
+                    { text: item.descuento || '---', alignment: 'right', style: 'textT' },
+                    { text: item.liquido || '---', alignment: 'right', style: 'textT' }
+                  ])
+                ]
+              },
+              margin: [0, 0, 0, 25]
+            }
+          ] : []),
+
+          // Sección RFC POSIBLES (si hay datos)
+          ...(possibleRFC.length > 0 ? [
+            {
+              text: 'Posible RFC',
+              style: 'sectionHeader',
+              margin: [0, 0, 0, 10]
+            },
+            {
+              table: {
+                headerRows: 1,
+                widths: ['auto', '*', '*'],
+                body: [
+                  [
+                    { text: 'Tipo_Orden ', bold: true, fillColor: '#eeeeee', color: 'black', alignment: 'center' },
+                    { text: 'RFC Actual', bold: true, fillColor: '#eeeeee', color: 'black', alignment: 'center' },
+                    { text: 'RFC Sugerido', bold: true, fillColor: '#eeeeee', color: 'black', alignment: 'center' }
+                  ],
+                  ...possibleRFC.map((item: any) => [
+                    { text: item.tipoOrden || '---', alignment: 'center', style: 'textT' },
+                    { text: item.rfcActual || '---', alignment: 'center', style: 'textT' },
+                    { text: item.rfcSugerido || '---', alignment: 'center', style: 'textT' }
+
+                  ])
+                ]
+              },
+              margin: [0, 0, 0, 25]
+            }
+          ] : []),
+
+          // Sección RECHAZOS (si hay datos)
+          ...(rechazos.length > 0 ? [
+            {
+              text: 'Trab. no existente en el cpto, baja o modificacion',
+              style: 'sectionHeader',
+              margin: [0, 0, 0, 10]
+            },
+            {
+              table: {
+                headerRows: 1,
+                widths: ['auto', '*', '*', '*'],
+                body: [
+                  [
+                    { text: 'Tipo_Orden', bold: true, fillColor: '#eeeeee', color: 'black', alignment: 'center' },
+                    { text: 'RFC', bold: true, fillColor: '#eeeeee', color: 'black', alignment: 'center' },
+                    { text: 'Nombre', bold: true, fillColor: '#eeeeee', color: 'black', alignment: 'center' },
+                    { text: 'Motivo del Rechazo', bold: true, fillColor: '#eeeeee', color: 'black', alignment: 'center' },
+                  ],
+                  ...rechazos.map((item: any) => [
+                    { text: item.tipoOrden || '---', alignment: 'center', style: 'textT' },
+                    { text: item.rfc || '---', alignment: 'center', style: 'textT' },
+                    { text: item.nombre || '---', alignment: 'left', style: 'textT' },
+                    { text: item.mensaje || '---', alignment: 'left', style: 'textT' }
+                  ])
+                ]
+              },
+              margin: [0, 0, 0, 25]
+            }
+          ] : []),
+
+          // Footer
+          {
+            text: `Reporte generado automáticamente el ${new Date().toLocaleString('es-MX')}`,
+            alignment: 'center',
+            fontSize: 8,
+            margin: [0, 30, 0, 0],
+            color: '#666666',
+            italics: true
+          }
+        ],
+
+        styles: {
+          title: {
+            fontSize: 18,
+            bold: true,
+            color: '#621132'
+          },
+          sectionHeader: {
+            fontSize: 14,
+            bold: true,
+            color: '#621132',
+            decoration: 'underline',
+            decorationColor: '#621132'
+          },
+          header: {
+            fontSize: 12,
+            bold: true
+          },
+          textT: {
+            fontSize: 9
+          }
+        }
+      };
+
+      // Generar el PDF
+      pdfMake.createPdf(documentDefinition).open();
+
+      // Cerrar el loading y mostrar éxito
+      Swal.fire({
+        icon: 'success',
+        title: '¡PDF Generado!',
+        text: 'El reporte se ha generado correctamente',
+        timer: 2000,
+        showConfirmButton: false
+      });
 
     } catch (error) {
-
+      // Cerrar loading y mostrar error
+      Swal.fire({
+        icon: 'error',
+        title: 'Error al generar PDF',
+        text: 'Ocurrió un problema al generar el reporte. Intente nuevamente.',
+        confirmButtonText: 'Entendido'
+      });
+      console.error('Error generando PDF:', error);
     }
   }
 
