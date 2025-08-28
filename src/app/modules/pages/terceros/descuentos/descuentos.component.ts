@@ -75,35 +75,47 @@ export class DescuentosComponent {
     this.PhpTercerosService.getInfoTercero(userId, 'get_info_tercero').subscribe(
       (response: ApiResponse) => {
         console.log('Información del tercero:', response.data);
+        this.info = response.data;
+        this.institucionales = response.data.si_institucionales;
+        console.log(this.institucionales);
+        this.noInstitucionales = response.data.no_institucionales;
+        console.log(this.noInstitucionales);
       },
       (error) => {
         console.error('Error al obtener la información del tercero:', error);
       }
     );
 
-    this.TercerosService.getInformation(userId).subscribe(
-      (response: ApiResponse) => {
-        console.log('Datos obtenidos:', response.data);
-        this.info = response.data;
-        this.institucionales = this.info.filter(t => t.ilimitado);
-        this.noInstitucionales = this.info.filter(t => !t.ilimitado);
-      },
-      (error) => {
-        console.error('Ocurrió un error', error);
-      }
-    );
+    // this.TercerosService.getInformation(userId).subscribe(
+    //   (response: ApiResponse) => {
+    //     console.log('Datos obtenidos:', response.data);
+    //     this.info = response.data;
+    //     this.institucionales = this.info.filter(t => t.ilimitado);
+    //     this.noInstitucionales = this.info.filter(t => !t.ilimitado);
+    //   },
+    //   (error) => {
+    //     console.error('Ocurrió un error', error);
+    //   }
+    // );
   }
 
-  verDetalle(id: number, added: boolean): void {
+  verDetalle(id: number, added: any): void {
+
+    if (!id) {
+    console.error("❌ ID no definido en verDetalle");
+    Swal.fire("Error", "El tercero no tiene ID válido", "error");
+    return;
+  }
+
     console.log('ID del tercero seleccionado:', id);
     console.log('¿Tercero agregado?:', added);
     this.PhpTercerosService.getStatusTercero('get_status_tercero', id.toString()).subscribe(
       (response: any) => {
-        console.log(response);
+        // console.log(response);
 
         this.status = response.data.status_tercero;
 
-        if (added === true) {
+        if (id === 4) {
           this.router.navigate(['/pages/Terceros/Crear-Layout/' + id]);
 
         } else {

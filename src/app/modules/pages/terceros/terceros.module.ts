@@ -12,6 +12,7 @@ import { HistoricoComponent } from './historico/historico.component';
 import { TercerosRoutingModule } from './terceros-routing.module';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CreateLayoutForteComponent } from './create-layout-forte/create-layout-forte.component';
 
 
 
@@ -25,7 +26,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     LayoutsTerminadosComponent,
     RegistrosTercerosComponent,
     RegistrosPersonasComponent,
-    HistoricoComponent
+    HistoricoComponent,
+    CreateLayoutForteComponent
   ],
   imports: [
     CommonModule,

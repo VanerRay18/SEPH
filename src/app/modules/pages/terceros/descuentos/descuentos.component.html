@@ -9,11 +9,11 @@
     <div class="col-auto d-flex align-items-center justify-content-between w-100">
       <h3 class="mb-0 ms-3">Institucionales</h3>
       <div class="justify-content-end">
-        <button class="btn boton ms-4 mt-2" *ngIf="agregar">CARGAR LAYOUTS</button>
+        <button class="btn boton ms-4 mt-2" *ngIf="agregar">DESCARGAR LAYOUTS</button>
       </div>
     </div>
     <hr>
-    <div *ngIf="info?.length">
+    <div *ngIf="institucionales?.length">
       <div class="card nomina m-3" *ngFor="let tercero of institucionales">
         <div class="row m-3">
           <div class="col-auto col-lg-6">
@@ -40,15 +40,14 @@
           <div class="col-auto col-lg-9">
             <div class="progress">
               <!-- <div class="step" *ngIf="tercero.added" [ngClass]="{ 'active': tercero.status >= 1 }"><strong>Crear layout</strong></div> -->
-               <code>{{ tercero.status }}</code>
-              <div class="step" [ngClass]="{ 'active': tercero.status >= 0 }"><strong>Revisión</strong></div>
-              <div class="step" [ngClass]="{ 'active': tercero.status >= 1 }"><strong>Correcciones</strong></div>
-              <div class="step" [ngClass]="{ 'active': tercero.status >= 2 }"><strong>Finalizado</strong></div>
+              <div class="step" [ngClass]="{ 'active': tercero.status_tercero >= 0 }"><strong>Revisión</strong></div>
+              <div class="step" [ngClass]="{ 'active': tercero.status_tercero >= 1 }"><strong>Correcciones</strong></div>
+              <div class="step" [ngClass]="{ 'active': tercero.status_tercero >= 2 }"><strong>Finalizado</strong></div>
             </div>
           </div>
 
           <div class="col-auto col-lg-3">
-            <button class="button ms-4 mt-2" *ngIf="agregar" (click)="verDetalle(tercero.terceroId, tercero.added)">
+            <button class="button ms-4 mt-2" *ngIf="agregar" (click)="verDetalle(tercero.id, tercero.added)">
               CONTINUAR
             </button>
           </div>
@@ -88,15 +87,14 @@
 
           <div class="col-auto col-lg-9">
             <div class="progress">
-               <code>{{ tercero.status }}</code>
-              <div class="step" [ngClass]="{ 'active': tercero.status >= 0 }"><strong>Revisión</strong></div>
-              <div class="step" [ngClass]="{ 'active': tercero.status >= 1 }"><strong>Correcciones</strong></div>
-              <div class="step" [ngClass]="{ 'active': tercero.status >= 2 }"><strong>Finalizado</strong></div>
+              <div class="step" [ngClass]="{ 'active': tercero.status_tercero >= 0 }"><strong>Revisión</strong></div>
+              <div class="step" [ngClass]="{ 'active': tercero.status_tercero >= 1 }"><strong>Correcciones</strong></div>
+              <div class="step" [ngClass]="{ 'active': tercero.status_tercero >= 2 }"><strong>Finalizado</strong></div>
             </div>
           </div>
 
           <div class="col-auto col-lg-3">
-            <button class="button ms-4 mt-2" *ngIf="agregar" (click)="verDetalle(tercero.terceroId, tercero.added)">
+            <button class="button ms-4 mt-2" *ngIf="agregar" (click)="verDetalle(tercero.id, tercero.added)">
               CONTINUAR
             </button>
           </div>

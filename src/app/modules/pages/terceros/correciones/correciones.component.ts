@@ -24,8 +24,8 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 export class CorrecionesComponent {
 
   searchTerm: string = '';
-  headersAN = ['Tipo_Orden ', 'RFC', 'Nombre', 'Desde', 'Hasta'];
-  displayedColumnsAN = ['tipo_orden', 'rfc', 'nombre', 'retentionTotal'];
+  headersAN = ['Tipo_Orden ', 'RFC', 'Nombre', 'Motivo'];
+  displayedColumnsAN = ['tipo_orden', 'rfc', 'nombre', 'mensaje'];
   dataAN = [];
   headersLI = ['Tipo_Orden ', 'RFC', 'Nombre', 'Descueto', 'Liquido'];
   displayedColumnsLI = ['tipo_orden', 'rfc', 'nombre', 'descuento', 'liquido',];
@@ -39,7 +39,6 @@ export class CorrecionesComponent {
   users: any;
   dataMov: Movs | null = null;
   crearlayout: any;
-  status = localStorage.getItem('status')!;
   isLoading = true;
   ilimitado: any;
   file: File[] = [];
@@ -47,6 +46,8 @@ export class CorrecionesComponent {
   layoutCorregido = [];
   info: any;
   added: any;
+  status: any;
+  save: boolean = true;
 
   dataFin: Info = {
     accepted: null,
@@ -127,6 +128,23 @@ export class CorrecionesComponent {
         console.error('Error en el flujo:', error);
       }
     });
+
+    this.php.getStatusTercero('get_status_tercero', this.terceroId).subscribe(
+      (response: any) => {
+        console.log(response);
+        this.status = response.data.status_tercero;
+      },
+      (error) => {
+        console.error('Error al llamar al servicio:', error);
+        Swal.fire({
+          title: 'Error',
+          text: `No se pudo obtener el estado del tercero. Por favor, inténtalo de nuevo más tarde.`,
+          icon: 'error',
+        });
+
+      }
+    );
+
   }
 
 
@@ -240,6 +258,20 @@ export class CorrecionesComponent {
                   this.dataFin.sinLiquido = response.data.sinLiquido;
                   this.dataFin.rejected = response.data.rechazos;
                   this.dataFin.accepted = response.data.correctos;
+                  this.save = false;
+
+                  const data = response.data;
+                  const lineas = data.users.map((u: any) => u.line);
+                  const contenido = lineas.join('\n');// con formato
+                  const blob = new Blob([contenido], { type: 'text/plain;charset=utf-8' });
+
+                  const url = window.URL.createObjectURL(blob);
+                  const a = document.createElement('a');
+                  a.href = url;
+                  a.download = 'LayoutCorregido.txt';
+                  a.click();
+                  window.URL.revokeObjectURL(url);
+
                   Swal.fire({
                     title: 'Layout corregido',
                     text: 'No se olvide de descargar el nuevo layout',
@@ -305,7 +337,7 @@ export class CorrecionesComponent {
           await this.TercerosService.SaveLayout(this.dataFin).toPromise();
           // Luego cambiar el estado
           await this.TercerosService.changeStatus(this.terceroId, status).toPromise();
-
+          this.save = true;
           // Mostrar éxito
           Swal.fire({
             title: 'Proceso terminado',

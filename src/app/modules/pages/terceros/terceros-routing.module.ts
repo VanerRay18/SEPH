@@ -1,3 +1,4 @@
+import { CreateLayoutForteComponent } from './create-layout-forte/create-layout-forte.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CorrecionesComponent } from './correciones/correciones.component';
@@ -11,13 +12,14 @@ import { ValidarComponent } from './validar/validar.component';
 
 const routes: Routes = [
   {path: 'Reporte-Validacion/:id',component: CorrecionesComponent},
-  {path: 'Crear-Layout/:id',component: CrearLayoutComponent},
+  {path: 'Crear-Layout-Ahorro/:id',component: CrearLayoutComponent},
   {path: 'Descuentos',component: DescuentosComponent},
   {path: 'Historico-Terceros',component: HistoricoComponent},
   {path: 'Home-Terceros',component: HomeTercerosComponent},
   {path: 'Revision-Final',component: LayoutsTerminadosComponent},
   {path: 'Registros',component: RegistrosPersonasComponent},
   {path: 'Validar/:id',component: ValidarComponent},
+  {path: 'Crear-Layout-Forte/:id',component: CreateLayoutForteComponent}
 
 ];
 

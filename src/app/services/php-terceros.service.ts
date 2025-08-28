@@ -58,5 +58,9 @@ export class PhpTercerosService {
     return this.http.post(`${this.apiUrl}/api_php.php`, formData, { headers });
   }
 
+  validadorUser(headers: HttpHeaders): Observable<any> {
+    return this.http.get(`${this.apiUrl}/api_php.php`, { headers });
+  }
+
 
 }
