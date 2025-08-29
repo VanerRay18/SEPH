@@ -45,7 +45,6 @@ export class CreateLayoutForteComponent {
       rfc: [''],
       srl_emp: [''],
       quincena: [''],
-      porcentaje: ['1'] // Valor por defecto
     });
   }
   async ngOnInit(): Promise<void> {
@@ -108,19 +107,32 @@ export class CreateLayoutForteComponent {
 
   guardar() {
     const datosForm = this.datosLayout.value;
-    const nombre = `${datosForm.nombre} ${datosForm.apellido1} ${datosForm.apellido2}`;
     const rfc = `${datosForm.rfc}`;
     const monto_descuento = 36;
+    const primer_apellido = `${datosForm.apellido1}`;
+    const segundo_apellido = `${datosForm.apellido2}`;
+    const nombre = `${datosForm.nombre}`;
 
     const servicio = 'get_validar_docente';
     let headers = new HttpHeaders;
 
-    headers = new HttpHeaders({ 'terceroId': this.terceroId, 'rfc': rfc, 'nombre': nombre, 'monto_descuento': monto_descuento, 'servicio': servicio });
+    const nuevoRegistro = {
+      terceroId: this.terceroId,
+      nombre: datosForm.nombre,
+      primer_apellido: datosForm.apellido1,
+      segundo_apellido: datosForm.apellido2,
+      rfc: datosForm.rfc,
+      documento: "000000",
+      tipo: "2",
+    };
+
+    headers = new HttpHeaders({ 'servicio': servicio});
 
 
-    this.php.validadorUser(headers).subscribe((response: ApiResponse) => {
+    this.php.validadorUser(headers, nuevoRegistro).subscribe((response: ApiResponse) => {
       console.log('Respuesta del servidor:', response);
-      if (response.data.procede_aplicar_descuento_tercero === 'true') {
+      console.log(response.data.procede_aplicar_descuento_tercero);
+      if (response.data.procede_aplicar_descuento_tercero === true) {
         Swal.fire('Éxito', 'Registro agregado correctamente.', 'success');
         this.data.push(datosForm); // agrega a la tabla
         this.data = [...this.data]; // forza detección de cambios si es necesario
